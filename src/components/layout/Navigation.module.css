@@ -1,0 +1,250 @@
+.header {
+  --nav-bg-alpha: 0;
+  --nav-pad: 1.6rem;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 120;
+  will-change: transform;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  opacity: var(--nav-bg-alpha);
+  background: rgba(8, 8, 8, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Soft shade so the transparent bar stays legible over the hero image */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -60%;
+  background: linear-gradient(180deg, rgba(8, 8, 8, 0.55), transparent);
+  opacity: calc(1 - var(--nav-bg-alpha));
+  pointer-events: none;
+}
+
+.header[data-open="true"] .backdrop,
+.header[data-open="true"]::before {
+  opacity: 0;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding: var(--nav-pad) var(--gutter);
+}
+
+.brand {
+  display: inline-flex;
+}
+
+.links {
+  display: none;
+  gap: clamp(1.4rem, 2.6vw, 2.75rem);
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  padding-block: 0.5rem;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.4s var(--ease-out);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.15rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--ivory);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.link[aria-current="page"] {
+  color: var(--ivory);
+}
+
+.link[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: var(--accent);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cta {
+  display: none;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 44px;
+  padding-inline: 0.25rem;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.toggleIcon {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 10px;
+}
+
+.toggleIcon span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  transition:
+    transform 0.6s var(--ease-out),
+    top 0.6s var(--ease-out),
+    width 0.6s var(--ease-out);
+}
+
+.toggleIcon span:first-child {
+  top: 0;
+}
+
+.toggleIcon span:last-child {
+  top: 9px;
+  left: auto;
+  width: 60%;
+}
+
+.header[data-open="true"] .toggleIcon span:first-child {
+  top: 4.5px;
+  transform: rotate(20deg);
+}
+
+.header[data-open="true"] .toggleIcon span:last-child {
+  top: 4.5px;
+  width: 100%;
+  transform: rotate(-20deg);
+}
+
+@media (min-width: 1100px) {
+  .links {
+    display: flex;
+  }
+  .cta {
+    display: block;
+  }
+  .toggle {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- Menu */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  visibility: hidden;
+  overflow-y: auto;
+  background:
+    radial-gradient(90% 60% at 100% 100%, rgba(66, 26, 24, 0.35), transparent 70%),
+    var(--bg-2);
+}
+
+.menuInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3rem;
+  min-height: 100%;
+  padding: calc(var(--nav-h) + 3rem) var(--gutter) 2.5rem;
+}
+
+.menuList {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.menuItem {
+  border-bottom: 1px solid var(--line);
+}
+
+.menuLink {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding-block: 0.6rem;
+  font-size: clamp(2.6rem, 11vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition:
+    color 0.4s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+
+.menuLink:hover,
+.menuLink:focus-visible {
+  transform: translateX(0.6rem);
+}
+
+.menuLink[aria-current="page"] .serif {
+  font-style: italic;
+}
+
+.menuIndex {
+  color: var(--accent);
+  min-width: 2ch;
+}
+
+.menuFooter {
+  display: grid;
+  gap: 1.5rem;
+  font-size: var(--fs-small);
+  color: var(--ivory);
+}
+
+.menuFooter .label {
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+@media (min-width: 640px) {
+  .menuFooter {
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 3rem;
+  }
+}

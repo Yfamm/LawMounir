@@ -1,0 +1,95 @@
+.heading {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--muted);
+}
+
+:global(.surface-paper) .meta {
+  color: var(--ink-muted);
+}
+
+.index {
+  color: var(--accent);
+}
+
+:global(.surface-paper) .index {
+  color: var(--accent-deep);
+}
+
+.rule {
+  display: block;
+  width: clamp(2.5rem, 6vw, 5rem);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.body {
+  display: grid;
+  gap: 2rem;
+  align-items: end;
+}
+
+@media (min-width: 1024px) {
+  .body {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+
+  .aside {
+    padding-bottom: 0.6rem;
+  }
+
+  /* Mega titles take the full measure; the introduction drops beneath, right-aligned. */
+  .stacked {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3rem 2rem;
+  }
+
+  .stacked > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .stacked .aside {
+    grid-column: 8 / span 5;
+    padding-bottom: 0;
+  }
+}
+
+.aside {
+  display: grid;
+  gap: 2rem;
+  justify-items: start;
+}
+
+.title {
+  text-transform: none;
+}
+
+.mega {
+  font-size: var(--fs-mega);
+  white-space: nowrap;
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+.xl {
+  font-size: var(--fs-display-xl);
+}
+
+.l {
+  font-size: var(--fs-display-l);
+  line-height: 0.98;
+}
+
+.m {
+  font-size: var(--fs-display-m);
+  line-height: 1.02;
+}

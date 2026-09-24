@@ -1,0 +1,130 @@
+.card {
+  position: relative;
+  height: 100%;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100%;
+  padding-top: 1.5rem;
+}
+
+.rule {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--tone-line-strong);
+}
+
+.rule::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tone-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1s var(--ease-out);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.category {
+  color: var(--tone-accent);
+}
+
+.issue {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--tone-muted);
+}
+
+.title {
+  font-size: clamp(1.6rem, 2.2vw, 2.15rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.titleText {
+  background: linear-gradient(currentColor, currentColor) 0 96% / 0 1px no-repeat;
+  transition: background-size 0.9s var(--ease-out);
+}
+
+.standfirst {
+  color: var(--tone-muted);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--tone-muted);
+}
+
+.read {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: currentColor;
+}
+
+.card .read {
+  color: inherit;
+}
+
+.link:hover .rule::after,
+.link:focus-visible .rule::after {
+  transform: scaleX(1);
+}
+
+.link:hover .titleText,
+.link:focus-visible .titleText {
+  background-size: 100% 1px;
+}
+
+/* Feature: the lead story */
+.feature .link {
+  gap: 1.75rem;
+  padding-top: 2rem;
+}
+
+.feature .title {
+  font-size: clamp(2.3rem, 4.4vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+}
+
+.feature .standfirst {
+  font-size: var(--fs-body-l);
+  max-width: 36rem;
+  -webkit-line-clamp: 4;
+}
+
+.feature .issue {
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 300;
+  line-height: 0.8;
+}

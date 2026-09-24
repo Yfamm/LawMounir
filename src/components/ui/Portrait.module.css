@@ -1,0 +1,48 @@
+.photo {
+  object-fit: cover;
+  filter: grayscale(0.25) contrast(1.05);
+}
+
+.plate {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(165deg, #1d1915 0%, #121110 45%, #0a0a0a 100%);
+}
+
+/* Carved-stone fluting, a quiet nod to the columns in the hero image. */
+.fluting {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(242, 235, 221, 0.035) 0 1px,
+    transparent 1px 22px,
+    rgba(0, 0, 0, 0.25) 22px 23px,
+    transparent 23px 44px
+  );
+  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+}
+
+.light {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(65% 45% at 28% 18%, rgba(181, 150, 90, 0.26), transparent 70%),
+    radial-gradient(90% 60% at 50% 110%, rgba(66, 26, 24, 0.45), transparent 70%);
+}
+
+.initials {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(6rem, 12vw, 11rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242, 235, 221, 0.28);
+  white-space: nowrap;
+}

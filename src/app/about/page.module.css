@@ -1,0 +1,30 @@
+.story {
+  background: var(--bg);
+}
+
+.grid {
+  display: grid;
+  gap: 3rem;
+}
+
+.statement {
+  font-size: var(--fs-display-l);
+}
+
+.copy {
+  display: grid;
+  gap: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .statement {
+    grid-column: 1 / span 6;
+  }
+  .copy {
+    grid-column: 8 / span 5;
+    padding-top: 1rem;
+  }
+}

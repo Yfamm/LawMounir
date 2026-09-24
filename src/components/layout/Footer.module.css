@@ -1,0 +1,127 @@
+.footer {
+  position: relative;
+  padding-top: var(--section-s);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  gap: 3rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.brand {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.note {
+  max-width: 24rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.col ul {
+  display: grid;
+  gap: 0.6rem;
+  font-size: var(--fs-small);
+}
+
+.col:last-child {
+  grid-column: 1 / -1;
+}
+
+.heading {
+  margin-bottom: 1.4rem;
+  color: var(--accent);
+}
+
+.link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition:
+    background-size 0.6s var(--ease-out),
+    color 0.4s var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  background-size: 100% 1px;
+  color: var(--ivory);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1.6fr 1fr 1.3fr 1.3fr;
+  }
+  .brand,
+  .col:last-child {
+    grid-column: auto;
+  }
+}
+
+.giant {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--section-s);
+  overflow: hidden;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(4.5rem, 20.5vw, 22rem);
+  font-weight: 400;
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242, 235, 221, 0.14);
+  user-select: none;
+}
+
+.giant span {
+  display: block;
+  padding-top: 0.06em;
+}
+
+.bottom {
+  display: grid;
+  gap: 0.75rem;
+  padding-block: 2rem 2.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.disclaimer {
+  max-width: 34rem;
+}
+
+.top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: start;
+  min-height: 44px;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory);
+}
+
+@media (min-width: 900px) {
+  .bottom {
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 2.5rem;
+  }
+  .disclaimer {
+    justify-self: center;
+    text-align: center;
+  }
+}

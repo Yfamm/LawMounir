@@ -1,0 +1,17 @@
+.header {
+  padding-top: calc(var(--nav-h) + clamp(4rem, 10vw, 9rem));
+  padding-bottom: var(--section-s);
+  background:
+    radial-gradient(60% 50% at 100% 0%, rgba(66, 26, 24, 0.22), transparent 70%),
+    var(--bg);
+}
+
+.band {
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+@media (max-width: 767px) {
+  .band :global(figure) > div {
+    aspect-ratio: 4 / 3;
+  }
+}

@@ -1,0 +1,202 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  will-change: transform;
+}
+
+.mediaInner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 30% 40%;
+  will-change: transform;
+}
+
+/* Keep Justice and the scales in frame at every aspect ratio. */
+.image {
+  object-fit: cover;
+  object-position: 22% 28%;
+  filter: saturate(0.9) contrast(1.06);
+}
+
+@media (max-aspect-ratio: 4 / 5) {
+  .image {
+    object-position: 26% 30%;
+  }
+}
+
+/* Cinematic grade: deep floor for type, darker left edge, lifted sky. */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(0deg, var(--bg) 0%, rgba(8, 8, 8, 0.82) 16%, rgba(8, 8, 8, 0.28) 48%, rgba(8, 8, 8, 0.1) 70%, rgba(8, 8, 8, 0.45) 100%),
+    linear-gradient(90deg, rgba(8, 8, 8, 0.55) 0%, rgba(8, 8, 8, 0.1) 45%, rgba(8, 8, 8, 0) 70%, rgba(8, 8, 8, 0.35) 100%);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(130% 110% at 45% 35%, transparent 45%, rgba(8, 8, 8, 0.7) 100%);
+  pointer-events: none;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+:global(html.js) .veil {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html.js) .veil {
+    opacity: 0;
+  }
+}
+
+.content {
+  position: relative;
+  padding-top: calc(var(--nav-h) + 4rem);
+  padding-bottom: clamp(3.5rem, 8vh, 6.5rem);
+  will-change: transform;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  color: var(--ivory);
+}
+
+.eyebrowRule {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: left center;
+}
+
+.title {
+  font-size: clamp(3.3rem, 9.4vw, 10.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  max-width: 12ch;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
+}
+
+.title em {
+  color: var(--ivory);
+}
+
+.foot {
+  display: grid;
+  gap: 2rem;
+  margin-top: clamp(2rem, 4vw, 3.25rem);
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  border-top: 1px solid var(--line);
+}
+
+.lede {
+  max-width: 30rem;
+  font-size: var(--fs-body-l);
+  line-height: 1.6;
+  color: rgba(242, 235, 221, 0.82);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (min-width: 900px) {
+  .foot {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    max-width: min(100%, 70rem);
+  }
+}
+
+/* Scroll cue */
+.cue {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(3.5rem, 8vh, 6.5rem);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cueLabel {
+  writing-mode: vertical-rl;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cueTrack {
+  position: relative;
+  width: 1px;
+  height: 4.5rem;
+  overflow: hidden;
+  background: var(--line-strong);
+}
+
+.cueDot {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, var(--accent));
+  animation: cue 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.coords {
+  position: absolute;
+  top: calc(var(--nav-h) + 1.5rem);
+  right: var(--gutter);
+  display: none;
+  font-weight: 500;
+  color: rgba(242, 235, 221, 0.55);
+}
+
+@media (min-width: 1100px) {
+  .cue {
+    display: flex;
+  }
+  .coords {
+    display: block;
+    writing-mode: vertical-rl;
+  }
+}

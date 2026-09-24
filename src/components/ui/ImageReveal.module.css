@@ -1,0 +1,52 @@
+.figure {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: var(--ratio, 4 / 5);
+  overflow: hidden;
+  background: var(--bg-3);
+}
+
+.inner {
+  position: absolute;
+  inset: calc(var(--travel) * -1) 0;
+  will-change: transform;
+}
+
+.img {
+  object-fit: cover;
+  filter: saturate(0.82) contrast(1.05);
+}
+
+.tone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.none {
+  display: none;
+}
+
+.soft {
+  background:
+    radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(8, 8, 8, 0.55) 100%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.1), rgba(8, 8, 8, 0.35));
+}
+
+.deep {
+  background:
+    radial-gradient(120% 90% at 50% 40%, rgba(8, 8, 8, 0.2) 20%, rgba(8, 8, 8, 0.85) 100%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.35), rgba(8, 8, 8, 0.7));
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-weight: 500;
+}

@@ -1,0 +1,22 @@
+.practice {
+  background: var(--bg);
+  padding-top: calc(var(--section) * 0.6);
+}
+
+.list {
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+
+.note {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}

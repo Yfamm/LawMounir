@@ -1,0 +1,7 @@
+.people {
+  background: var(--bg);
+}
+
+.grid {
+  margin-top: clamp(4rem, 8vw, 7rem);
+}

@@ -1,0 +1,24 @@
+.page {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--nav-h) + 3rem) 4rem;
+  background:
+    radial-gradient(60% 60% at 80% 20%, rgba(66, 26, 24, 0.3), transparent 70%),
+    var(--bg);
+}
+
+.inner {
+  display: grid;
+  gap: 2rem;
+  justify-items: start;
+}
+
+.code {
+  color: var(--accent);
+}
+
+.title {
+  font-size: var(--fs-display-xl);
+}
