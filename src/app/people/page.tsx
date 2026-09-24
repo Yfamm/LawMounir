@@ -16,7 +16,8 @@ export default function PeoplePage() {
       <PageHeader
         index="01"
         label="Our People"
-        title={["Our", "People"]}
+        arabic="فريقنا"
+        title={["Our", <span key="p">People<sup className="count">(06)</sup></span>]}
         intro="Partners stay on the matter from first advice to final hearing. The people who prepare the file are the people who stand behind it."
       />
 

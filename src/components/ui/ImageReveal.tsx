@@ -19,6 +19,10 @@ type Props = {
   className?: string;
   tone?: "none" | "soft" | "deep";
   caption?: string;
+  /** Plate number shown before the caption, e.g. "III". */
+  plate?: string;
+  /** Thin antique-gold keyline set inside the image edge. */
+  framed?: boolean;
   priority?: boolean;
 };
 
@@ -37,6 +41,8 @@ export function ImageReveal({
   className,
   tone = "soft",
   caption,
+  plate,
+  framed = false,
   priority = false,
 }: Props) {
   const ref = useRef<HTMLElement>(null);
@@ -95,8 +101,14 @@ export function ImageReveal({
           />
         </div>
         <div className={`${styles.tone} ${styles[tone]}`} aria-hidden="true" />
+        {framed && <span className={styles.keyline} aria-hidden="true" />}
       </div>
-      {caption && <figcaption className={`${styles.caption} label`}>{caption}</figcaption>}
+      {caption && (
+        <figcaption className={`${styles.caption} label`}>
+          {plate && <span className={styles.plate}>Pl. {plate}</span>}
+          <span>{caption}</span>
+        </figcaption>
+      )}
     </figure>
   );
 }

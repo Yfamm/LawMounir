@@ -12,7 +12,8 @@ export function PracticeAreasSection() {
         <SectionHeading
           index="03"
           label="Practice Areas"
-          title={["Practice", "Areas"]}
+          arabic="مجالات الممارسة"
+          title={["Practice", <span key="a">Areas<sup className="count">(12)</sup></span>]}
           size="mega"
           intro="Twelve areas of Egyptian law, organized around the decisions clients actually face — and the forums where those decisions are tested."
         />

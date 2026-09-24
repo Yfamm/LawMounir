@@ -5,6 +5,7 @@ import { useRef } from "react";
 import heroImage from "@/assets/hero-justice-cairo.webp";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import { site } from "@/content/site";
+import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import styles from "./Hero.module.css";
 
@@ -106,6 +107,9 @@ export function Hero() {
             </span>
           ))}
         </h1>
+        <p className={styles.arabicLine} data-fade>
+          <Arabic>{site.taglineAr}</Arabic>
+        </p>
 
         <div className={styles.foot}>
           <p className={styles.lede} data-fade>

@@ -29,6 +29,28 @@ const sans = localFont({
   fallback: ["system-ui", "Helvetica Neue", "Arial", "sans-serif"],
 });
 
+const mono = localFont({
+  src: [
+    { path: "../fonts/ibm-plex-mono-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-latin-500-normal.woff2", weight: "500", style: "normal" },
+  ],
+  variable: "--font-mono",
+  display: "swap",
+  fallback: ["ui-monospace", "Menlo", "monospace"],
+});
+
+// Amiri revives the Naskh type of the Bulaq (Amiria) press in Cairo.
+const arabic = localFont({
+  src: [
+    { path: "../fonts/amiri-arabic-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/amiri-arabic-700-normal.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-arabic",
+  display: "swap",
+  preload: false,
+  fallback: ["Noto Naskh Arabic", "serif"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
@@ -53,7 +75,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable} ${arabic.variable}`} suppressHydrationWarning>
       <head>
         {/* Flags JS support before first paint so animated elements can start hidden. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

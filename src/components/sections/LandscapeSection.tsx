@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import heroImage from "@/assets/hero-justice-cairo.webp";
+import { plateNumber, plates } from "@/content/plates";
+import { Arabic } from "@/components/ui/Arabic";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import styles from "./LandscapeSection.module.css";
 
@@ -106,7 +107,7 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
       <div className={styles.stage} data-stage data-reveal>
         <div className={styles.media} aria-hidden="true">
           <div className={styles.mediaInner} data-media>
-            <Image src={heroImage} alt="" fill sizes="100vw" placeholder="blur" className={styles.image} />
+            <Image src={plates.hallAisle.image} alt="" fill sizes="100vw" placeholder="blur" className={styles.image} />
           </div>
         </div>
         <div className={styles.shade} data-shade aria-hidden="true" />
@@ -118,6 +119,7 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
             <h2 id="landscape-title" className="label">
               The Egyptian legal landscape
             </h2>
+            <Arabic className={styles.arabic}>المشهد القانوني المصري</Arabic>
           </div>
 
           <div className={styles.frames}>
@@ -164,6 +166,9 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
               <span className={styles.bar} data-progress />
             </span>
             <span className="label tabular">03</span>
+            <span className={`label ${styles.plateCaption}`}>
+              Pl. {plateNumber("hallAisle")} — {plates.hallAisle.caption}
+            </span>
           </div>
         </div>
       </div>

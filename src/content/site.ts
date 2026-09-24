@@ -6,6 +6,9 @@ export const site = {
   name: "Mounir",
   legalName: "Mounir Law Firm",
   descriptor: "Attorneys at Law",
+  /** Arabic name and tagline, set in Amiri. */
+  nameAr: "منير للمحاماة",
+  taglineAr: "القانون، في الواقع المصري",
   city: "Cairo",
   url: "https://mounirlaw.com",
   description:

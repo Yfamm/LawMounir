@@ -1,3 +1,5 @@
+import type { PlateKey } from "./plates";
+
 export type PracticeArea = {
   slug: string;
   title: string;
@@ -5,7 +7,9 @@ export type PracticeArea = {
   overview: string;
   scope: string[];
   forums: string[];
-  /** Background position used to frame the preview visual for this area. */
+  /** Architectural plate used for this area's imagery. */
+  plate: PlateKey;
+  /** Background/object position used to frame that plate. */
   focus: string;
 };
 
@@ -25,7 +29,8 @@ export const practiceAreas: PracticeArea[] = [
       "Joint ventures, reorganizations and exits",
     ],
     forums: ["General Authority for Investment and Free Zones", "Commercial Registry", "Economic Courts"],
-    focus: "42% 40%",
+    plate: "colonnade",
+    focus: "62% 45%",
   },
   {
     slug: "litigation-dispute-resolution",
@@ -42,7 +47,8 @@ export const practiceAreas: PracticeArea[] = [
       "Enforcement of judgments and arbitral awards",
     ],
     forums: ["Civil & Commercial Courts", "Economic Courts", "Court of Cassation", "Arbitral tribunals"],
-    focus: "24% 18%",
+    plate: "colonnadeDetail",
+    focus: "50% 35%",
   },
   {
     slug: "criminal-law",
@@ -58,7 +64,8 @@ export const practiceAreas: PracticeArea[] = [
       "Cheque and breach-of-trust cases",
     ],
     forums: ["Public Prosecution", "Misdemeanor & Felony Courts", "Economic Courts"],
-    focus: "9% 88%",
+    plate: "hallRows",
+    focus: "40% 55%",
   },
   {
     slug: "real-estate-construction",
@@ -75,7 +82,8 @@ export const practiceAreas: PracticeArea[] = [
       "Construction and developer disputes",
     ],
     forums: ["Real Estate Publicity Department", "Civil Courts", "Arbitral tribunals"],
-    focus: "56% 62%",
+    plate: "colonnade",
+    focus: "30% 75%",
   },
   {
     slug: "banking-finance",
@@ -91,7 +99,8 @@ export const practiceAreas: PracticeArea[] = [
       "Regulatory licensing and compliance",
     ],
     forums: ["Central Bank of Egypt", "Financial Regulatory Authority", "Economic Courts"],
-    focus: "72% 52%",
+    plate: "hallAisle",
+    focus: "55% 30%",
   },
   {
     slug: "tax-customs",
@@ -107,7 +116,8 @@ export const practiceAreas: PracticeArea[] = [
       "Tax structuring of transactions",
     ],
     forums: ["Egyptian Tax Authority", "Egyptian Customs Authority", "Appeal committees"],
-    focus: "88% 58%",
+    plate: "mashrabiya",
+    focus: "62% 50%",
   },
   {
     slug: "labor-employment",
@@ -123,7 +133,8 @@ export const practiceAreas: PracticeArea[] = [
       "Labor disputes and litigation",
     ],
     forums: ["Ministry of Labor", "National Organization for Social Insurance", "Labor courts"],
-    focus: "66% 80%",
+    plate: "hallRows",
+    focus: "82% 72%",
   },
   {
     slug: "intellectual-property",
@@ -139,7 +150,8 @@ export const practiceAreas: PracticeArea[] = [
       "Anti-counterfeiting and infringement actions",
     ],
     forums: ["Trademarks Office", "Egyptian Patent Office", "Economic Courts"],
-    focus: "78% 22%",
+    plate: "mashrabiya",
+    focus: "8% 40%",
   },
   {
     slug: "family-personal-status",
@@ -155,7 +167,8 @@ export const practiceAreas: PracticeArea[] = [
       "Cross-border family matters",
     ],
     forums: ["Family Courts", "Personal Status Registry"],
-    focus: "30% 50%",
+    plate: "hallAislePortrait",
+    focus: "50% 62%",
   },
   {
     slug: "administrative-regulatory",
@@ -171,7 +184,8 @@ export const practiceAreas: PracticeArea[] = [
       "Public–private partnership structures",
     ],
     forums: ["Council of State", "Sector regulators", "Ministries and governorates"],
-    focus: "4% 40%",
+    plate: "colonnade",
+    focus: "86% 38%",
   },
   {
     slug: "investment-business-setup",
@@ -187,7 +201,8 @@ export const practiceAreas: PracticeArea[] = [
       "Branches and representative offices",
     ],
     forums: ["General Authority for Investment and Free Zones", "Commercial Registry"],
-    focus: "60% 60%",
+    plate: "hallAisle",
+    focus: "28% 72%",
   },
   {
     slug: "technology-data-protection",
@@ -203,7 +218,8 @@ export const practiceAreas: PracticeArea[] = [
       "Cybersecurity incidents and response",
     ],
     forums: ["Personal Data Protection Center", "National Telecom Regulatory Authority", "Central Bank of Egypt"],
-    focus: "96% 70%",
+    plate: "mashrabiya",
+    focus: "72% 32%",
   },
 ];
 

@@ -14,17 +14,23 @@
 .copy {
   display: grid;
   gap: 1.75rem;
+  align-content: end;
 }
 
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 2rem;
+    row-gap: clamp(4rem, 7vw, 6rem);
   }
   .statement {
-    grid-column: 1 / span 6;
+    grid-column: 1 / span 8;
+  }
+  .figure {
+    grid-column: 1 / span 5;
   }
   .copy {
-    grid-column: 8 / span 5;
-    padding-top: 1rem;
+    grid-column: 7 / span 5;
+    padding-bottom: 3rem;
   }
 }

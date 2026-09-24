@@ -41,6 +41,11 @@
   background: var(--accent);
 }
 
+.arabic {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
 .sub {
   font-size: var(--fs-label);
   letter-spacing: 0.32em;

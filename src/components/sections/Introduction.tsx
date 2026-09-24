@@ -2,7 +2,9 @@
 
 import { useRef } from "react";
 import { gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
+import { PlateFigure } from "@/components/ui/PlateFigure";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./Introduction.module.css";
@@ -63,17 +65,35 @@ export function Introduction() {
           <span className="label" data-reveal-item>
             The Firm
           </span>
+          <span className={styles.arabicLabel} data-reveal-item>
+            <Arabic>المكتب</Arabic>
+          </span>
         </Reveal>
 
-        <h2 id="intro-title" className={`display ${styles.statement}`} data-statement data-reveal>
-          {statement.map(({ word, em }, i) => (
-            <span key={i} data-word className={em ? styles.em : undefined}>
-              {word}{" "}
-            </span>
-          ))}
-        </h2>
+        <div className={styles.spread}>
+          <div className={styles.lead}>
+            <h2 id="intro-title" className={`display ${styles.statement}`} data-statement data-reveal>
+              {statement.map(({ word, em }, i) => (
+                <span key={i} data-word className={em ? styles.em : undefined}>
+                  {word}{" "}
+                </span>
+              ))}
+            </h2>
+            <Reveal>
+              <Arabic as="p" className={styles.arabicStatement}>
+                مبني على واقع القانون والأعمال والنزاع في مصر
+              </Arabic>
+            </Reveal>
+          </div>
 
-        <div className={styles.grid}>
+          <PlateFigure
+            plate="hallAislePortrait"
+            ratio="4 / 5"
+            sizes="(min-width: 1024px) 34vw, 100vw"
+            parallax={10}
+            className={styles.figure}
+          />
+
           <div className={styles.body}>
             <SplitReveal className="lede">
               We are an Egyptian law firm for clients who need more than a reading of the statute. We advise on how

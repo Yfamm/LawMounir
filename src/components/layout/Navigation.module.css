@@ -184,7 +184,21 @@
     var(--bg-2);
 }
 
+.menuPattern {
+  position: absolute;
+  inset: 0;
+  color: var(--accent);
+  pointer-events: none;
+  mask-image: radial-gradient(70% 60% at 100% 100%, #000 0%, transparent 75%);
+}
+
+.menuArabic {
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  color: var(--accent);
+}
+
 .menuInner {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

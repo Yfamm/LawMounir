@@ -19,14 +19,14 @@
 .mediaInner {
   position: absolute;
   inset: 0;
-  transform-origin: 57% 62%;
+  transform-origin: 46% 34%;
   will-change: transform;
 }
 
 .image {
   object-fit: cover;
-  object-position: 57% 60%;
-  filter: saturate(0.7) contrast(1.1) brightness(0.9);
+  object-position: 50% 40%;
+  filter: contrast(1.06);
 }
 
 .shade {
@@ -60,8 +60,20 @@
   display: block;
   width: clamp(2.5rem, 6vw, 5rem);
   height: 1px;
-  background: currentColor;
-  opacity: 0.5;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.arabic {
+  margin-left: auto;
+  white-space: nowrap;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.plateCaption {
+  display: none;
 }
 
 .frames {
@@ -158,7 +170,16 @@
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    max-width: 24rem;
+    color: var(--muted);
+  }
+
+  .progress > .track {
+    flex: 0 1 18rem;
+  }
+
+  .plateCaption {
+    display: block;
+    margin-left: auto;
     color: var(--muted);
   }
 

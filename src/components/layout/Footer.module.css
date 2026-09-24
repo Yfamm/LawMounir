@@ -4,9 +4,32 @@
   background: var(--bg);
   border-top: 1px solid var(--line);
   overflow: hidden;
+  isolation: isolate;
+}
+
+.pattern {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--accent);
+  pointer-events: none;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 55%);
+}
+
+.arabic {
+  display: block;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.coords {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
 }
 
 .grid {
+  position: relative;
   display: grid;
   gap: 3rem 2rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -79,7 +102,7 @@
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(242, 235, 221, 0.14);
+  -webkit-text-stroke: 1px rgba(181, 150, 90, 0.32);
   user-select: none;
 }
 

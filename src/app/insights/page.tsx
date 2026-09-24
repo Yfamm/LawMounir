@@ -15,7 +15,8 @@ export default function InsightsPage() {
       <PageHeader
         index="01"
         label="Insights"
-        title={["Insights"]}
+        arabic="رؤى قانونية"
+        title={[<span key="i">Insights<sup className="count">(06)</sup></span>]}
         intro="Commentary on legislation, regulation and the practice of the Egyptian courts — written for the people who have to act on it."
       />
       <section className={`section surface-paper ${styles.journal}`} aria-label="All insights">

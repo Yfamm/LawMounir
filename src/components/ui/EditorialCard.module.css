@@ -128,3 +128,26 @@
   font-weight: 300;
   line-height: 0.8;
 }
+
+.media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-3);
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 1.4s var(--ease-out);
+}
+
+.keyline {
+  position: absolute;
+  inset: 0.8rem;
+  border: 1px solid rgba(217, 194, 143, 0.4);
+}
+
+.link:hover .image,
+.link:focus-visible .image {
+  transform: scale(1.05);
+}

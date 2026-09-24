@@ -5,7 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
 import { useSmoothScroll } from "@/animation/SmoothScrollProvider";
 import { primaryNav, site } from "@/content/site";
+import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
+import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { Wordmark } from "./Wordmark";
 import styles from "./Navigation.module.css";
@@ -185,6 +187,7 @@ export function Navigation() {
         inert={!open}
         data-lenis-prevent
       >
+        <GeometricPattern className={styles.menuPattern} opacity={0.08} size={96} />
         <div className={styles.menuInner}>
           <ol className={styles.menuList}>
             {primaryNav.map((item, i) => (
@@ -206,6 +209,9 @@ export function Navigation() {
             ))}
           </ol>
 
+          <p className={styles.menuArabic} data-menu-fade>
+            <Arabic>{site.taglineAr}</Arabic>
+          </p>
           <div className={styles.menuFooter}>
             <div data-menu-fade>
               <p className="label">Call</p>

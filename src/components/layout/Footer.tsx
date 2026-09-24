@@ -5,7 +5,9 @@ import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import { useSmoothScroll } from "@/animation/SmoothScrollProvider";
 import { practiceAreas } from "@/content/practiceAreas";
 import { primaryNav, site } from "@/content/site";
+import { Arabic } from "@/components/ui/Arabic";
 import { Arrow } from "@/components/ui/Arrow";
+import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { Wordmark } from "./Wordmark";
 import styles from "./Footer.module.css";
@@ -41,6 +43,7 @@ export function Footer() {
 
   return (
     <footer ref={ref} className={styles.footer}>
+      <GeometricPattern className={styles.pattern} opacity={0.06} size={110} />
       <div className="container">
         <div className={styles.grid}>
           <div className={styles.brand}>
@@ -109,7 +112,10 @@ export function Footer() {
           <p className={styles.disclaimer}>
             The content of this website is general information and does not constitute legal advice.
           </p>
-          <p className="tabular">{site.coordinates}</p>
+          <p className="tabular">
+            <Arabic className={styles.arabic}>{site.taglineAr}</Arabic>
+            <span className={styles.coords}>{site.coordinates}</span>
+          </p>
           <button type="button" className={styles.top} onClick={() => scrollTo(0)}>
             Back to top <Arrow direction="up-right" />
           </button>

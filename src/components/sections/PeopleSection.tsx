@@ -11,6 +11,7 @@ export function PeopleSection() {
         <SectionHeading
           index="07"
           label="Our People"
+          arabic="فريقنا"
           title={["The lawyers", <em key="e">behind the file.</em>]}
           size="l"
           intro="Partners who remain on the matter from first advice to final hearing, supported by a team that knows the file as well as they do."

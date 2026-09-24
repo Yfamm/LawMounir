@@ -4,6 +4,7 @@ import { formatDate, getInsight, insights, type InsightBlock } from "@/content/i
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Arrow } from "@/components/ui/Arrow";
 import { EditorialCard } from "@/components/ui/EditorialCard";
+import { PlateFigure } from "@/components/ui/PlateFigure";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { SplitReveal } from "@/components/ui/SplitReveal";
@@ -80,6 +81,13 @@ export default async function InsightPage({ params }: Props) {
           <SplitReveal className={styles.standfirst} immediate delay={0.7}>
             {insight.standfirst}
           </SplitReveal>
+          <PlateFigure
+            plate={insight.plate}
+            ratio="21 / 9"
+            sizes="(min-width: 1680px) 1600px, 100vw"
+            parallax={8}
+            className={styles.plate}
+          />
         </header>
 
         <div className={`container ${styles.layout}`}>

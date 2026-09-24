@@ -47,6 +47,10 @@
   color: var(--muted);
 }
 
+.plate {
+  margin-top: clamp(1rem, 3vw, 2.5rem);
+}
+
 .title {
   max-width: 20ch;
   font-size: clamp(2.6rem, 6vw, 6.4rem);
@@ -76,6 +80,16 @@
   font-size: 1.0625rem;
   line-height: 1.8;
   color: rgba(242, 235, 221, 0.86);
+}
+
+.body > p:first-child::first-letter {
+  float: left;
+  margin: 0.08em 0.14em 0 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 4.6em;
+  font-weight: 400;
+  line-height: 0.78;
+  color: var(--gold-200);
 }
 
 .h {

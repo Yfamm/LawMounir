@@ -46,7 +46,8 @@ export default async function PracticeAreaPage({ params }: Props) {
         title={titleLines(area.title)}
         size="xl"
         intro={area.summary}
-        image={{ position: area.focus, zoom: 1.5, alt: "" }}
+        arabic="مجال الممارسة"
+        plate={{ key: area.plate, position: area.focus, zoom: 1.15 }}
       />
 
       <section className={`section ${styles.overview}`} aria-labelledby="overview-title">

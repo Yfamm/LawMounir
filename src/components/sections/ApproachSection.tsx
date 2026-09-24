@@ -1,3 +1,4 @@
+import { PlateFigure } from "@/components/ui/PlateFigure";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./ApproachSection.module.css";
@@ -32,12 +33,21 @@ export function ApproachSection({ index = "05" }: { index?: string }) {
         <SectionHeading
           index={index}
           label="Our Approach"
+          arabic="منهجنا"
           title={["Four principles,", <em key="e">applied to every file.</em>]}
           size="l"
           intro="Not a slogan and not a process chart — the working habits that decide how a matter is prepared, argued and closed."
         />
 
-        <Reveal as="ol" className={styles.grid} stagger={0.12}>
+        <div className={styles.layout}>
+          <PlateFigure
+            plate="colonnadeDetail"
+            ratio="4 / 5"
+            sizes="(min-width: 1024px) 38vw, 100vw"
+            parallax={8}
+            className={styles.figure}
+          />
+          <Reveal as="ol" className={styles.grid} stagger={0.12}>
           {principles.map((p) => (
             <li key={p.title} className={styles.item} data-reveal-item>
               <span className={styles.line} data-reveal-line />
@@ -46,7 +56,8 @@ export function ApproachSection({ index = "05" }: { index?: string }) {
               <p className={styles.text}>{p.text}</p>
             </li>
           ))}
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Arabic } from "./Arabic";
 import { Reveal } from "./Reveal";
 import { RevealText } from "./RevealText";
 import { SplitReveal } from "./SplitReveal";
@@ -7,6 +8,8 @@ import styles from "./SectionHeading.module.css";
 type Props = {
   index?: string;
   label: string;
+  /** Arabic counterpart of the label, set at the end of the rule. */
+  arabic?: string;
   title: ReactNode[];
   intro?: string;
   size?: "mega" | "xl" | "l" | "m";
@@ -23,6 +26,7 @@ type Props = {
 export function SectionHeading({
   index,
   label,
+  arabic,
   title,
   intro,
   size = "xl",
@@ -43,6 +47,11 @@ export function SectionHeading({
         <span className="label" data-reveal-item>
           {label}
         </span>
+        {arabic && (
+          <span className={styles.arabic} data-reveal-item>
+            <Arabic>{arabic}</Arabic>
+          </span>
+        )}
       </Reveal>
 
       <div className={`${styles.body} ${size === "mega" ? styles.stacked : ""}`}>

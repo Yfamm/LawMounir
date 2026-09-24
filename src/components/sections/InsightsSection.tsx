@@ -13,6 +13,7 @@ export function InsightsSection() {
         <SectionHeading
           index="08"
           label="Insights"
+          arabic="رؤى قانونية"
           title={["Notes on", <em key="e">Egyptian law.</em>]}
           size="l"
           intro="Commentary on legislation, regulation and the practice of the courts — written for the people who have to act on it."

@@ -1,8 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
+import { plateNumber, plates } from "@/content/plates";
 import { practiceAreas } from "@/content/practiceAreas";
+import { Arabic } from "@/components/ui/Arabic";
+import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import styles from "./ExperienceSection.module.css";
 
 const movements = [
@@ -87,6 +91,26 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
           { scaleX: 1, ease: "none", scrollTrigger: { trigger: root, start: "top top", end: () => `+=${distance()}`, scrub: true } },
         );
 
+        const panelImage = q("[data-panel-image]")[0];
+        if (panelImage) {
+          gsap.fromTo(
+            panelImage,
+            { xPercent: -8, scale: 1.18 },
+            {
+              xPercent: 8,
+              scale: 1.18,
+              ease: "none",
+              scrollTrigger: {
+                trigger: panelImage.closest("figure"),
+                containerAnimation: scroller,
+                start: "left right",
+                end: "right left",
+                scrub: true,
+              },
+            },
+          );
+        }
+
         panels.forEach((panel) => {
           const items = panel.querySelectorAll("[data-panel-item]");
           gsap.set(items, { autoAlpha: 0, y: 40 });
@@ -142,12 +166,14 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
 
   return (
     <section ref={ref} className={styles.experience} aria-labelledby="experience-title">
+      <GeometricPattern className={styles.pattern} opacity={0.07} size={120} />
       <div className={styles.track} data-track data-reveal>
         <div className={`${styles.panel} ${styles.intro}`}>
           <div className={styles.meta}>
             <span className="label tabular">{index}</span>
             <span className={styles.rule} />
             <span className="label">Experience</span>
+            <Arabic className={styles.arabic}>الخبرة</Arabic>
           </div>
           <h2 id="experience-title" className={`display ${styles.introTitle}`}>
             The practice,
@@ -161,6 +187,24 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
             Scroll to continue
           </span>
         </div>
+
+        <figure className={styles.imagePanel}>
+          <div className={styles.imageFrame}>
+            <Image
+              src={plates.hallRows.image}
+              alt={plates.hallRows.alt}
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              placeholder="blur"
+              className={styles.image}
+              data-panel-image
+            />
+            <span className={styles.keyline} aria-hidden="true" />
+          </div>
+          <figcaption className="label">
+            <span className={styles.plateNo}>Pl. {plateNumber("hallRows")}</span> {plates.hallRows.caption}
+          </figcaption>
+        </figure>
 
         {movements.map((m, i) => (
           <article key={m.label} className={styles.panel} data-panel>

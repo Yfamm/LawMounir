@@ -1,5 +1,7 @@
 import Image from "next/image";
-import heroImage from "@/assets/hero-justice-cairo.webp";
+import { plates } from "@/content/plates";
+import { Arabic } from "@/components/ui/Arabic";
+import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { site } from "@/content/site";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
@@ -17,9 +19,10 @@ export function ContactSection({ index, as = "h2", immediate = false }: Props) {
   return (
     <section className={styles.contact} aria-labelledby="contact-title" id="contact">
       <div className={styles.media} aria-hidden="true">
-        <Image src={heroImage} alt="" fill sizes="50vw" placeholder="blur" className={styles.image} />
+        <Image src={plates.mashrabiya.image} alt="" fill sizes="60vw" placeholder="blur" className={styles.image} />
       </div>
       <div className={styles.shade} aria-hidden="true" />
+      <GeometricPattern className={styles.pattern} opacity={0.08} size={96} />
 
       <div className={`container ${styles.inner}`}>
         <Reveal className={styles.meta} immediate={immediate}>
@@ -31,6 +34,9 @@ export function ContactSection({ index, as = "h2", immediate = false }: Props) {
           <span className={styles.rule} data-reveal-line />
           <span className="label" data-reveal-item>
             Contact
+          </span>
+          <span className={styles.arabic} data-reveal-item>
+            <Arabic>تواصل معنا</Arabic>
           </span>
         </Reveal>
 

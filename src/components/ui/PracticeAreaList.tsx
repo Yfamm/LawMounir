@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import heroImage from "@/assets/hero-justice-cairo.webp";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
+import { plateOrder, plates } from "@/content/plates";
 import { practiceNumber, type PracticeArea } from "@/content/practiceAreas";
 import { PracticeAreaRow } from "./PracticeAreaRow";
 import styles from "./PracticeAreaList.module.css";
@@ -11,7 +11,8 @@ type Props = { areas: PracticeArea[] };
 
 /**
  * Interactive index of practice areas. On fine pointers a framed window
- * follows the cursor and pans across the Cairo image as rows change.
+ * follows the cursor; each row brings in its own architectural plate,
+ * crossfading and panning to that area's framing.
  */
 export function PracticeAreaList({ areas }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,7 +44,7 @@ export function PracticeAreaList({ areas }: Props) {
       });
 
       mm.add(MOTION.finePointer, () => {
-        const img = preview.querySelector<HTMLElement>("[data-preview-img]");
+        const layers = gsap.utils.toArray<HTMLElement>("[data-preview-img]", preview);
         const num = preview.querySelector<HTMLElement>("[data-preview-num]");
         const xTo = gsap.quickTo(preview, "x", { duration: 0.7, ease: "power3" });
         const yTo = gsap.quickTo(preview, "y", { duration: 0.7, ease: "power3" });
@@ -63,8 +64,18 @@ export function PracticeAreaList({ areas }: Props) {
 
         activate.current = (index: number) => {
           const area = areas[index];
-          if (!area || !img || !num) return;
-          gsap.to(img, { backgroundPosition: area.focus, duration: 1.1, ease: EASE.inOut, overwrite: true });
+          if (!area || !num) return;
+          layers.forEach((layer) => {
+            const active = layer.dataset.plate === area.plate;
+            gsap.to(layer, { autoAlpha: active ? 1 : 0, duration: 0.7, ease: EASE.soft, overwrite: "auto" });
+            if (active) {
+              gsap.fromTo(
+                layer,
+                { scale: 1.12 },
+                { scale: 1, backgroundPosition: area.focus, duration: 1.2, ease: EASE.inOut, overwrite: "auto" },
+              );
+            }
+          });
           num.textContent = practiceNumber(area.slug);
           gsap.fromTo(num, { yPercent: 60, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.6, ease: EASE.soft });
         };
@@ -100,11 +111,18 @@ export function PracticeAreaList({ areas }: Props) {
       </ul>
 
       <div ref={previewRef} className={styles.preview} aria-hidden="true">
-        <div
-          className={styles.previewImg}
-          data-preview-img
-          style={{ backgroundImage: `url(${heroImage.src})`, backgroundPosition: areas[0]?.focus }}
-        />
+        {plateOrder.map((key) => (
+          <div
+            key={key}
+            className={styles.previewImg}
+            data-preview-img
+            data-plate={key}
+            style={{
+              backgroundImage: `url(${plates[key].preview.src})`,
+              opacity: areas[0]?.plate === key ? 1 : 0,
+            }}
+          />
+        ))}
         <span className={styles.previewShade} />
         <span className={`${styles.previewNum} serif tabular`} data-preview-num>
           {areas[0] ? practiceNumber(areas[0].slug) : ""}

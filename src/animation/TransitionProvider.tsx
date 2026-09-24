@@ -93,6 +93,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           <span className={styles.word}>Mounir</span>
           <span className={styles.rule} />
           <span className={styles.sub}>Attorneys at Law</span>
+          <span className={`arabic ${styles.arabic}`} lang="ar" dir="rtl">
+            منير للمحاماة
+          </span>
         </div>
       </div>
     </TransitionContext.Provider>

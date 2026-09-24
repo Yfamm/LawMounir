@@ -18,14 +18,10 @@ export default function PracticeAreasPage() {
       <PageHeader
         index="01"
         label="Practice Areas"
-        title={["Practice", "Areas"]}
+        arabic="مجالات الممارسة"
+        title={["Practice", <span key="a">Areas<sup className="count">(12)</sup></span>]}
         intro="Twelve areas of Egyptian law, each organized around the forum where matters are decided and the authorities that shape them."
-        image={{
-          position: "57% 62%",
-          zoom: 1.35,
-          alt: "The Giza pyramids at sunset beyond the Cairo skyline",
-          caption: "Twelve disciplines — one standard of work",
-        }}
+        plate={{ key: "colonnade", position: "50% 40%" }}
       />
 
       <section className={`section ${styles.index}`} aria-label="All practice areas">

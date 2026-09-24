@@ -1,3 +1,5 @@
+import type { PlateKey } from "./plates";
+
 export const insightCategories = [
   "Legal Updates",
   "Egyptian Law",
@@ -17,6 +19,7 @@ export type InsightBlock =
 
 export type Insight = {
   slug: string;
+  plate: PlateKey;
   category: InsightCategory;
   title: string;
   standfirst: string;
@@ -28,6 +31,7 @@ export type Insight = {
 export const insights: Insight[] = [
   {
     slug: "economic-courts-and-the-commercial-dispute",
+    plate: "colonnade",
     category: "Egyptian Law",
     title: "The Economic Courts and the commercial dispute",
     standfirst:
@@ -74,6 +78,7 @@ export const insights: Insight[] = [
   },
   {
     slug: "buying-property-where-title-is-not-registered",
+    plate: "mashrabiya",
     category: "Legal Guides",
     title: "Buying property where the title is not registered",
     standfirst:
@@ -121,6 +126,7 @@ export const insights: Insight[] = [
   },
   {
     slug: "personal-data-in-egypt-law-151-of-2020",
+    plate: "hallRows",
     category: "Regulatory Changes",
     title: "Personal data in Egypt: what Law No. 151 of 2020 asks of a business",
     standfirst:
@@ -165,6 +171,7 @@ export const insights: Insight[] = [
   },
   {
     slug: "anatomy-of-a-commercial-dispute",
+    plate: "colonnadeDetail",
     category: "Case Analysis",
     title: "Anatomy of a commercial dispute, from notice to enforcement",
     standfirst:
@@ -212,6 +219,7 @@ export const insights: Insight[] = [
   },
   {
     slug: "choosing-a-corporate-vehicle-in-egypt",
+    plate: "hallAisle",
     category: "Business & Investment",
     title: "Choosing a corporate vehicle in Egypt",
     standfirst:
@@ -250,6 +258,7 @@ export const insights: Insight[] = [
   },
   {
     slug: "employment-documentation-under-the-new-labor-law",
+    plate: "hallAislePortrait",
     category: "Legal Updates",
     title: "Reviewing employment documentation under the new Labor Law",
     standfirst:

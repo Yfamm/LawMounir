@@ -3,6 +3,7 @@ import { ApproachSection } from "@/components/sections/ApproachSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { LandscapeSection } from "@/components/sections/LandscapeSection";
 import { PageHeader } from "@/components/sections/PageHeader";
+import { PlateFigure } from "@/components/ui/PlateFigure";
 import { RevealText } from "@/components/ui/RevealText";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./page.module.css";
@@ -19,14 +20,11 @@ export default function AboutPage() {
       <PageHeader
         index="01"
         label="About the Firm"
+        arabic="عن المكتب"
         title={["A Cairo firm", <em key="e">for the Egyptian reality.</em>]}
         size="xl"
         intro="We advise Egyptian businesses, foreign investors, families and individuals on the matters they are most likely to meet in Egypt — and on how those matters are actually decided."
-        image={{
-          position: "50% 45%",
-          alt: "Justice holding scales above the Cairo skyline, the Nile and the pyramids at sunset",
-          caption: "Cairo — at the edge of the Nile",
-        }}
+        plate={{ key: "hallRows", position: "88% 62%", zoom: 1.2 }}
       />
 
       <section className={`section ${styles.story}`}>
@@ -35,6 +33,13 @@ export default function AboutPage() {
             as="h2"
             className={`display ${styles.statement}`}
             lines={["An Egyptian firm,", <em key="e">commercially fluent.</em>]}
+          />
+          <PlateFigure
+            plate="colonnade"
+            ratio="3 / 4"
+            position="72% 40%"
+            sizes="(min-width: 1024px) 36vw, 100vw"
+            className={styles.figure}
           />
           <div className={styles.copy}>
             <SplitReveal className="lede">
