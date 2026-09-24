@@ -94,6 +94,7 @@ export function Introduction() {
             className={styles.figure}
           />
 
+          {/* VERIFY: describes the firm's practice and method. */}
           <div className={styles.body}>
             <SplitReveal className="lede">
               We are an Egyptian law firm for clients who need more than a reading of the statute. We advise on how

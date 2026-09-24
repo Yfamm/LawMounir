@@ -6,9 +6,10 @@ import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Speak with Mounir Law Firm in Cairo about a corporate, dispute, regulatory or personal matter.",
+  description: "Speak with the firm about a corporate, dispute, regulatory or personal matter.",
 };
 
+// VERIFY: intake process (conflict check, first conversation, engagement letter) — confirm it matches the firm's procedure.
 const steps = [
   {
     title: "Conflict check",

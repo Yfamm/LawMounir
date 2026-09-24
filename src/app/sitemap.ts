@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const practice = practiceAreas.map((area) => ({ url: `${site.url}/practice-areas/${area.slug}` }));
   const notes = insights.map((insight) => ({
     url: `${site.url}/insights/${insight.slug}`,
-    lastModified: insight.date,
+    ...(insight.date ? { lastModified: insight.date } : {}),
   }));
   return [...pages, ...practice, ...notes];
 }

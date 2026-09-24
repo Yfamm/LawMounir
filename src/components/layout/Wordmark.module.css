@@ -12,7 +12,21 @@
   letter-spacing: 0.2em;
   line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
   padding-top: 0.08em;
+}
+
+/* Longer firm names: slightly smaller and tighter, descriptor only on wide screens. */
+.long .name {
+  font-size: 1.3rem;
+  letter-spacing: 0.14em;
+}
+
+@media (max-width: 1439px) {
+  .long .rule,
+  .long .descriptor {
+    display: none;
+  }
 }
 
 .rule {
@@ -49,6 +63,10 @@
 @media (max-width: 479px) {
   .name {
     font-size: 1.35rem;
+  }
+  .long .name {
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
   }
   .rule,
   .descriptor {

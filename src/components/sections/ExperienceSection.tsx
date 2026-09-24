@@ -9,6 +9,9 @@ import { Arabic } from "@/components/ui/Arabic";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import styles from "./ExperienceSection.module.css";
 
+// VERIFY: "Twelve practice areas" must match practiceAreas; the forums are
+// general facts about the Egyptian system; the markets list is a claim of
+// sector experience and must reflect work the firm has actually done.
 const movements = [
   {
     label: "Legal disciplines",

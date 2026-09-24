@@ -7,6 +7,7 @@ import { useSmoothScroll } from "@/animation/SmoothScrollProvider";
 import { primaryNav, site } from "@/content/site";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
+import { ContactLink } from "@/components/ui/ContactLink";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { Wordmark } from "./Wordmark";
@@ -215,11 +216,11 @@ export function Navigation() {
           <div className={styles.menuFooter}>
             <div data-menu-fade>
               <p className="label">Call</p>
-              <a href={site.contact.phoneHref}>{site.contact.phone}</a>
+              <ContactLink href={site.contact.phoneHref}>{site.contact.phone}</ContactLink>
             </div>
             <div data-menu-fade>
               <p className="label">Write</p>
-              <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+              <ContactLink href={site.contact.emailHref}>{site.contact.email}</ContactLink>
             </div>
             <div data-menu-fade>
               <p className="label">Visit</p>

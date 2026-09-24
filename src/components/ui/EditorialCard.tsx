@@ -43,7 +43,7 @@ export function EditorialCard({ insight, issue, variant = "standard" }: Props) {
 
         <div className={styles.foot}>
           <span className={`${styles.meta} tabular`}>
-            <time dateTime={insight.date}>{formatDate(insight.date)}</time>
+            <time dateTime={insight.date ?? undefined}>{formatDate(insight.date)}</time>
             <span aria-hidden="true"> · </span>
             {insight.readingTime}
           </span>

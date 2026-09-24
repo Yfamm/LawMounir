@@ -21,8 +21,9 @@ export default function AboutPage() {
         index="01"
         label="About the Firm"
         arabic="عن المكتب"
-        title={["A Cairo firm", <em key="e">for the Egyptian reality.</em>]}
+        title={["A law firm", <em key="e">for the Egyptian reality.</em>]}
         size="xl"
+        // VERIFY: client types and scope — confirm against the firm's actual practice.
         intro="We advise Egyptian businesses, foreign investors, families and individuals on the matters they are most likely to meet in Egypt — and on how those matters are actually decided."
         plate={{ key: "hallRows", position: "88% 62%", zoom: 1.2 }}
       />
@@ -41,6 +42,7 @@ export default function AboutPage() {
             sizes="(min-width: 1024px) 36vw, 100vw"
             className={styles.figure}
           />
+          {/* VERIFY: the three paragraphs below describe the firm's practice and method. */}
           <div className={styles.copy}>
             <SplitReveal className="lede">
               Our lawyers work across corporate and commercial law, disputes, regulation and personal status — the

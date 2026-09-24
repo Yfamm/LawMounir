@@ -4,6 +4,7 @@ import { Arabic } from "@/components/ui/Arabic";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { site } from "@/content/site";
 import { ContactForm } from "@/components/ui/ContactForm";
+import { ContactLink } from "@/components/ui/ContactLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import styles from "./ContactSection.module.css";
@@ -54,13 +55,13 @@ export function ContactSection({ index, as = "h2", immediate = false }: Props) {
             <div data-reveal-item>
               <dt className="label">Phone</dt>
               <dd>
-                <a href={site.contact.phoneHref}>{site.contact.phone}</a>
+                <ContactLink href={site.contact.phoneHref}>{site.contact.phone}</ContactLink>
               </dd>
             </div>
             <div data-reveal-item>
               <dt className="label">Email</dt>
               <dd>
-                <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+                <ContactLink href={site.contact.emailHref}>{site.contact.email}</ContactLink>
               </dd>
             </div>
             <div data-reveal-item>

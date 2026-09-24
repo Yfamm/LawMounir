@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: insight.title,
     description: insight.standfirst,
-    openGraph: { type: "article", publishedTime: insight.date, title: insight.title, description: insight.standfirst },
+    openGraph: { type: "article", publishedTime: insight.date ?? undefined, title: insight.title, description: insight.standfirst },
   };
 }
 
@@ -72,7 +72,7 @@ export default async function InsightPage({ params }: Props) {
               {insight.category}
             </span>
             <span className={`${styles.date} tabular`} data-reveal-item>
-              <time dateTime={insight.date}>{formatDate(insight.date)}</time> · {insight.readingTime}
+              <time dateTime={insight.date ?? undefined}>{formatDate(insight.date)}</time> · {insight.readingTime}
             </span>
           </Reveal>
 
@@ -109,6 +109,7 @@ export default async function InsightPage({ params }: Props) {
             <p className={styles.disclaimer}>
               This note is general information about Egyptian law as it stood at the date of publication. It is not
               legal advice and should not be relied on for any specific matter.
+              {!insight.reviewed && " [DRAFT — PENDING LEGAL REVIEW BY THE FIRM]"}
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-# Mounir Law Firm — website
+# [LAW FIRM NAME] — website
 
 A cinematic, editorial website for an Egyptian law firm, built with Next.js (App Router), TypeScript, CSS Modules, GSAP (ScrollTrigger + SplitText) and Lenis.
 
@@ -44,10 +44,16 @@ scripts/plates/           Python renderers that produced the architectural plate
 
 ## Editing content
 
-- **Firm details** (phone, email, office, hours, domain): `src/content/site.ts` — the values shipped are placeholders.
-- **Team**: `src/content/people.ts` — names and bios are placeholders. Add a portrait with `image: "/images/people/name.jpg"` (put files in `public/images/people/`); without one, a typographic portrait is shown.
-- **Practice areas**: `src/content/practiceAreas.ts` (`plate` and `focus` choose and frame the area's image).
-- **Insights**: `src/content/insights.ts` — general commentary; have the firm's lawyers review before publishing.
+All firm-specific information is currently a visible `[PLACEHOLDER]`, and every
+statement that needs the firm's confirmation is marked `VERIFY` in the source.
+**See [`CONTENT_CHECKLIST.md`](CONTENT_CHECKLIST.md) for the complete list.**
+
+- **Firm identity and contact** (English/Arabic name, Arabic tagline, city, phone, email, office, hours, coordinates, website): `src/content/site.ts`. Phone and email only become links once real values replace the placeholders.
+- **Canonical URL**: set `NEXT_PUBLIC_SITE_URL` (used by metadata, sitemap and robots).
+- **Team**: `src/content/people.ts` — six `[LAWYER NAME]` placeholders. Add a portrait with `image: "/images/people/name.jpg"` (files in `public/images/people/`); without one, a typographic plate is shown. The people count on the site follows this list.
+- **Practice areas**: `src/content/practiceAreas.ts` (`plate` and `focus` choose and frame the area's image). The count follows this list.
+- **Insights**: `src/content/insights.ts` — sample commentary with `reviewed: false` and `date: null`. Unreviewed notes display a "pending legal review" notice; set `reviewed: true` and a publication `date` once approved.
+- **Favicon**: `src/app/icon.svg` is a neutral placeholder mark.
 
 ## Contact form
 

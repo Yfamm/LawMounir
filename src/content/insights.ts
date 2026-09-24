@@ -23,11 +23,22 @@ export type Insight = {
   category: InsightCategory;
   title: string;
   standfirst: string;
-  date: string;
+  /** ISO publication date. null until the firm publishes the note. */
+  date: string | null;
+  /** False until the firm's lawyers have reviewed the note. Unreviewed notes show a draft notice. */
+  reviewed: boolean;
+  /** Factual legal statements in the note that require verification by the firm. */
+  verify: string[];
   readingTime: string;
   body: InsightBlock[];
 };
 
+/**
+ * VERIFY: these notes are sample commentary drafted for the site structure.
+ * Each contains statements of Egyptian law (listed in `verify`) that must be
+ * reviewed and approved by the firm's lawyers before publication. Set
+ * `reviewed: true` and a real `date` once approved.
+ */
 export const insights: Insight[] = [
   {
     slug: "economic-courts-and-the-commercial-dispute",
@@ -36,7 +47,13 @@ export const insights: Insight[] = [
     title: "The Economic Courts and the commercial dispute",
     standfirst:
       "Why a specialized forum created in 2008 now sits at the center of so many business disputes in Egypt — and what that means for how a case is prepared.",
-    date: "2026-09-10",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Economic Courts established by Law No. 120 of 2008",
+      "Scope of Economic Court jurisdiction (the statutes listed)",
+      "Role and procedure of the preparatory panel",
+    ],
     readingTime: "6 min read",
     body: [
       {
@@ -83,7 +100,13 @@ export const insights: Insight[] = [
     title: "Buying property where the title is not registered",
     standfirst:
       "A large share of Egyptian real estate changes hands without registered title. A guide to what that means for a buyer, and how to reduce the risk.",
-    date: "2026-08-21",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Ownership transferred by registration with the Real Estate Publicity Department",
+      "Prevalence of unregistered primary contracts",
+      "Description of 'validity of signature' and 'validity and enforceability' actions",
+    ],
     readingTime: "7 min read",
     body: [
       {
@@ -131,7 +154,13 @@ export const insights: Insight[] = [
     title: "Personal data in Egypt: what Law No. 151 of 2020 asks of a business",
     standfirst:
       "Egypt's Personal Data Protection Law moves data handling from an IT concern to a legal one. The obligations every data-heavy business should map.",
-    date: "2026-07-30",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Scope of Law No. 151 of 2020 (electronically processed data; controllers and processors)",
+      "Role of the Personal Data Protection Center",
+      "Obligations listed: legal basis, licensing, DPO, data-subject rights, cross-border transfers, breach notification",
+    ],
     readingTime: "6 min read",
     body: [
       {
@@ -176,7 +205,13 @@ export const insights: Insight[] = [
     title: "Anatomy of a commercial dispute, from notice to enforcement",
     standfirst:
       "An illustrative walk through a supply dispute in Egypt — the decisions that shape the outcome, and the moments where cases are quietly won or lost.",
-    date: "2026-07-09",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Framed as illustrative — confirm the scenario is acceptable",
+      "Use and weight of court-appointed experts",
+      "Precautionary attachment and the executory formula",
+    ],
     readingTime: "8 min read",
     body: [
       {
@@ -224,7 +259,14 @@ export const insights: Insight[] = [
     title: "Choosing a corporate vehicle in Egypt",
     standfirst:
       "Limited liability company, joint stock company or one-person company: the decision that shapes governance, financing and exit for years to come.",
-    date: "2026-06-18",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Companies Law No. 159 of 1981 and Investment Law No. 72 of 2017",
+      "Incorporation through the General Authority for Investment and Free Zones",
+      "One-person company introduced by amendment in 2018",
+      "Characteristics given for LLCs and joint stock companies",
+    ],
     readingTime: "5 min read",
     body: [
       {
@@ -263,7 +305,12 @@ export const insights: Insight[] = [
     title: "Reviewing employment documentation under the new Labor Law",
     standfirst:
       "Egypt's new Labor Law replaced a framework that had governed private-sector employment for more than two decades. Where employers should start.",
-    date: "2026-05-27",
+    date: null, // PLACEHOLDER: set on publication
+    reviewed: false,
+    verify: [
+      "Labor Law issued as Law No. 14 of 2025, replacing Law No. 12 of 2003",
+      "Areas of change described",
+    ],
     readingTime: "5 min read",
     body: [
       {
@@ -301,7 +348,8 @@ export function getInsight(slug: string) {
   return insights.find((insight) => insight.slug === slug);
 }
 
-export function formatDate(iso: string) {
+export function formatDate(iso: string | null) {
+  if (!iso) return "[PUBLICATION DATE]";
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",

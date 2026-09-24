@@ -7,6 +7,7 @@ import { practiceAreas } from "@/content/practiceAreas";
 import { primaryNav, site } from "@/content/site";
 import { Arabic } from "@/components/ui/Arabic";
 import { Arrow } from "@/components/ui/Arrow";
+import { ContactLink } from "@/components/ui/ContactLink";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { Wordmark } from "./Wordmark";
@@ -84,14 +85,14 @@ export function Footer() {
             <p className={`label ${styles.heading}`}>Contact</p>
             <ul>
               <li>
-                <a href={site.contact.phoneHref} className={styles.link}>
+                <ContactLink href={site.contact.phoneHref} className={styles.link}>
                   {site.contact.phone}
-                </a>
+                </ContactLink>
               </li>
               <li>
-                <a href={`mailto:${site.contact.email}`} className={styles.link}>
+                <ContactLink href={site.contact.emailHref} className={styles.link}>
                   {site.contact.email}
-                </a>
+                </ContactLink>
               </li>
               <li className={styles.muted}>{site.contact.office.join(", ")}</li>
               <li className={styles.muted}>{site.contact.hours}</li>
@@ -99,7 +100,13 @@ export function Footer() {
           </div>
         </div>
 
-        <p className={styles.giant} aria-hidden="true" data-giant data-reveal>
+        <p
+          className={styles.giant}
+          aria-hidden="true"
+          data-giant
+          data-reveal
+          style={{ "--chars": site.name.length } as React.CSSProperties}
+        >
           {site.name.split("").map((ch, i) => (
             <span key={i}>{ch}</span>
           ))}

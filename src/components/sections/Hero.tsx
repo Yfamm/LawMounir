@@ -112,6 +112,7 @@ export function Hero() {
         </p>
 
         <div className={styles.foot}>
+          {/* VERIFY: describes the firm's clientele. */}
           <p className={styles.lede} data-fade>
             Counsel for companies, investors and families navigating Egypt&rsquo;s courts, regulators and markets.
           </p>

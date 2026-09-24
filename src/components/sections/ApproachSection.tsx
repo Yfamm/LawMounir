@@ -3,6 +3,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./ApproachSection.module.css";
 
+// VERIFY: statements of how the firm works — confirm with the partners before launch.
 export const principles = [
   {
     numeral: "I",

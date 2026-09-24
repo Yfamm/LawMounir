@@ -19,7 +19,8 @@ export default function PracticeAreasPage() {
         index="01"
         label="Practice Areas"
         arabic="مجالات الممارسة"
-        title={["Practice", <span key="a">Areas<sup className="count">(12)</sup></span>]}
+        title={["Practice", <span key="a">Areas<sup className="count">({String(practiceAreas.length).padStart(2, "0")})</sup></span>]}
+        // VERIFY: count and framing must match the practice areas the firm offers.
         intro="Twelve areas of Egyptian law, each organized around the forum where matters are decided and the authorities that shape them."
         plate={{ key: "colonnade", position: "50% 40%" }}
       />

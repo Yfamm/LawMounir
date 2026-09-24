@@ -7,6 +7,7 @@ import { Arabic } from "@/components/ui/Arabic";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import styles from "./LandscapeSection.module.css";
 
+// VERIFY: general statements about Egyptian courts and regulators.
 const pillars = [
   {
     title: "Courts",

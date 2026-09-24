@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { insights } from "@/content/insights";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { InsightsIndex } from "@/components/ui/InsightsIndex";
@@ -16,7 +17,7 @@ export default function InsightsPage() {
         index="01"
         label="Insights"
         arabic="رؤى قانونية"
-        title={[<span key="i">Insights<sup className="count">(06)</sup></span>]}
+        title={[<span key="i">Insights<sup className="count">({String(insights.length).padStart(2, "0")})</sup></span>]}
         intro="Commentary on legislation, regulation and the practice of the Egyptian courts — written for the people who have to act on it."
       />
       <section className={`section surface-paper ${styles.journal}`} aria-label="All insights">

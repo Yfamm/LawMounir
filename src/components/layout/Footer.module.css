@@ -96,7 +96,8 @@
   margin-top: var(--section-s);
   overflow: hidden;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(4.5rem, 20.5vw, 22rem);
+  /* Sized so any name fills the measure: 20.5vw for a six-letter name. */
+  font-size: min(22rem, calc(123vw / max(var(--chars, 6), 6)));
   font-weight: 400;
   line-height: 0.78;
   letter-spacing: -0.02em;

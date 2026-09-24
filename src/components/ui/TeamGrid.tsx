@@ -46,7 +46,7 @@ export function TeamGrid({ people, showBio = false, columns = 3 }: Props) {
   return (
     <div ref={ref} className={`${styles.grid} ${columns === 4 ? styles.four : ""}`} data-reveal>
       {people.map((person, i) => (
-        <TeamCard key={person.name} person={person} number={String(i + 1).padStart(2, "0")} showBio={showBio} />
+        <TeamCard key={person.id} person={person} number={String(i + 1).padStart(2, "0")} showBio={showBio} />
       ))}
     </div>
   );

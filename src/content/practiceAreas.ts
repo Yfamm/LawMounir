@@ -13,6 +13,13 @@ export type PracticeArea = {
   focus: string;
 };
 
+/**
+ * VERIFY: confirm which practice areas the firm offers (add, rename or remove
+ * entries — counts on the site follow this list). Each `overview` refers to
+ * Egyptian statutes and authorities, and each `forums` list names real courts
+ * and regulators; both are statements of law/fact the firm must confirm.
+ * `scope` items describe work the firm handles and must reflect real practice.
+ */
 export const practiceAreas: PracticeArea[] = [
   {
     slug: "corporate-commercial",

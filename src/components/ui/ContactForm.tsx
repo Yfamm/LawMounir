@@ -71,6 +71,13 @@ export function ContactForm() {
         return;
       }
       if (json.fallback === "mailto") {
+        if (!site.contact.emailHref) {
+          setStatus({
+            kind: "error",
+            message: "Online enquiries are not yet connected. Please use the contact details on this page.",
+          });
+          return;
+        }
         window.location.href = mailtoFor(data);
         setStatus({ kind: "mail" });
         return;
