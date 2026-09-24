@@ -111,7 +111,7 @@ export const insights: Insight[] = [
     body: [
       {
         type: "p",
-        text: "In Egypt, ownership of real estate is transferred through registration with the Real Estate Publicity Department. In reality, a significant portion of the market operates on primary contracts — sale agreements between buyer and seller that are valid between the parties but have never been registered. Many apartments in established Cairo neighborhoods have passed through several such contracts.",
+        text: "In Egypt, ownership of real estate is transferred through registration with the Real Estate Publicity Department. In reality, a significant portion of the market operates on primary contracts — sale agreements between buyer and seller that are valid between the parties but have never been registered. Many apartments in established urban neighborhoods have passed through several such contracts.",
       },
       {
         type: "p",

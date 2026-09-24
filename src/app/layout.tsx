@@ -54,14 +54,14 @@ const arabic = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.legalName} — Law, within the Egyptian reality`,
+    default: `${site.name} — ${site.descriptor}, ${site.city}`,
     template: `%s — ${site.legalName}`,
   },
   description: site.description,
   openGraph: {
     type: "website",
     siteName: site.legalName,
-    title: `${site.legalName} — Law, within the Egyptian reality`,
+    title: `${site.name} — ${site.descriptor}, ${site.city}`,
     description: site.description,
     locale: "en_EG",
   },

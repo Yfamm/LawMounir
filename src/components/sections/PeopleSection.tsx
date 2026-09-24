@@ -12,10 +12,10 @@ export function PeopleSection() {
           index="07"
           label="Our People"
           arabic="فريقنا"
-          title={["The lawyers", <em key="e">behind the file.</em>]}
+          title={["Our counsel", <em key="e">and lawyers.</em>]}
           size="l"
-          // VERIFY: describes how the firm staffs matters — confirm before launch.
-          intro="Lawyers who remain on the matter from first advice to final hearing, supported by a team that knows the file as well as they do."
+          // Source: introduction document ("مستشارين ومحامين متخصصين"). Team details are placeholders.
+          intro="Counsel and lawyers specialized in branches of the law. Profiles of the team will be published once confirmed by the firm."
           aside={
             <Button href="/people" variant="outline">
               Meet the team

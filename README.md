@@ -1,4 +1,4 @@
-# [LAW FIRM NAME] — website
+# DIWAN — ديوان للمحاماه والأستشارات القانونية — website
 
 A cinematic, editorial website for an Egyptian law firm, built with Next.js (App Router), TypeScript, CSS Modules, GSAP (ScrollTrigger + SplitText) and Lenis.
 
@@ -44,16 +44,23 @@ scripts/plates/           Python renderers that produced the architectural plate
 
 ## Editing content
 
-All firm-specific information is currently a visible `[PLACEHOLDER]`, and every
-statement that needs the firm's confirmation is marked `VERIFY` in the source.
-**See [`CONTENT_CHECKLIST.md`](CONTENT_CHECKLIST.md) for the complete list.**
+Firm content is sourced from the firm's public Facebook page and its Arabic
+introduction document. **See [`CONTENT_CHECKLIST.md`](CONTENT_CHECKLIST.md)** for
+the source log, every placeholder, and every statement marked `VERIFY`.
 
-- **Firm identity and contact** (English/Arabic name, Arabic tagline, city, phone, email, office, hours, coordinates, website): `src/content/site.ts`. Phone and email only become links once real values replace the placeholders.
-- **Canonical URL**: set `NEXT_PUBLIC_SITE_URL` (used by metadata, sitemap and robots).
-- **Team**: `src/content/people.ts` — six `[LAWYER NAME]` placeholders. Add a portrait with `image: "/images/people/name.jpg"` (files in `public/images/people/`); without one, a typographic plate is shown. The people count on the site follows this list.
-- **Practice areas**: `src/content/practiceAreas.ts` (`plate` and `focus` choose and frame the area's image). The count follows this list.
-- **Insights**: `src/content/insights.ts` — sample commentary with `reviewed: false` and `date: null`. Unreviewed notes display a "pending legal review" notice; set `reviewed: true` and a publication `date` once approved.
-- **Favicon**: `src/app/icon.svg` is a neutral placeholder mark.
+- **Identity and contact**: `src/content/site.ts` (DIWAN wordmark, Arabic name as
+  published, Kafr el Sheikh; phone, email, street address and hours are
+  placeholders and only become links once supplied).
+- **Vision, who we are, values, mission** (English + Arabic, with sources and
+  recorded edits): `src/content/firm.ts`.
+- **Sources**: `src/content/sources.ts`; verbatim document in `docs/sources/`.
+- **Practice areas**: `src/content/practiceAreas.ts` — six source-backed areas
+  are published; seven prototype areas sit in `pendingPracticeAreas` (not
+  rendered) until the firm confirms them.
+- **Team**: `src/content/people.ts` — six placeholders until official profiles
+  are supplied.
+- **Insights**: `src/content/insights.ts` — sample notes pending legal review.
+- **Canonical URL**: set `NEXT_PUBLIC_SITE_URL`.
 
 ## Contact form
 

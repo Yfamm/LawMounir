@@ -211,7 +211,7 @@ export function Navigation() {
           </ol>
 
           <p className={styles.menuArabic} data-menu-fade>
-            <Arabic>{site.taglineAr}</Arabic>
+            <Arabic>{site.nameAr}</Arabic>
           </p>
           <div className={styles.menuFooter}>
             <div data-menu-fade>

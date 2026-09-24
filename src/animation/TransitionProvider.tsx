@@ -93,7 +93,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
         <div ref={markRef} className={styles.mark}>
           <span className={styles.word}>{site.name}</span>
           <span className={styles.rule} />
-          <span className={styles.sub}>Attorneys at Law</span>
+          <span className={styles.sub}>{site.descriptor}</span>
           <span className={`arabic ${styles.arabic}`} lang="ar" dir="rtl">
             {site.nameAr}
           </span>

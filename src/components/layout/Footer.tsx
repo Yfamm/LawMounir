@@ -50,8 +50,8 @@ export function Footer() {
           <div className={styles.brand}>
             <Wordmark />
             <p className={styles.note}>
-              An Egyptian law firm for companies, investors and families — built around the realities of Egyptian
-              law, business and dispute.
+              Law and legal consultancy in {site.city} — companies and investment, civil and real-estate
+              transactions, and personal status.
             </p>
           </div>
 
@@ -114,14 +114,14 @@ export function Footer() {
 
         <div className={styles.bottom}>
           <p>
-            © {year} {site.legalName}. All rights reserved.
+            © {year} {site.legalName} · <Arabic>{site.nameAr}</Arabic>. All rights reserved.
           </p>
           <p className={styles.disclaimer}>
             The content of this website is general information and does not constitute legal advice.
           </p>
           <p className="tabular">
-            <Arabic className={styles.arabic}>{site.taglineAr}</Arabic>
-            <span className={styles.coords}>{site.coordinates}</span>
+            <Arabic className={styles.arabic}>{site.nameAr}</Arabic>
+            <span className={styles.coords}>{site.location}</span>
           </p>
           <button type="button" className={styles.top} onClick={() => scrollTo(0)}>
             Back to top <Arrow direction="up-right" />

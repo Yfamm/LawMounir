@@ -15,8 +15,8 @@ export function PracticeAreasSection() {
           arabic="مجالات الممارسة"
           title={["Practice", <span key="a">Areas<sup className="count">({String(practiceAreas.length).padStart(2, "0")})</sup></span>]}
           size="mega"
-          // VERIFY: count and framing must match the practice areas the firm offers.
-          intro="Twelve areas of Egyptian law, organized around the decisions clients actually face — and the forums where those decisions are tested."
+          // Source: introduction document (areas) and mission (representation).
+          intro="Companies and investment, civil and real-estate transactions, and personal status — the areas named in the firm's own introduction, with representation before judicial and administrative bodies."
         />
         <div className={styles.list}>
           <PracticeAreaList areas={practiceAreas} />

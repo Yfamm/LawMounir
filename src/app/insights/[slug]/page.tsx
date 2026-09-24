@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { site } from "@/content/site";
 import { formatDate, getInsight, insights, type InsightBlock } from "@/content/insights";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Arrow } from "@/components/ui/Arrow";
@@ -108,7 +109,7 @@ export default async function InsightPage({ params }: Props) {
             ))}
             <p className={styles.disclaimer}>
               This note is general information about Egyptian law as it stood at the date of publication. It is not
-              legal advice and should not be relied on for any specific matter.
+              legal advice from {site.name} and should not be relied on for any specific matter.
               {!insight.reviewed && " [DRAFT — PENDING LEGAL REVIEW BY THE FIRM]"}
             </p>
           </div>

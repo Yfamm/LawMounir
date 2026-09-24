@@ -18,7 +18,7 @@ export default function InsightsPage() {
         label="Insights"
         arabic="رؤى قانونية"
         title={[<span key="i">Insights<sup className="count">({String(insights.length).padStart(2, "0")})</sup></span>]}
-        intro="Commentary on legislation, regulation and the practice of the Egyptian courts — written for the people who have to act on it."
+        intro="Sample notes on Egyptian law, pending legal review by the firm. They are general information, not legal advice from DIWAN."
       />
       <section className={`section surface-paper ${styles.journal}`} aria-label="All insights">
         <div className="container">

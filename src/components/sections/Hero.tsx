@@ -4,17 +4,19 @@ import Image from "next/image";
 import { useRef } from "react";
 import heroImage from "@/assets/hero-justice-cairo.webp";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { vision } from "@/content/firm";
 import { site } from "@/content/site";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import styles from "./Hero.module.css";
 
+// From the firm's vision (introduction document): "القانون ليس مجرد نصوص جامدة، بل هو حصن الأمان".
 const headline = [
-  <>Law, within</>,
+  <>More than</>,
+  <>rigid text.</>,
   <>
-    the <em>Egyptian</em>
+    A <em>fortress.</em>
   </>,
-  <>reality.</>,
 ];
 
 /**
@@ -108,13 +110,14 @@ export function Hero() {
           ))}
         </h1>
         <p className={styles.arabicLine} data-fade>
-          <Arabic>{site.taglineAr}</Arabic>
+          <Arabic>{vision.headlineAr}</Arabic>
         </p>
 
         <div className={styles.foot}>
-          {/* VERIFY: describes the firm's clientele. */}
+          {/* Source: introduction document — who we are, mission. */}
           <p className={styles.lede} data-fade>
-            Counsel for companies, investors and families navigating Egypt&rsquo;s courts, regulators and markets.
+            Legal counsel for investors, company owners and individuals — in companies and investment, civil and
+            real-estate transactions, and personal status.
           </p>
           <div className={styles.actions} data-fade>
             <Button href="/contact" variant="solid">
@@ -134,7 +137,7 @@ export function Hero() {
         </span>
       </div>
       <p className={`${styles.coords} label tabular`} data-scroll-cue data-reveal aria-hidden="true">
-        {site.coordinates}
+        {site.location}
       </p>
     </section>
   );

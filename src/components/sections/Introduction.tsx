@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { vision, whoWeAre } from "@/content/firm";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import { PlateFigure } from "@/components/ui/PlateFigure";
@@ -9,18 +10,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./Introduction.module.css";
 
-const statement: { word: string; em?: boolean }[] = [
-  { word: "Built" },
-  { word: "around" },
-  { word: "the" },
-  { word: "realities", em: true },
-  { word: "of" },
-  { word: "Egyptian" },
-  { word: "law," },
-  { word: "business" },
-  { word: "and" },
-  { word: "dispute." },
-];
+// From the firm's vision (introduction document): "حصن الأمان الذي يحمي حقوق الأفراد ويدعم نمو الشركات".
+const statement: { word: string; em?: boolean }[] = "A fortress that protects the rights of individuals and supports the growth of companies."
+  .split(" ")
+  .map((word) => ({ word, em: word === "fortress" }));
 
 /** A near-empty editorial pause: one statement that lights up word by word. */
 export function Introduction() {
@@ -81,7 +74,7 @@ export function Introduction() {
             </h2>
             <Reveal>
               <Arabic as="p" className={styles.arabicStatement}>
-                مبني على واقع القانون والأعمال والنزاع في مصر
+                {vision.statementAr}
               </Arabic>
             </Reveal>
           </div>
@@ -94,18 +87,13 @@ export function Introduction() {
             className={styles.figure}
           />
 
-          {/* VERIFY: describes the firm's practice and method. */}
+          {/* Source: introduction document — who we are (see firm.ts). */}
           <div className={styles.body}>
-            <SplitReveal className="lede">
-              We are an Egyptian law firm for clients who need more than a reading of the statute. We advise on how
-              Egyptian law actually operates — in courtrooms, in ministries and across the negotiating table — and we
-              build our advice around that practice.
-            </SplitReveal>
-            <SplitReveal className="lede" delay={0.1}>
-              Our work spans corporate and commercial matters, disputes, regulation and personal status. Across all of
-              it, the method is the same: understand the business, identify where the matter will truly be decided,
-              and act early.
-            </SplitReveal>
+            {whoWeAre.en.map((paragraph, i) => (
+              <SplitReveal key={i} className="lede" delay={i * 0.1}>
+                {paragraph}
+              </SplitReveal>
+            ))}
             <Reveal>
               <Button href="/about" variant="outline">
                 About the firm

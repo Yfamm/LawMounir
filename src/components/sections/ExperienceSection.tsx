@@ -9,33 +9,32 @@ import { Arabic } from "@/components/ui/Arabic";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import styles from "./ExperienceSection.module.css";
 
-// VERIFY: "Twelve practice areas" must match practiceAreas; the forums are
-// general facts about the Egyptian system; the markets list is a claim of
-// sector experience and must reflect work the firm has actually done.
+// Source: the firm's introduction document (areas, mission, values). The
+// named courts in "Forums" are general statements — VERIFY with the firm.
 const movements = [
   {
-    label: "Legal disciplines",
-    title: "Twelve practice areas, one standard of work.",
-    text: "From corporate transactions to personal status, the practice spans the matters businesses and families actually face in Egypt.",
-    items: practiceAreas.slice(0, 6).map((a) => a.title),
+    label: "Practice areas",
+    title: "The areas the firm names as its own.",
+    text: "Companies and investment, civil and real-estate transactions, and personal status cases — with representation running through all of them.",
+    items: practiceAreas.map((a) => a.title),
   },
   {
     label: "Forums",
-    title: "Where Egyptian matters are decided.",
-    text: "Each forum has its own procedure, pace and expectations. Preparation starts from the forum, not the file.",
-    items: ["Civil & Commercial Courts", "Economic Courts", "Council of State", "Criminal Courts", "Family Courts", "Arbitral tribunals"],
+    title: "Before judicial and administrative bodies.",
+    text: "The firm's mission commits it to the faithful defence of rights before all judicial and administrative bodies.",
+    items: ["Judicial bodies", "Administrative bodies", "Civil Courts", "Family Courts"],
   },
   {
-    label: "Markets",
-    title: "The sectors that move the Egyptian economy.",
-    text: "Advice grounded in how each sector is regulated, financed and contracted — and how its disputes tend to unfold.",
-    items: ["Real estate & development", "Financial services", "Industry & trade", "Technology", "Energy & infrastructure", "Family enterprises"],
+    label: "Clients",
+    title: "For investors, company owners and citizens.",
+    text: "The mission names those the firm serves: everyone seeking legal security in Egypt.",
+    items: ["Investors", "Company owners", "Citizens"],
   },
   {
     label: "Approach",
-    title: "One file, from first advice to enforcement.",
-    text: "The lawyers who draft the contract understand how it will be read in court — so advice given on day one already anticipates the dispute.",
-    items: ["Advise", "Structure", "Negotiate", "Litigate", "Arbitrate", "Enforce"],
+    title: "Simpler procedures. Clearer advice.",
+    text: "Simplifying procedures, offering clear advice and faithfully defending rights — completed efficiently, with the client kept informed.",
+    items: ["Simplify procedures", "Clear advice", "Company formation", "Contract drafting", "Administrative procedures", "Defence of rights"],
   },
 ];
 

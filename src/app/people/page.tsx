@@ -7,7 +7,7 @@ import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Our People",
-  description: "The lawyers of the firm and the practice areas they lead.",
+  description: "The counsel and lawyers of DIWAN — team profiles to follow.",
 };
 
 export default function PeoplePage() {
@@ -18,8 +18,8 @@ export default function PeoplePage() {
         label="Our People"
         arabic="فريقنا"
         title={["Our", <span key="p">People<sup className="count">({String(people.length).padStart(2, "0")})</sup></span>]}
-        // VERIFY: describes how the firm staffs matters — confirm before launch.
-        intro="The lawyers who prepare the file are the lawyers who stand behind it, from first advice to final hearing."
+        // Source: introduction document ("مستشارين ومحامين متخصصين"). Team details are placeholders.
+        intro="Counsel and lawyers specialized in branches of the law. Profiles of the team will be published once confirmed by the firm."
       />
 
       <section className={`section ${styles.team}`} aria-label="The team">

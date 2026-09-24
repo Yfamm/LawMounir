@@ -34,3 +34,25 @@
     padding-bottom: 3rem;
   }
 }
+
+/* Arabic source text set alongside its English translation */
+.arabicText {
+  max-width: 38rem;
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  line-height: 1.9;
+  color: var(--gold-200);
+}
+
+.mission {
+  background: var(--bg);
+}
+
+.band {
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+@media (min-width: 1024px) {
+  .heading {
+    grid-column: 1 / -1;
+  }
+}

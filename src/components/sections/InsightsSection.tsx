@@ -16,7 +16,7 @@ export function InsightsSection() {
           arabic="رؤى قانونية"
           title={["Notes on", <em key="e">Egyptian law.</em>]}
           size="l"
-          intro="Commentary on legislation, regulation and the practice of the courts — written for the people who have to act on it."
+          intro="Sample notes on Egyptian law, pending legal review by the firm. They are general information, not legal advice from DIWAN."
         />
 
         <Reveal className={styles.masthead}>

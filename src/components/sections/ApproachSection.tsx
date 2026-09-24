@@ -1,43 +1,23 @@
+import { values } from "@/content/firm";
 import { PlateFigure } from "@/components/ui/PlateFigure";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./ApproachSection.module.css";
 
-// VERIFY: statements of how the firm works — confirm with the partners before launch.
-export const principles = [
-  {
-    numeral: "I",
-    title: "Precision",
-    text: "We read the statute, its executive regulations, the ministerial decrees and the recent practice of the courts — because in Egypt the answer often sits in the layer beneath the law.",
-  },
-  {
-    numeral: "II",
-    title: "Strategy",
-    text: "Every file starts with its end: where the matter will be decided, by whom and on what timeline. Advice is shaped around that forum, not around theory.",
-  },
-  {
-    numeral: "III",
-    title: "Clarity",
-    text: "Clients receive a position, not a memo of possibilities. We say what we would do, what it will take and what could go wrong — plainly.",
-  },
-  {
-    numeral: "IV",
-    title: "Representation",
-    text: "Before judges, tribunals, ministries and counterparties, we appear prepared and credible, with a record built from the first day of the matter.",
-  },
-];
+// Source: the four core values in the firm's introduction document (see firm.ts).
+export const principles = values.items.map((v) => ({ numeral: v.numeral, title: v.titleEn, text: v.textEn }));
 
 export function ApproachSection({ index = "05" }: { index?: string }) {
   return (
-    <section className={`section surface-paper ${styles.approach}`} aria-label="Our approach">
+    <section className={`section surface-paper ${styles.approach}`} aria-label="Our values">
       <div className="container">
         <SectionHeading
           index={index}
-          label="Our Approach"
-          arabic="منهجنا"
-          title={["Four principles,", <em key="e">applied to every file.</em>]}
+          label={values.labelEn}
+          arabic={values.labelAr}
+          title={["Why clients", <em key="e">choose us.</em>]}
           size="l"
-          intro="Not a slogan and not a process chart — the working habits that decide how a matter is prepared, argued and closed."
+          intro="Four core values the firm sets out as the basis of its work."
         />
 
         <div className={styles.layout}>

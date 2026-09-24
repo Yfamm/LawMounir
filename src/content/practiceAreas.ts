@@ -1,8 +1,11 @@
 import type { PlateKey } from "./plates";
+import type { SourceId } from "./sources";
 
 export type PracticeArea = {
   slug: string;
   title: string;
+  /** Arabic name, where the source gives one. */
+  titleAr?: string;
   summary: string;
   overview: string;
   scope: string[];
@@ -11,52 +14,149 @@ export type PracticeArea = {
   plate: PlateKey;
   /** Background/object position used to frame that plate. */
   focus: string;
+  /** "confirmed" = named in the supplied sources; "pending" = not shown on the site. */
+  status: "confirmed" | "pending";
+  sources: SourceId[];
+  /** Statements in this entry that the firm must confirm. */
+  verify: string[];
 };
 
+const FORUMS_VERIFY = "Forums/authorities listed are general statements about the Egyptian system — confirm they reflect where the firm acts.";
+
 /**
- * VERIFY: confirm which practice areas the firm offers (add, rename or remove
- * entries — counts on the site follow this list). Each `overview` refers to
- * Egyptian statutes and authorities, and each `forums` list names real courts
- * and regulators; both are statements of law/fact the firm must confirm.
- * `scope` items describe work the firm handles and must reflect real practice.
+ * Practice areas published on the site. Each is supported by the firm's
+ * introduction document (docs/sources/introduction-ar.md):
+ * - "الشركات والاستثمار" → Companies & Contracts, Investment
+ * - "المعاملات المدنية والعقارية" → Civil Transactions, Real Estate
+ * - "قضايا الأحوال الشخصية" → Personal Status
+ * - Mission: "الدفاع المخلص عن الحقوق أمام كافة الجهات القضائية والإدارية" → Litigation & Representation
+ * - Value IV: "إنهاء الإجراءات الإدارية، تأسيس الشركات، وصياغة العقود"
+ * Counts on the site follow this list.
  */
 export const practiceAreas: PracticeArea[] = [
   {
     slug: "corporate-commercial",
-    title: "Corporate & Commercial",
-    summary:
-      "Formation, governance, transactions and the commercial contracts that hold a business together.",
+    title: "Companies & Contracts",
+    titleAr: "الشركات",
+    summary: "Company formation, contract drafting and the administrative procedures a growing business depends on.",
     overview:
-      "We advise Egyptian and foreign-owned companies across their full life cycle — from choosing the right corporate vehicle to restructuring, acquisitions and exit. The work is anchored in the Companies Law, the Investment Law and the practical requirements of the authorities that apply them.",
+      "Companies are the first area named in the firm's introduction. The work covers forming companies, drafting the contracts that hold a business together, and completing the administrative procedures that follow — efficiently and promptly, as the firm's values set out.",
     scope: [
-      "Company formation and corporate structuring",
-      "Shareholder agreements and governance frameworks",
-      "Mergers, acquisitions and share transfers",
-      "Commercial agency, distribution and franchise arrangements",
-      "Joint ventures, reorganizations and exits",
+      "Company formation",
+      "Drafting and reviewing contracts",
+      "Completing administrative procedures",
+      "Legal advice to company owners",
     ],
-    forums: ["General Authority for Investment and Free Zones", "Commercial Registry", "Economic Courts"],
+    forums: ["Commercial Registry", "General Authority for Investment and Free Zones"],
     plate: "colonnade",
     focus: "62% 45%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY],
+  },
+  {
+    slug: "investment-business-setup",
+    title: "Investment & Business Setup",
+    titleAr: "الاستثمار",
+    summary: "Legal support for investors establishing and growing a business in Egypt.",
+    overview:
+      "Investment sits alongside companies in the firm's introduction, and its mission names investors among the clients it serves. The work covers setting up a business, the procedures that come with it, and clear advice on the investor's legal position.",
+    scope: [
+      "Setting up a new business or investment",
+      "Company setup and related procedures",
+      "Clear advice on the legal framework for investors",
+      "Contracts supporting the investment",
+    ],
+    forums: ["General Authority for Investment and Free Zones"],
+    plate: "hallAisle",
+    focus: "28% 72%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY],
+  },
+  {
+    slug: "civil-transactions",
+    title: "Civil Transactions",
+    titleAr: "المعاملات المدنية",
+    summary: "Civil contracts and obligations between individuals and businesses, and the disputes that arise from them.",
+    overview:
+      "Civil transactions are named in the firm's introduction as a core area. The work covers the contracts and obligations of everyday civil life, and the defence of rights when they are contested.",
+    scope: [
+      "Drafting and reviewing civil contracts",
+      "Advice on civil rights and obligations",
+      "Civil claims and representation before the courts",
+    ],
+    forums: ["Civil Courts"],
+    plate: "hallRows",
+    focus: "40% 55%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY],
+  },
+  {
+    slug: "real-estate",
+    title: "Real Estate Transactions",
+    titleAr: "المعاملات العقارية",
+    summary: "Buying, selling and documenting property, and protecting title when it is contested.",
+    overview:
+      "Real-estate transactions are named in the firm's introduction. The work covers the sale, purchase and documentation of property, and the defence of the owner's rights when title is contested.",
+    scope: [
+      "Sale and purchase contracts",
+      "Review of title before a transaction",
+      "Documentation and registration of property",
+      "Real-estate disputes",
+    ],
+    forums: ["Real Estate Publicity Department", "Civil Courts"],
+    plate: "colonnade",
+    focus: "30% 75%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY, "Scope items are a general description of real-estate transaction work — confirm."],
+  },
+  {
+    slug: "family-personal-status",
+    title: "Personal Status",
+    titleAr: "قضايا الأحوال الشخصية",
+    summary: "Marriage, divorce, custody, maintenance and inheritance cases, handled in confidence.",
+    overview:
+      "Personal status cases are named in the firm's introduction. They concern the most private parts of a client's life, and are handled with the absolute confidentiality the firm sets as a core value.",
+    scope: ["Marriage and divorce", "Custody and visitation", "Alimony and maintenance", "Inheritance"],
+    forums: ["Family Courts"],
+    plate: "hallAislePortrait",
+    focus: "50% 62%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY, "Scope items are the usual heads of personal status work — confirm."],
   },
   {
     slug: "litigation-dispute-resolution",
-    title: "Litigation & Dispute Resolution",
-    summary:
-      "Civil, commercial and Economic Court litigation, and domestic and international arbitration.",
+    title: "Litigation & Representation",
+    titleAr: "التقاضي والتمثيل",
+    summary: "Faithful defence of clients' rights before judicial and administrative bodies.",
     overview:
-      "Disputes are won in preparation. We build each case around the forum that will decide it — the civil and commercial courts, the Economic Courts or an arbitral tribunal — and carry it through appeal, cassation and enforcement.",
+      "The firm's mission commits it to the faithful defence of rights before all judicial and administrative bodies. Representation runs through each of the areas above — from civil and real-estate claims to personal status cases — with the client kept informed at every stage.",
     scope: [
-      "Commercial and contractual disputes",
-      "Economic Court proceedings",
-      "Domestic and international arbitration",
-      "Appeals and challenges before the Court of Cassation",
-      "Enforcement of judgments and arbitral awards",
+      "Representation before the courts",
+      "Representation before administrative bodies",
+      "Following cases and reporting each development to the client",
     ],
-    forums: ["Civil & Commercial Courts", "Economic Courts", "Court of Cassation", "Arbitral tribunals"],
+    forums: ["Civil Courts", "Family Courts", "Administrative bodies"],
     plate: "colonnadeDetail",
     focus: "50% 35%",
+    status: "confirmed",
+    sources: ["introDoc"],
+    verify: [FORUMS_VERIFY],
   },
+];
+
+/**
+ * VERIFY — pending confirmation. These areas existed in the prototype but are
+ * NOT named in the supplied sources. They are not rendered anywhere and have
+ * no routes. Move an entry into `practiceAreas` (status "confirmed", with
+ * sources) only once the firm confirms it offers the service, and review its
+ * wording first.
+ */
+export const pendingPracticeAreas: PracticeArea[] = [
   {
     slug: "criminal-law",
     title: "Criminal Law",
@@ -73,24 +173,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Public Prosecution", "Misdemeanor & Felony Courts", "Economic Courts"],
     plate: "hallRows",
     focus: "40% 55%",
-  },
-  {
-    slug: "real-estate-construction",
-    title: "Real Estate & Construction",
-    summary:
-      "Acquisitions, development, title and construction disputes across Egypt's property market.",
-    overview:
-      "Egyptian real estate carries its own realities — unregistered title, chains of primary contracts, phased payments and developer obligations. We structure acquisitions and developments with those realities in view, and act when projects or titles are contested.",
-    scope: [
-      "Title due diligence and registration",
-      "Development and off-plan sale agreements",
-      "Leasing and property management",
-      "Construction contracts, including FIDIC-based agreements",
-      "Construction and developer disputes",
-    ],
-    forums: ["Real Estate Publicity Department", "Civil Courts", "Arbitral tribunals"],
-    plate: "colonnade",
-    focus: "30% 75%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "banking-finance",
@@ -108,6 +193,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Central Bank of Egypt", "Financial Regulatory Authority", "Economic Courts"],
     plate: "hallAisle",
     focus: "55% 30%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "tax-customs",
@@ -125,6 +213,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Egyptian Tax Authority", "Egyptian Customs Authority", "Appeal committees"],
     plate: "mashrabiya",
     focus: "62% 50%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "labor-employment",
@@ -142,6 +233,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Ministry of Labor", "National Organization for Social Insurance", "Labor courts"],
     plate: "hallRows",
     focus: "82% 72%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "intellectual-property",
@@ -159,23 +253,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Trademarks Office", "Egyptian Patent Office", "Economic Courts"],
     plate: "mashrabiya",
     focus: "8% 40%",
-  },
-  {
-    slug: "family-personal-status",
-    title: "Family & Personal Status",
-    summary: "Marriage, divorce, custody, guardianship and succession — handled with discretion.",
-    overview:
-      "Personal status matters in Egypt are governed by distinct rules and heard before specialized family courts. We advise individuals and families discreetly, including in matters that cross borders.",
-    scope: [
-      "Marriage and divorce proceedings",
-      "Custody, visitation and guardianship",
-      "Alimony and maintenance",
-      "Inheritance and succession planning",
-      "Cross-border family matters",
-    ],
-    forums: ["Family Courts", "Personal Status Registry"],
-    plate: "hallAislePortrait",
-    focus: "50% 62%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "administrative-regulatory",
@@ -193,23 +273,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Council of State", "Sector regulators", "Ministries and governorates"],
     plate: "colonnade",
     focus: "86% 38%",
-  },
-  {
-    slug: "investment-business-setup",
-    title: "Investment & Business Setup",
-    summary: "Market entry, investment incentives and establishing operations in Egypt.",
-    overview:
-      "For investors entering Egypt, the first decisions shape everything after. We advise on the vehicle, the location and the incentives available under the Investment Law, and manage setup with the General Authority for Investment and Free Zones.",
-    scope: [
-      "Market-entry structuring",
-      "Investment incentives and free zones",
-      "Company setup and GAFI procedures",
-      "Foreign ownership and sector restrictions",
-      "Branches and representative offices",
-    ],
-    forums: ["General Authority for Investment and Free Zones", "Commercial Registry"],
-    plate: "hallAisle",
-    focus: "28% 72%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
   {
     slug: "technology-data-protection",
@@ -227,6 +293,9 @@ export const practiceAreas: PracticeArea[] = [
     forums: ["Personal Data Protection Center", "National Telecom Regulatory Authority", "Central Bank of Egypt"],
     plate: "mashrabiya",
     focus: "72% 32%",
+    status: "pending",
+    sources: [],
+    verify: ["Not named in the supplied sources — confirm whether the firm offers this area before publishing it."],
   },
 ];
 

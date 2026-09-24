@@ -6,22 +6,22 @@ import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Speak with the firm about a corporate, dispute, regulatory or personal matter.",
+  description: "Contact DIWAN — law and legal consultancy in Kafr el Sheikh.",
 };
 
-// VERIFY: intake process (conflict check, first conversation, engagement letter) — confirm it matches the firm's procedure.
+// Source: the firm's values and mission (introduction document).
 const steps = [
   {
-    title: "Conflict check",
-    text: "Before discussing the substance of a matter, we confirm that we are free to act for you. We only need the names of the parties involved.",
+    title: "In confidence",
+    text: "Your privacy, your data and your case are treated with absolute confidentiality from the first message.",
   },
   {
-    title: "First conversation",
-    text: "A focused discussion of the facts, the timeline and what you need to achieve — and an honest view of whether and how we can help.",
+    title: "Clear advice",
+    text: "A clear view of your legal position and the procedures ahead, set out simply.",
   },
   {
-    title: "Engagement",
-    text: "If we proceed, you receive a written engagement letter setting out the scope of work, the team and the basis of our fees before work begins.",
+    title: "Kept informed",
+    text: "You are kept up to date with every development in your case and its legal position, through direct and digital channels.",
   },
 ];
 
@@ -37,7 +37,7 @@ export default function ContactPage() {
           <SectionHeading
             index="02"
             label="What happens next"
-            title={["From first call", <em key="e">to engagement.</em>]}
+            title={["What you", <em key="e">can expect.</em>]}
             size="l"
           />
           <Reveal as="ol" className={styles.steps} stagger={0.12}>
