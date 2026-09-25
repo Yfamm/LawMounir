@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/content/seo";
 import { getPracticeArea, practiceAreas, practiceNumber } from "@/content/practiceAreas";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { PageHeader } from "@/components/sections/PageHeader";
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const area = getPracticeArea(slug);
   if (!area) return {};
-  return { title: area.title, description: area.summary };
+  return pageMetadata({ title: area.title, description: area.summary, path: `/practice-areas/${area.slug}` });
 }
 
 /** Splits "Banking & Finance" into two display lines at the ampersand. */

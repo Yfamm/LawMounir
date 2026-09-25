@@ -45,7 +45,9 @@ export const site = {
    * Canonical origin used for metadata, sitemap and robots. Set
    * NEXT_PUBLIC_SITE_URL in the deployment environment.
    */
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
   /** Derived from the introduction document (who we are) and the Facebook page (location). */
   description:
     "DIWAN (ديوان للمحاماه والأستشارات القانونية) is an Egyptian law and legal consultancy firm in Kafr el Sheikh, working in companies and investment, civil and real-estate transactions, and personal status cases.",

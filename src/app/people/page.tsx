@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/content/seo";
 import { people } from "@/content/people";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { TeamGrid } from "@/components/ui/TeamGrid";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Our People",
-  description: "The counsel and lawyers of DIWAN — team profiles to follow.",
-};
+  description:
+    "The counsel and lawyers of DIWAN — team profiles to follow.",
+  path: "/people",
+});
 
 export default function PeoplePage() {
   return (

@@ -61,6 +61,8 @@ the source log, every placeholder, and every statement marked `VERIFY`.
   are supplied.
 - **Insights**: `src/content/insights.ts` — sample notes pending legal review.
 - **Canonical URL**: set `NEXT_PUBLIC_SITE_URL`.
+- **Indexing**: every page is `noindex` and robots.txt disallows crawling until `NEXT_PUBLIC_SITE_INDEXABLE=true` is set at launch.
+- **Metadata**: per-page titles, descriptions, canonical URLs and Open Graph/Twitter tags come from `pageMetadata()` in `src/content/seo.ts`; the share image is `src/app/opengraph-image.jpg`.
 
 ## Contact form
 

@@ -74,7 +74,9 @@ export function ContactForm() {
         if (!site.contact.emailHref) {
           setStatus({
             kind: "error",
-            message: "Online enquiries are not yet connected. Please use the contact details on this page.",
+            message: site.contact.phoneHref
+              ? `Online enquiries are not yet available. Please call us on ${site.contact.phone}.`
+              : "Online enquiries are not yet available. Please try again later.",
           });
           return;
         }

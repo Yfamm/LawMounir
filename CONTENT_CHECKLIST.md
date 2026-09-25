@@ -95,7 +95,15 @@ routes. Move an area into `practiceAreas` only once the firm confirms it.
   pending review, and state they are not legal advice from DIWAN. Replace them
   with the firm's own notes, or set `reviewed: true` and a `date` once approved.
 
-## 5. Deliberately absent
+## 5. Launch settings (deployment environment)
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical origin for canonical links, Open Graph URLs, sitemap and robots | Vercel production URL if available, otherwise `http://localhost:3000` |
+| `NEXT_PUBLIC_SITE_INDEXABLE` | Set to `true` at launch to allow search indexing | Unset → `noindex, nofollow` on every page and `Disallow: /` in robots.txt |
+| `CONTACT_WEBHOOK_URL` | Delivers enquiries from the contact form | Unset → the form shows "Online enquiries are not yet available" |
+
+## 6. Deliberately absent
 
 No founding date, history, awards, rankings, clients, case results,
 statistics, bar admissions, education, languages or other credentials appear

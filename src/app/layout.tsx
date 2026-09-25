@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from "@/animation/SmoothScrollProvider";
 import { TransitionProvider } from "@/animation/TransitionProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
+import { indexable } from "@/content/seo";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -58,12 +59,16 @@ export const metadata: Metadata = {
     template: `%s — ${site.legalName}`,
   },
   description: site.description,
+  applicationName: site.name,
+  // Pre-launch safety: no indexing until NEXT_PUBLIC_SITE_INDEXABLE=true.
+  robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
   openGraph: {
     type: "website",
-    siteName: site.legalName,
+    siteName: site.name,
     title: `${site.name} — ${site.descriptor}, ${site.city}`,
     description: site.description,
     locale: "en_EG",
+    url: "/",
   },
   twitter: { card: "summary_large_image" },
 };

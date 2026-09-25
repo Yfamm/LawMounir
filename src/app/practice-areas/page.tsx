@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/content/seo";
 import { practiceAreas } from "@/content/practiceAreas";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
@@ -6,11 +7,12 @@ import { PageHeader } from "@/components/sections/PageHeader";
 import { PracticeAreaList } from "@/components/ui/PracticeAreaList";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Practice Areas",
   description:
     "Companies and investment, civil and real-estate transactions, personal status, and representation before judicial and administrative bodies — DIWAN, Kafr el Sheikh.",
-};
+  path: "/practice-areas",
+});
 
 export default function PracticeAreasPage() {
   return (

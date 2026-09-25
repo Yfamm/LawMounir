@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/content/seo";
 import { site } from "@/content/site";
 import { formatDate, getInsight, insights, type InsightBlock } from "@/content/insights";
 import { ContactSection } from "@/components/sections/ContactSection";
@@ -24,11 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const insight = getInsight(slug);
   if (!insight) return {};
-  return {
+  return pageMetadata({
     title: insight.title,
     description: insight.standfirst,
-    openGraph: { type: "article", publishedTime: insight.date ?? undefined, title: insight.title, description: insight.standfirst },
-  };
+    path: `/insights/${insight.slug}`,
+    type: "article",
+    publishedTime: insight.date ?? undefined,
+  });
 }
 
 function Block({ block }: { block: InsightBlock }) {

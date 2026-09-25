@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/content/seo";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
-  description: "Contact DIWAN — law and legal consultancy in Kafr el Sheikh.",
-};
+  description:
+    "Contact DIWAN — law and legal consultancy in Kafr el Sheikh.",
+  path: "/contact",
+});
 
 // Source: the firm's values and mission (introduction document).
 const steps = [

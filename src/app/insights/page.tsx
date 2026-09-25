@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/content/seo";
 import { insights } from "@/content/insights";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { InsightsIndex } from "@/components/ui/InsightsIndex";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Insights",
-  description: "Commentary on Egyptian legislation, regulation and the practice of the courts.",
-};
+  description:
+    "Commentary on Egyptian legislation, regulation and the practice of the courts.",
+  path: "/insights",
+});
 
 export default function InsightsPage() {
   return (

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/content/seo";
 import { mission, vision, whoWeAre } from "@/content/firm";
 import { ApproachSection } from "@/components/sections/ApproachSection";
 import { ContactSection } from "@/components/sections/ContactSection";
@@ -9,11 +10,12 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./page.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About the Firm",
   description:
     "DIWAN — ديوان للمحاماه والأستشارات القانونية — law and legal consultancy in Kafr el Sheikh: our vision, who we are, our values and our mission.",
-};
+  path: "/about",
+});
 
 /**
  * Structure and wording follow the firm's introduction document

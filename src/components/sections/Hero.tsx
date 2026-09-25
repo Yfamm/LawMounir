@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import heroImage from "@/assets/hero-justice-cairo.webp";
+import heroImage from "@/assets/hero-justice.webp";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import { vision } from "@/content/firm";
 import { site } from "@/content/site";
@@ -20,7 +20,7 @@ const headline = [
 ];
 
 /**
- * Full-viewport opening sequence built around the Justice-over-Cairo image:
+ * Full-viewport opening sequence built around the Justice hero image:
  * a dark veil lifts, the image settles from a slow push-in, the headline
  * rises line by line, and the image drifts with scroll.
  */
@@ -79,7 +79,7 @@ export function Hero() {
         <div className={styles.mediaInner} data-media>
           <Image
             src={heroImage}
-            alt="Bronze statue of Justice holding scales above Cairo at sunset, with the pyramids and the Nile beyond"
+            alt="Bronze statue of Justice holding scales at sunset, with the pyramids and the Nile in the distance"
             fill
             priority
             quality={85}
