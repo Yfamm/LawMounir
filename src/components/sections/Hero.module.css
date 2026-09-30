@@ -130,6 +130,14 @@
   color: rgba(242, 235, 221, 0.82);
 }
 
+.ledeAr {
+  max-width: 30rem;
+  margin-top: 0.75rem;
+  font-size: var(--fs-body-l);
+  line-height: 1.7;
+  color: rgba(242, 235, 221, 0.72);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

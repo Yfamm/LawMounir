@@ -2,26 +2,12 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { plateNumber, plates } from "@/content/plates";
+import type { ResolvedImage } from "@/lib/cms/images";
+import { headlineLines } from "@/lib/cms/text";
+import type { HomeLandscape } from "@/lib/cms/types";
 import { Arabic } from "@/components/ui/Arabic";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import styles from "./LandscapeSection.module.css";
-
-// VERIFY: general statements about Egyptian courts and regulators.
-const pillars = [
-  {
-    title: "Courts",
-    text: "From courts of first instance to the Court of Cassation, with specialized Economic, Family and administrative courts alongside.",
-  },
-  {
-    title: "Regulators",
-    text: "Investment, financial, banking and sector authorities whose decisions shape what a business may do — and when.",
-  },
-  {
-    title: "Markets",
-    text: "The commercial customs, negotiating habits and market realities that no statute records but every dispute reveals.",
-  },
-];
 
 function Lines({ lines }: { lines: React.ReactNode[] }) {
   return lines.map((line, i) => (
@@ -38,7 +24,19 @@ function Lines({ lines }: { lines: React.ReactNode[] }) {
  * three statements pass through it and the image slowly pulls back from the
  * pyramids to the city. On mobile the statements simply stack.
  */
-export function LandscapeSection({ index = "04" }: { index?: string }) {
+export function LandscapeSection({
+  content,
+  image,
+  index = "04",
+}: {
+  content: HomeLandscape;
+  image: ResolvedImage;
+  index?: string;
+}) {
+  // The pinned timeline is choreographed for exactly three statements.
+  const frames = [0, 1, 2].map((i) => content.frames[i]?.text ?? "");
+  const pillars = content.pillars;
+
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -108,7 +106,15 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
       <div className={styles.stage} data-stage data-reveal>
         <div className={styles.media} aria-hidden="true">
           <div className={styles.mediaInner} data-media>
-            <Image src={plates.hallAisle.image} alt="" fill sizes="100vw" placeholder="blur" className={styles.image} />
+            <Image
+              src={image.src}
+              alt=""
+              fill
+              sizes="100vw"
+              placeholder={typeof image.src === "string" ? "empty" : "blur"}
+              className={styles.image}
+              style={image.position !== "50% 50%" ? { objectPosition: image.position } : undefined}
+            />
           </div>
         </div>
         <div className={styles.shade} data-shade aria-hidden="true" />
@@ -118,38 +124,31 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
             <span className="label tabular">{index}</span>
             <span className={styles.rule} />
             <h2 id="landscape-title" className="label">
-              The Egyptian legal landscape
+              {content.label}
             </h2>
-            <Arabic className={styles.arabic}>المشهد القانوني المصري</Arabic>
+            {content.labelAr && <Arabic className={styles.arabic}>{content.labelAr}</Arabic>}
           </div>
 
           <div className={styles.frames}>
             <div className={styles.frame} data-frame>
               <p className={`display ${styles.statement}`}>
-                <Lines lines={["Egyptian law is not", "simply a collection", <em key="s">of statutes.</em>]} />
+                <Lines lines={headlineLines(frames[0])} />
               </p>
             </div>
 
             <div className={styles.frame} data-frame>
               <p className={`display ${styles.statement} ${styles.statementSmall}`}>
-                <Lines
-                  lines={[
-                    "It is a living framework,",
-                    "shaped by courts, regulation,",
-                    "commerce — and the realities",
-                    <em key="m">of the market.</em>,
-                  ]}
-                />
+                <Lines lines={headlineLines(frames[1])} />
               </p>
             </div>
 
             <div className={styles.frame} data-frame>
               <p className={`display ${styles.statement} ${styles.statementSmall}`}>
-                <Lines lines={["Good counsel reads", <em key="a">all three at once.</em>]} />
+                <Lines lines={headlineLines(frames[2])} />
               </p>
               <ul className={styles.pillars}>
                 {pillars.map((pillar, i) => (
-                  <li key={pillar.title} className={styles.pillar} data-pillar>
+                  <li key={i} className={styles.pillar} data-pillar>
                     <span className={`label tabular ${styles.pillarIndex}`}>{String(i + 1).padStart(2, "0")}</span>
                     <h3 className={`serif ${styles.pillarTitle}`}>{pillar.title}</h3>
                     <p>{pillar.text}</p>
@@ -167,9 +166,12 @@ export function LandscapeSection({ index = "04" }: { index?: string }) {
               <span className={styles.bar} data-progress />
             </span>
             <span className="label tabular">03</span>
-            <span className={`label ${styles.plateCaption}`}>
-              Pl. {plateNumber("hallAisle")} — {plates.hallAisle.caption}
-            </span>
+            {image.caption && (
+              <span className={`label ${styles.plateCaption}`}>
+                {image.plateNo ? `Pl. ${image.plateNo} — ` : ""}
+                {image.caption}
+              </span>
+            )}
           </div>
         </div>
       </div>

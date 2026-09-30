@@ -1,71 +1,101 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { z } from "zod";
+import { getSite } from "@/lib/cms/repository";
+import { notifyNewEnquiry } from "@/lib/server/notify";
+import { allow } from "@/lib/server/rateLimit";
+import { clientIp, rateKey } from "@/lib/server/request";
+import { serviceClient } from "@/lib/supabase/service";
 
-type Enquiry = {
-  name?: unknown;
-  email?: unknown;
-  phone?: unknown;
-  organization?: unknown;
-  practice?: unknown;
-  message?: unknown;
-  company?: unknown;
-};
+const MAX_BYTES = 10_000;
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const enquirySchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name.").max(200, "Your name is too long."),
+  phone: z
+    .string()
+    .trim()
+    .min(5, "Please enter a phone number.")
+    .max(40, "That phone number is too long.")
+    .regex(/^\+?[\d\s().-]+$/, "Please enter a valid phone number.")
+    .refine((v) => (v.match(/\d/g) ?? []).length >= 5, "Please enter a valid phone number."),
+  email: z.union([z.literal(""), z.email("Please enter a valid email address, or leave it empty.").max(200)]),
+  message: z.string().trim().min(1, "Please describe your issue or question.").max(4000, "Please keep your message under 4,000 characters."),
+  path: z.string().max(200).optional(),
+});
 
-function text(value: unknown, max: number) {
-  return typeof value === "string" ? value.trim().slice(0, max) : "";
-}
+const fail = (error: string, status: number) => NextResponse.json({ ok: false, error }, { status });
 
 /**
- * Receives contact enquiries. When CONTACT_WEBHOOK_URL is configured the
- * enquiry is forwarded there as JSON (e.g. to a form service, CRM or an
- * email automation). Without it, the client is told to fall back to email.
+ * Public enquiry intake. Validates on the server, rejects bots (honeypot),
+ * rate-limits per client, then stores the enquiry with the service role —
+ * the database is the source of truth. An optional notification e-mail is
+ * sent afterwards and cannot affect the stored enquiry.
  */
 export async function POST(request: Request) {
-  let body: Enquiry;
+  if (!request.headers.get("content-type")?.includes("application/json")) {
+    return fail("Invalid request.", 415);
+  }
+  const declared = Number(request.headers.get("content-length") ?? 0);
+  if (declared > MAX_BYTES) return fail("Your message is too long.", 413);
+
+  let raw: string;
   try {
-    body = (await request.json()) as Enquiry;
+    raw = await request.text();
   } catch {
-    return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
+    return fail("Invalid request.", 400);
   }
+  if (raw.length > MAX_BYTES) return fail("Your message is too long.", 413);
 
-  // Honeypot: pretend success for bots.
-  if (text(body.company, 200)) {
-    return NextResponse.json({ ok: true });
-  }
-
-  const enquiry = {
-    name: text(body.name, 200),
-    email: text(body.email, 200),
-    phone: text(body.phone, 60),
-    organization: text(body.organization, 200),
-    practice: text(body.practice, 120),
-    message: text(body.message, 4000),
-    receivedAt: new Date().toISOString(),
-  };
-
-  if (!enquiry.name || !EMAIL.test(enquiry.email) || enquiry.message.length < 10) {
-    return NextResponse.json(
-      { ok: false, error: "Please provide your name, a valid email address and a short message." },
-      { status: 422 },
-    );
-  }
-
-  const webhook = process.env.CONTACT_WEBHOOK_URL;
-  if (!webhook) {
-    return NextResponse.json({ ok: false, fallback: "mailto" }, { status: 503 });
-  }
-
+  let body: Record<string, unknown>;
   try {
-    const res = await fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(enquiry),
-    });
-    if (!res.ok) throw new Error(`Webhook responded ${res.status}`);
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error("[contact] delivery failed", error);
-    return NextResponse.json({ ok: false, fallback: "mailto" }, { status: 502 });
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+    body = parsed as Record<string, unknown>;
+  } catch {
+    return fail("Invalid request.", 400);
   }
+
+  // Honeypot: a hidden field people never fill in. Pretend success to bots.
+  if (typeof body.company === "string" && body.company.trim()) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const result = enquirySchema.safeParse(body);
+  if (!result.success) return fail(result.error.issues[0]?.message ?? "Please check the form and try again.", 422);
+  const enquiry = result.data;
+
+  const db = serviceClient();
+  if (!db) {
+    console.error("[contact] SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL is not configured");
+    return fail("Online enquiries are temporarily unavailable. Please try again later.", 503);
+  }
+
+  const allowance = await allow(rateKey("contact", clientIp(request.headers)), 5, 600);
+  if (allowance === "unavailable") {
+    return fail("Online enquiries are temporarily unavailable. Please try again later.", 503);
+  }
+  if (allowance === "limited") {
+    return fail("Too many enquiries were sent from your connection. Please try again in a few minutes.", 429);
+  }
+
+  const { data, error } = await db
+    .from("enquiries")
+    .insert({
+      name: enquiry.name,
+      phone: enquiry.phone,
+      email: enquiry.email || null,
+      message: enquiry.message,
+      source_path: enquiry.path?.startsWith("/") ? enquiry.path : null,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    console.error("[contact] could not store enquiry:", error?.message);
+    return fail("We couldn't send your enquiry. Please try again in a moment.", 500);
+  }
+
+  const site = await getSite();
+  after(() => notifyNewEnquiry({ id: data.id as string, name: enquiry.name, siteUrl: site.url }));
+
+  return NextResponse.json({ ok: true });
 }

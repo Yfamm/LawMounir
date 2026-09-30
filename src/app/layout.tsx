@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { SmoothScrollProvider } from "@/animation/SmoothScrollProvider";
-import { TransitionProvider } from "@/animation/TransitionProvider";
-import { Footer } from "@/components/layout/Footer";
-import { Navigation } from "@/components/layout/Navigation";
 import { indexable } from "@/content/seo";
-import { site } from "@/content/site";
-import "./globals.css";
+import { getSite } from "@/lib/cms/repository";
 
 const serif = localFont({
   src: [
@@ -52,26 +47,29 @@ const arabic = localFont({
   fallback: ["Noto Naskh Arabic", "serif"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: `${site.name} — ${site.descriptor}, ${site.city}`,
-    template: `%s — ${site.legalName}`,
-  },
-  description: site.description,
-  applicationName: site.name,
-  // Pre-launch safety: no indexing until NEXT_PUBLIC_SITE_INDEXABLE=true.
-  robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    title: `${site.name} — ${site.descriptor}, ${site.city}`,
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: site.browserTitle,
+      template: `%s — ${site.siteName}`,
+    },
     description: site.description,
-    locale: "en_EG",
-    url: "/",
-  },
-  twitter: { card: "summary_large_image" },
-};
+    applicationName: site.siteName,
+    // Pre-launch safety: no indexing until NEXT_PUBLIC_SITE_INDEXABLE=true.
+    robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
+    openGraph: {
+      type: "website",
+      siteName: site.siteName,
+      title: site.browserTitle,
+      description: site.description,
+      locale: "en_EG",
+      url: "/",
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#080808",
@@ -85,19 +83,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* Flags JS support before first paint so animated elements can start hidden. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
-      <body>
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <SmoothScrollProvider>
-          <TransitionProvider>
-            <Navigation />
-            <main id="main">{children}</main>
-            <Footer />
-          </TransitionProvider>
-        </SmoothScrollProvider>
-        <div className="grain" aria-hidden="true" />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -2,15 +2,15 @@
 
 import { useRef, useState } from "react";
 import { EASE, gsap, prefersReducedMotion, showRoot, useGSAP } from "@/animation/gsap";
-import { insightCategories, insights, type InsightCategory } from "@/content/insights";
+import type { InsightView } from "@/lib/cms/repository";
 import { EditorialCard } from "./EditorialCard";
 import { Reveal } from "./Reveal";
 import styles from "./InsightsIndex.module.css";
 
-type Filter = InsightCategory | "All";
+type Filter = string;
 
 /** Filterable journal index. Changing category re-deals the cards. */
-export function InsightsIndex() {
+export function InsightsIndex({ insights, categories }: { insights: InsightView[]; categories: string[] }) {
   const [filter, setFilter] = useState<Filter>("All");
   const gridRef = useRef<HTMLDivElement>(null);
   const hasEntered = useRef(false);
@@ -64,7 +64,7 @@ export function InsightsIndex() {
     <div className={styles.index}>
       <Reveal className={styles.filters}>
         <div role="group" aria-label="Filter insights by category" className={styles.filterList}>
-          {(["All", ...insightCategories] as Filter[]).map((c) => (
+          {["All", ...categories].map((c) => (
             <button
               key={c}
               type="button"
@@ -86,7 +86,7 @@ export function InsightsIndex() {
           >
             <EditorialCard
               insight={insight}
-              issue={String(insights.indexOf(insight) + 1).padStart(2, "0")}
+              issue={insight.issue}
               variant={insight === visible[0] ? "feature" : "standard"}
             />
           </div>

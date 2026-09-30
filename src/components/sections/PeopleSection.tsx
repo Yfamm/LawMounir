@@ -1,29 +1,34 @@
-import { people } from "@/content/people";
+import type { PersonView } from "@/lib/cms/repository";
+import { headlineLines } from "@/lib/cms/text";
+import type { HomePeople } from "@/lib/cms/types";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TeamGrid } from "@/components/ui/TeamGrid";
 import styles from "./PeopleSection.module.css";
 
-export function PeopleSection() {
+type Props = { content: HomePeople; people: PersonView[]; index?: string };
+
+export function PeopleSection({ content, people, index = "07" }: Props) {
   return (
-    <section className={`section ${styles.people}`} aria-label="Our people">
+    <section className={`section ${styles.people}`} aria-label={content.label}>
       <div className="container">
         <SectionHeading
-          index="07"
-          label="Our People"
-          arabic="فريقنا"
-          title={["Our counsel", <em key="e">and lawyers.</em>]}
+          index={index}
+          label={content.label}
+          arabic={content.labelAr || undefined}
+          title={headlineLines(content.title)}
           size="l"
-          // Source: introduction document ("مستشارين ومحامين متخصصين"). Team details are placeholders.
-          intro="Counsel and lawyers specialized in branches of the law. Profiles of the team will be published once confirmed by the firm."
+          intro={content.intro || undefined}
           aside={
-            <Button href="/people" variant="outline">
-              Meet the team
-            </Button>
+            content.ctaText && content.ctaUrl ? (
+              <Button href={content.ctaUrl} variant="outline">
+                {content.ctaText}
+              </Button>
+            ) : undefined
           }
         />
         <div className={styles.grid}>
-          <TeamGrid people={people.slice(0, 3)} />
+          <TeamGrid people={people} />
         </div>
       </div>
     </section>

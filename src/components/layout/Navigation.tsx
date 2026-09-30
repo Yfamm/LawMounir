@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
 import { useSmoothScroll } from "@/animation/SmoothScrollProvider";
-import { primaryNav, site } from "@/content/site";
+import { useSite } from "@/components/providers/SiteProvider";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import { ContactLink } from "@/components/ui/ContactLink";
@@ -15,6 +15,7 @@ import styles from "./Navigation.module.css";
 
 export function Navigation() {
   const pathname = usePathname();
+  const { site, nav } = useSite();
   const { stop, start } = useSmoothScroll();
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -136,13 +137,13 @@ export function Navigation() {
         <div className={styles.backdrop} aria-hidden="true" />
         <nav className={styles.bar} aria-label="Primary">
           <div data-nav-item>
-            <TransitionLink href="/" className={styles.brand} aria-label={`${site.legalName} — home`} onClick={close}>
+            <TransitionLink href="/" className={styles.brand} aria-label={`${site.siteName} — home`} onClick={close}>
               <Wordmark />
             </TransitionLink>
           </div>
 
           <ul className={styles.links}>
-            {primaryNav.map((item) => (
+            {nav.map((item) => (
               <li key={item.href} data-nav-item>
                 <TransitionLink
                   href={item.href}
@@ -157,8 +158,8 @@ export function Navigation() {
 
           <div className={styles.actions}>
             <div className={styles.cta} data-nav-item>
-              <Button href="/contact" variant="accent">
-                Let&rsquo;s talk
+              <Button href={site.navCtaUrl} variant="accent">
+                {site.navCtaText}
               </Button>
             </div>
             <div data-nav-item>
@@ -191,7 +192,7 @@ export function Navigation() {
         <GeometricPattern className={styles.menuPattern} opacity={0.08} size={96} />
         <div className={styles.menuInner}>
           <ol className={styles.menuList}>
-            {primaryNav.map((item, i) => (
+            {nav.map((item, i) => (
               <li key={item.href} className={styles.menuItem}>
                 <span className="line-mask">
                   <span className="line-inner" data-menu-line>
@@ -211,20 +212,20 @@ export function Navigation() {
           </ol>
 
           <p className={styles.menuArabic} data-menu-fade>
-            <Arabic>{site.nameAr}</Arabic>
+            <Arabic>{site.siteNameAr}</Arabic>
           </p>
           <div className={styles.menuFooter}>
             <div data-menu-fade>
               <p className="label">Call</p>
-              <ContactLink href={site.contact.phoneHref}>{site.contact.phone}</ContactLink>
+              <ContactLink href={site.phoneHref}>{site.phone}</ContactLink>
             </div>
             <div data-menu-fade>
               <p className="label">Write</p>
-              <ContactLink href={site.contact.emailHref}>{site.contact.email}</ContactLink>
+              <ContactLink href={site.emailHref}>{site.email}</ContactLink>
             </div>
             <div data-menu-fade>
               <p className="label">Visit</p>
-              <p>{site.contact.office.join(", ")}</p>
+              <p>{site.address.join(", ")}</p>
             </div>
           </div>
         </div>

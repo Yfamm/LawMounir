@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import { useSmoothScroll } from "@/animation/SmoothScrollProvider";
-import { practiceAreas } from "@/content/practiceAreas";
-import { primaryNav, site } from "@/content/site";
+import { useSite } from "@/components/providers/SiteProvider";
 import { Arabic } from "@/components/ui/Arabic";
 import { Arrow } from "@/components/ui/Arrow";
 import { ContactLink } from "@/components/ui/ContactLink";
@@ -16,6 +15,7 @@ import styles from "./Footer.module.css";
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
   const { scrollTo } = useSmoothScroll();
+  const { site, nav, practiceLinks } = useSite();
 
   useGSAP(
     () => {
@@ -49,16 +49,13 @@ export function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <Wordmark />
-            <p className={styles.note}>
-              Law and legal consultancy in {site.city} — companies and investment, civil and real-estate
-              transactions, and personal status.
-            </p>
+            <p className={styles.note}>{site.footerDescription}</p>
           </div>
 
           <nav aria-label="Footer" className={styles.col}>
             <p className={`label ${styles.heading}`}>The Firm</p>
             <ul>
-              {primaryNav.map((item) => (
+              {nav.map((item) => (
                 <li key={item.href}>
                   <TransitionLink href={item.href} className={styles.link}>
                     {item.label}
@@ -71,7 +68,7 @@ export function Footer() {
           <div className={styles.col}>
             <p className={`label ${styles.heading}`}>Practice</p>
             <ul>
-              {practiceAreas.slice(0, 6).map((area) => (
+              {practiceLinks.slice(0, 6).map((area) => (
                 <li key={area.slug}>
                   <TransitionLink href={`/practice-areas/${area.slug}`} className={styles.link}>
                     {area.title}
@@ -85,17 +82,31 @@ export function Footer() {
             <p className={`label ${styles.heading}`}>Contact</p>
             <ul>
               <li>
-                <ContactLink href={site.contact.phoneHref} className={styles.link}>
-                  {site.contact.phone}
+                <ContactLink href={site.phoneHref} className={styles.link}>
+                  {site.phone}
                 </ContactLink>
               </li>
               <li>
-                <ContactLink href={site.contact.emailHref} className={styles.link}>
-                  {site.contact.email}
+                <ContactLink href={site.emailHref} className={styles.link}>
+                  {site.email}
                 </ContactLink>
               </li>
-              <li className={styles.muted}>{site.contact.office.join(", ")}</li>
-              <li className={styles.muted}>{site.contact.hours}</li>
+              {site.whatsappHref && (
+                <li>
+                  <a href={site.whatsappHref} className={styles.link} target="_blank" rel="noopener noreferrer">
+                    WhatsApp {site.whatsapp}
+                  </a>
+                </li>
+              )}
+              <li className={styles.muted}>{site.address.join(", ")}</li>
+              <li className={styles.muted}>{site.hours}</li>
+              {site.social.map((link) => (
+                <li key={link.url}>
+                  <a href={link.url} className={styles.link} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -105,22 +116,20 @@ export function Footer() {
           aria-hidden="true"
           data-giant
           data-reveal
-          style={{ "--chars": site.name.length } as React.CSSProperties}
+          style={{ "--chars": site.siteName.length } as React.CSSProperties}
         >
-          {site.name.split("").map((ch, i) => (
+          {site.siteName.split("").map((ch, i) => (
             <span key={i}>{ch}</span>
           ))}
         </p>
 
         <div className={styles.bottom}>
           <p>
-            © {year} {site.legalName} · <Arabic>{site.nameAr}</Arabic>. All rights reserved.
+            © {year} {site.siteName} · <Arabic>{site.siteNameAr}</Arabic>. {site.copyright}
           </p>
-          <p className={styles.disclaimer}>
-            The content of this website is general information and does not constitute legal advice.
-          </p>
+          <p className={styles.disclaimer}>{site.disclaimer}</p>
           <p className="tabular">
-            <Arabic className={styles.arabic}>{site.nameAr}</Arabic>
+            <Arabic className={styles.arabic}>{site.siteNameAr}</Arabic>
             <span className={styles.coords}>{site.location}</span>
           </p>
           <button type="button" className={styles.top} onClick={() => scrollTo(0)}>

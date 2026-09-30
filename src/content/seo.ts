@@ -14,6 +14,8 @@ type PageMeta = {
   path: string;
   type?: "website" | "article";
   publishedTime?: string;
+  /** Site name from the CMS settings. */
+  siteName?: string;
 };
 
 /**
@@ -30,15 +32,15 @@ const shareImage = {
   alt: "Bronze statue of Justice holding scales at sunset — DIWAN, Law & Legal Consultancy",
 };
 
-export function pageMetadata({ title, description, path, type = "website", publishedTime }: PageMeta): Metadata {
-  const fullTitle = `${title} — ${site.name}`;
+export function pageMetadata({ title, description, path, type = "website", publishedTime, siteName = site.name }: PageMeta): Metadata {
+  const fullTitle = `${title} — ${siteName}`;
   return {
     title,
     description,
     alternates: { canonical: path },
     openGraph: {
       type,
-      siteName: site.name,
+      siteName,
       locale: "en_EG",
       url: path,
       title: fullTitle,

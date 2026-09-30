@@ -110,3 +110,21 @@
     transform: scaleX(1);
   }
 }
+
+.arabic {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.details {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 28rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.details dt {
+  margin-bottom: 0.15rem;
+  color: var(--accent);
+}

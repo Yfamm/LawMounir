@@ -1,10 +1,10 @@
-import type { PracticeArea } from "@/content/practiceAreas";
+import type { PracticeAreaView } from "@/lib/cms/repository";
 import { Arrow } from "./Arrow";
 import { TransitionLink } from "./TransitionLink";
 import styles from "./PracticeAreaList.module.css";
 
 type Props = {
-  area: PracticeArea;
+  area: PracticeAreaView;
   number: string;
   onActivate?: () => void;
 };

@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { formatDate, type Insight } from "@/content/insights";
-import { plates } from "@/content/plates";
+import type { InsightView } from "@/lib/cms/repository";
+import { formatDate } from "@/lib/cms/text";
 import { Arrow } from "./Arrow";
 import { TransitionLink } from "./TransitionLink";
 import styles from "./EditorialCard.module.css";
 
 type Props = {
-  insight: Insight;
+  insight: Pick<InsightView, "slug" | "category" | "title" | "standfirst" | "date" | "readingTime" | "cover">;
   issue: string;
   variant?: "feature" | "standard";
 };
@@ -20,12 +20,13 @@ export function EditorialCard({ insight, issue, variant = "standard" }: Props) {
         {variant === "feature" && (
           <div className={styles.media}>
             <Image
-              src={plates[insight.plate].image}
+              src={insight.cover.src}
               alt=""
               fill
               sizes="(min-width: 900px) 55vw, 100vw"
-              placeholder="blur"
+              placeholder={typeof insight.cover.src === "string" ? "empty" : "blur"}
               className={styles.image}
+              style={insight.cover.position !== "50% 50%" ? { objectPosition: insight.cover.position } : undefined}
             />
             <span className={styles.keyline} aria-hidden="true" />
           </div>

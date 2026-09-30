@@ -2,7 +2,9 @@
 
 import { useRef } from "react";
 import { gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
-import { vision, whoWeAre } from "@/content/firm";
+import type { ResolvedImage } from "@/lib/cms/images";
+import { paragraphs, statementWords } from "@/lib/cms/text";
+import type { HomeIntro } from "@/lib/cms/types";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import { PlateFigure } from "@/components/ui/PlateFigure";
@@ -10,14 +12,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./Introduction.module.css";
 
-// From the firm's vision (introduction document): "حصن الأمان الذي يحمي حقوق الأفراد ويدعم نمو الشركات".
-const statement: { word: string; em?: boolean }[] = "A fortress that protects the rights of individuals and supports the growth of companies."
-  .split(" ")
-  .map((word) => ({ word, em: word === "fortress" }));
-
 /** A near-empty editorial pause: one statement that lights up word by word. */
-export function Introduction() {
+export function Introduction({ content, image, index = "02" }: { content: HomeIntro; image: ResolvedImage; index?: string }) {
   const ref = useRef<HTMLElement>(null);
+  const statement = statementWords(content.statement);
 
   useGSAP(
     () => {
@@ -52,15 +50,17 @@ export function Introduction() {
       <div className="container">
         <Reveal className={styles.meta}>
           <span className="label tabular" data-reveal-item>
-            02
+            {index}
           </span>
           <span className={styles.rule} data-reveal-line />
           <span className="label" data-reveal-item>
-            The Firm
+            {content.label}
           </span>
-          <span className={styles.arabicLabel} data-reveal-item>
-            <Arabic>المكتب</Arabic>
-          </span>
+          {content.labelAr && (
+            <span className={styles.arabicLabel} data-reveal-item>
+              <Arabic>{content.labelAr}</Arabic>
+            </span>
+          )}
         </Reveal>
 
         <div className={styles.spread}>
@@ -72,33 +72,36 @@ export function Introduction() {
                 </span>
               ))}
             </h2>
-            <Reveal>
-              <Arabic as="p" className={styles.arabicStatement}>
-                {vision.statementAr}
-              </Arabic>
-            </Reveal>
+            {content.statementAr && (
+              <Reveal>
+                <Arabic as="p" className={styles.arabicStatement}>
+                  {content.statementAr}
+                </Arabic>
+              </Reveal>
+            )}
           </div>
 
           <PlateFigure
-            plate="hallAislePortrait"
+            image={image}
             ratio="4 / 5"
             sizes="(min-width: 1024px) 34vw, 100vw"
             parallax={10}
             className={styles.figure}
           />
 
-          {/* Source: introduction document — who we are (see firm.ts). */}
           <div className={styles.body}>
-            {whoWeAre.en.map((paragraph, i) => (
+            {paragraphs(content.body).map((paragraph, i) => (
               <SplitReveal key={i} className="lede" delay={i * 0.1}>
                 {paragraph}
               </SplitReveal>
             ))}
-            <Reveal>
-              <Button href="/about" variant="outline">
-                About the firm
-              </Button>
-            </Reveal>
+            {content.ctaText && content.ctaUrl && (
+              <Reveal>
+                <Button href={content.ctaUrl} variant="outline">
+                  {content.ctaText}
+                </Button>
+              </Reveal>
+            )}
           </div>
         </div>
       </div>

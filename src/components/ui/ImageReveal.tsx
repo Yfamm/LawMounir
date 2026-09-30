@@ -6,7 +6,8 @@ import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import styles from "./ImageReveal.module.css";
 
 type Props = {
-  src: StaticImageData;
+  /** A static import (blur placeholder) or an uploaded image URL. */
+  src: StaticImageData | string;
   alt: string;
   sizes: string;
   /** CSS object-position used to frame the image. */
@@ -95,7 +96,7 @@ export function ImageReveal({
             fill
             sizes={sizes}
             priority={priority}
-            placeholder="blur"
+            placeholder={typeof src === "string" ? "empty" : "blur"}
             className={styles.img}
             style={{ objectPosition: position }}
           />

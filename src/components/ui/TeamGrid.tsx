@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
-import type { Person } from "@/content/people";
+import type { PersonView } from "@/lib/cms/repository";
 import { TeamCard } from "./TeamCard";
 import styles from "./TeamGrid.module.css";
 
-type Props = { people: Person[]; showBio?: boolean; columns?: 3 | 4 };
+type Props = { people: PersonView[]; showBio?: boolean; columns?: 3 | 4 };
 
 /** Portrait grid; each image unmasks upward as it scrolls into view. */
 export function TeamGrid({ people, showBio = false, columns = 3 }: Props) {

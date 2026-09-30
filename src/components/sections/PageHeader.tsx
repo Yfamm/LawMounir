@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { PlateKey } from "@/content/plates";
+import type { ResolvedImage } from "@/lib/cms/images";
 import { PlateFigure } from "@/components/ui/PlateFigure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./PageHeader.module.css";
@@ -13,7 +13,7 @@ type Props = {
   size?: "mega" | "xl" | "l";
   aside?: ReactNode;
   /** Architectural plate set as a wide band beneath the heading. */
-  plate?: { key: PlateKey; position?: string; zoom?: number };
+  plate?: { image: ResolvedImage; zoom?: number };
 };
 
 /** Opening block for inner pages: oversized title, then a captioned plate. */
@@ -36,9 +36,8 @@ export function PageHeader({ index, label, arabic, title, intro, size = "mega", 
       {plate && (
         <div className={`container ${styles.band}`}>
           <PlateFigure
-            plate={plate.key}
+            image={plate.image}
             sizes="(min-width: 1680px) 1600px, 100vw"
-            position={plate.position}
             zoom={plate.zoom}
             ratio="21 / 9"
             parallax={10}

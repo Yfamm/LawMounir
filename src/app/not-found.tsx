@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { Button } from "@/components/ui/Button";
 import { RevealText } from "@/components/ui/RevealText";
 import styles from "./not-found.module.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
+    <SiteChrome>
     <section className={styles.page}>
       <div className={`container ${styles.inner}`}>
         <p className={`label ${styles.code}`}>Error 404</p>
@@ -26,5 +29,6 @@ export default function NotFound() {
         </Button>
       </div>
     </section>
+    </SiteChrome>
   );
 }

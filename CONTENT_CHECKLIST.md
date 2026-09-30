@@ -1,5 +1,11 @@
 # Content checklist and source log — DIWAN
 
+> **Since the CMS:** everything below is now edited in the admin (`/admin`).
+> The files named here are the *source content* that was migrated into the
+> CMS by `npm run cms:seed` and that the site falls back to if the database is
+> unavailable. Source ids and VERIFY notes were migrated with the practice
+> areas (`sources`, `verify`) and insights (`verify`, legal review "pending").
+
 The site's firm content comes from two sources. Every statement is either
 traced to one of them, adapted with the change recorded, left as a visible
 `[PLACEHOLDER]`, or marked `VERIFY` (`grep -rn VERIFY src`). Nothing has been
@@ -54,28 +60,28 @@ Machine-readable versions: `src/content/sources.ts` (registry) and
 
 ## 2. Placeholders still to supply
 
-| Placeholder | Where | Edit in |
+| Placeholder | Where | Edit in the admin |
 | --- | --- | --- |
-| `[PHONE]` | Contact section, footer, mobile menu (becomes a `tel:` link) | `src/content/site.ts` |
-| `[WHATSAPP]` | Not rendered yet — add if used | `site.ts` → `contact.whatsapp` |
-| `[EMAIL]` | Contact section, footer, mobile menu, form fallback (becomes a `mailto:` link) | `site.ts` |
-| `[STREET ADDRESS]` | Contact section, footer, mobile menu (city is confirmed) | `site.ts` → `contact.office` |
-| `[OFFICE HOURS]` | Contact section, footer | `site.ts` → `contact.hours` |
-| `[WEBSITE]` | Reference value; also set `NEXT_PUBLIC_SITE_URL` | `site.ts` |
-| `[LAWYER NAME]`, `[TITLE]`, `[PRACTICE AREA]`, `[SHORT BIO]` | Six team cards | `src/content/people.ts` |
-| `[PUBLICATION DATE]` | Insight cards and articles | `src/content/insights.ts` |
-| Favicon mark | Browser tab | `src/app/icon.svg` |
+| `[PHONE]` | Contact section, footer, mobile menu (becomes a `tel:` link) | Site Settings → Phone |
+| `[WHATSAPP]` | Shown in the contact section and footer only once a real number is set | Site Settings → WhatsApp |
+| `[EMAIL]` | Contact section, footer, mobile menu (becomes a `mailto:` link) | Site Settings → Contact email |
+| `[STREET ADDRESS]` | Contact section, footer, mobile menu (city is confirmed) | Site Settings → Address |
+| `[OFFICE HOURS]` | Contact section, footer | Site Settings → Office hours |
+| `[WEBSITE]` | Canonical URL | Site Settings → Canonical URL, or `NEXT_PUBLIC_SITE_URL` |
+| `[LAWYER NAME]`, `[TITLE]`, `[PRACTICE AREA]`, `[SHORT BIO]` | Six team cards | People |
+| `[PUBLICATION DATE]` | Insight cards and articles | Insights → Publication date |
+| Favicon mark | Browser tab | `src/app/icon.svg` (code) |
 
 Exact office coordinates are not supplied; the hero and footer show the
 confirmed location line ("Kafr el Sheikh — Egypt") instead.
 
 ## 3. Pending confirmation — not shown on the site
 
-`pendingPracticeAreas` in `src/content/practiceAreas.ts` holds seven areas from
+These were **not** migrated into the CMS. `pendingPracticeAreas` in `src/content/practiceAreas.ts` holds seven areas from
 the prototype that the sources do not mention: Criminal Law, Banking & Finance,
 Tax & Customs, Labor & Employment, Intellectual Property, Administrative &
 Regulatory, Technology & Data Protection. They are not rendered and have no
-routes. Move an area into `practiceAreas` only once the firm confirms it.
+routes. Create an area in Admin → Practice Areas only once the firm confirms it.
 
 ## 4. VERIFY — statements not covered by the sources
 
@@ -93,7 +99,8 @@ routes. Move an area into `practiceAreas` only once the firm confirms it.
   159 of 1981, Law No. 72 of 2017, Law No. 14 of 2025, among others). They show
   "[DRAFT — PENDING LEGAL REVIEW BY THE FIRM]", are introduced as sample notes
   pending review, and state they are not legal advice from DIWAN. Replace them
-  with the firm's own notes, or set `reviewed: true` and a `date` once approved.
+  with the firm's own notes, or set Legal review → Approved and a publication
+  date in Admin → Insights once approved.
 
 ## 5. Launch settings (deployment environment)
 
@@ -101,7 +108,10 @@ routes. Move an area into `practiceAreas` only once the firm confirms it.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin for canonical links, Open Graph URLs, sitemap and robots | Vercel production URL if available, otherwise `http://localhost:3000` |
 | `NEXT_PUBLIC_SITE_INDEXABLE` | Set to `true` at launch to allow search indexing | Unset → `noindex, nofollow` on every page and `Disallow: /` in robots.txt |
-| `CONTACT_WEBHOOK_URL` | Delivers enquiries from the contact form | Unset → the form shows "Online enquiries are not yet available" |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | CMS reads and admin sign-in | Unset → the site shows the source content; the admin is unavailable |
+| `SUPABASE_SERVICE_ROLE_KEY` | Stores enquiries; rate limiting; CLI scripts (server only) | Unset → the form reports that online enquiries are temporarily unavailable |
+| `RATE_LIMIT_SALT` | Hashes client IPs for rate limiting | — |
+| `RESEND_API_KEY`, `CONTACT_NOTIFICATION_EMAIL`, `CONTACT_FROM_EMAIL` | Optional e-mail notice of new enquiries | Unset → no e-mail; enquiries are still stored |
 
 ## 6. Deliberately absent
 

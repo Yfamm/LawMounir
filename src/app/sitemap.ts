@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
-import { insights } from "@/content/insights";
-import { practiceAreas } from "@/content/practiceAreas";
-import { site } from "@/content/site";
+import { getInsights, getPracticeAreas, getSite } from "@/lib/cms/repository";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 300;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [site, areas, insights] = await Promise.all([getSite(), getPracticeAreas(), getInsights()]);
   const pages = ["", "/about", "/practice-areas", "/people", "/insights", "/contact"].map((path) => ({
     url: `${site.url}${path}`,
   }));
-  const practice = practiceAreas.map((area) => ({ url: `${site.url}/practice-areas/${area.slug}` }));
+  const practice = areas.map((area) => ({ url: `${site.url}/practice-areas/${area.slug}` }));
   const notes = insights.map((insight) => ({
     url: `${site.url}/insights/${insight.slug}`,
     ...(insight.date ? { lastModified: insight.date } : {}),

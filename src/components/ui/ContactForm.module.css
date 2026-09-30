@@ -97,22 +97,16 @@ select.input option {
   overflow: hidden;
 }
 
-.consent {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.9rem;
-  align-items: start;
+.notice {
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--muted);
-  cursor: pointer;
 }
 
-.consent input {
-  width: 1.1rem;
-  height: 1.1rem;
-  margin: 0.2rem 0 0;
-  accent-color: var(--accent);
+.label .hint {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .submit {

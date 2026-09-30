@@ -1,10 +1,11 @@
-import { plateNumber, plates, type PlateKey } from "@/content/plates";
+import type { ResolvedImage } from "@/lib/cms/images";
 import { ImageReveal } from "./ImageReveal";
 
 type Props = {
-  plate: PlateKey;
+  image: ResolvedImage;
   sizes: string;
   ratio?: string;
+  /** Overrides the image's own framing. */
   position?: string;
   zoom?: number;
   parallax?: number;
@@ -15,17 +16,17 @@ type Props = {
   priority?: boolean;
 };
 
-/** One of the architectural plates, revealed and captioned like a folio plate. */
-export function PlateFigure({ plate, caption = true, framed = true, tone = "soft", ...rest }: Props) {
-  const p = plates[plate];
+/** An architectural plate (or uploaded image), revealed and captioned like a folio plate. */
+export function PlateFigure({ image, caption = true, framed = true, tone = "soft", position, ...rest }: Props) {
   return (
     <ImageReveal
-      src={p.image}
-      alt={p.alt}
-      caption={caption ? p.caption : undefined}
-      plate={caption ? plateNumber(plate) : undefined}
+      src={image.src}
+      alt={image.alt}
+      caption={caption && image.caption ? image.caption : undefined}
+      plate={caption && image.plateNo ? image.plateNo : undefined}
       framed={framed}
       tone={tone}
+      position={position ?? image.position}
       {...rest}
     />
   );

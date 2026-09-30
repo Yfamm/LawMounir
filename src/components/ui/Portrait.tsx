@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { isPlaceholder } from "@/content/site";
+import { isPlaceholder } from "@/lib/cms/text";
 import styles from "./Portrait.module.css";
 
-type Props = { name: string; image?: string; sizes: string };
+type Props = { name: string; image?: string; alt?: string; sizes: string };
 
 function initials(name: string) {
   if (isPlaceholder(name)) return "";
@@ -14,9 +14,9 @@ function initials(name: string) {
  * Portrait slot. Renders the photograph when one is provided, otherwise a
  * studio-lit typographic plate with the person's initials.
  */
-export function Portrait({ name, image, sizes }: Props) {
+export function Portrait({ name, image, alt, sizes }: Props) {
   if (image) {
-    return <Image src={image} alt={`Portrait of ${name}`} fill sizes={sizes} className={styles.photo} />;
+    return <Image src={image} alt={alt || `Portrait of ${name}`} fill sizes={sizes} className={styles.photo} />;
   }
   return (
     <div

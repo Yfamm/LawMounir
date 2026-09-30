@@ -1,42 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
-import { plateNumber, plates } from "@/content/plates";
-import { practiceAreas } from "@/content/practiceAreas";
+import type { ResolvedImage } from "@/lib/cms/images";
+import { headlineLines } from "@/lib/cms/text";
+import type { HomeExperience } from "@/lib/cms/types";
 import { Arabic } from "@/components/ui/Arabic";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import styles from "./ExperienceSection.module.css";
-
-// Source: the firm's introduction document (areas, mission, values). The
-// named courts in "Forums" are general statements — VERIFY with the firm.
-const movements = [
-  {
-    label: "Practice areas",
-    title: "The areas the firm names as its own.",
-    text: "Companies and investment, civil and real-estate transactions, and personal status cases — with representation running through all of them.",
-    items: practiceAreas.map((a) => a.title),
-  },
-  {
-    label: "Forums",
-    title: "Before judicial and administrative bodies.",
-    text: "The firm's mission commits it to the faithful defence of rights before all judicial and administrative bodies.",
-    items: ["Judicial bodies", "Administrative bodies", "Civil Courts", "Family Courts"],
-  },
-  {
-    label: "Clients",
-    title: "For investors, company owners and citizens.",
-    text: "The mission names those the firm serves: everyone seeking legal security in Egypt.",
-    items: ["Investors", "Company owners", "Citizens"],
-  },
-  {
-    label: "Approach",
-    title: "Simpler procedures. Clearer advice.",
-    text: "Simplifying procedures, offering clear advice and faithfully defending rights — completed efficiently, with the client kept informed.",
-    items: ["Simplify procedures", "Clear advice", "Company formation", "Contract drafting", "Administrative procedures", "Defence of rights"],
-  },
-];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -44,8 +16,18 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Horizontal storytelling track. Pinned and scrubbed sideways on desktop;
  * a vertical sequence on smaller screens. Numerals count up on entry.
  */
-export function ExperienceSection({ index = "06" }: { index?: string }) {
+type Props = {
+  content: HomeExperience;
+  image: ResolvedImage;
+  /** Titles of the published practice areas, for movements that list them. */
+  practiceTitles: string[];
+  index?: string;
+};
+
+export function ExperienceSection({ content, image, practiceTitles, index = "06" }: Props) {
   const ref = useRef<HTMLElement>(null);
+  const movements = content.movements.map((m) => ({ ...m, items: m.autoPracticeAreas ? practiceTitles : m.items }));
+  const titleLines = headlineLines(content.title);
 
   useGSAP(
     () => {
@@ -58,6 +40,7 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
       const countUp = (el: Element | null) => {
         if (!el) return;
         const target = Number(el.getAttribute("data-count"));
+        if (!Number.isFinite(target)) return;
         const state = { v: 0 };
         gsap.to(state, {
           v: target,
@@ -174,50 +157,56 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
           <div className={styles.meta}>
             <span className="label tabular">{index}</span>
             <span className={styles.rule} />
-            <span className="label">Experience</span>
-            <Arabic className={styles.arabic}>الخبرة</Arabic>
+            <span className="label">{content.label}</span>
+            {content.labelAr && <Arabic className={styles.arabic}>{content.labelAr}</Arabic>}
           </div>
           <h2 id="experience-title" className={`display ${styles.introTitle}`}>
-            The practice,
-            <br />
-            <em>in four movements.</em>
+            {titleLines.map((line, i) => (
+              <Fragment key={i}>
+                {i > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
           </h2>
-          <p className="lede">
-            Not a list of figures — a map of where the work sits, where it is decided and how it is carried through.
-          </p>
-          <span className={`label ${styles.hint}`} aria-hidden="true">
-            Scroll to continue
-          </span>
+          {content.intro && <p className="lede">{content.intro}</p>}
+          {content.hint && (
+            <span className={`label ${styles.hint}`} aria-hidden="true">
+              {content.hint}
+            </span>
+          )}
         </div>
 
         <figure className={styles.imagePanel}>
           <div className={styles.imageFrame}>
             <Image
-              src={plates.hallRows.image}
-              alt={plates.hallRows.alt}
+              src={image.src}
+              alt={image.alt}
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
-              placeholder="blur"
+              placeholder={typeof image.src === "string" ? "empty" : "blur"}
               className={styles.image}
+              style={image.position !== "50% 50%" ? { objectPosition: image.position } : undefined}
               data-panel-image
             />
             <span className={styles.keyline} aria-hidden="true" />
           </div>
-          <figcaption className="label">
-            <span className={styles.plateNo}>Pl. {plateNumber("hallRows")}</span> {plates.hallRows.caption}
-          </figcaption>
+          {image.caption && (
+            <figcaption className="label">
+              {image.plateNo && <span className={styles.plateNo}>Pl. {image.plateNo}</span>} {image.caption}
+            </figcaption>
+          )}
         </figure>
 
         {movements.map((m, i) => (
-          <article key={m.label} className={styles.panel} data-panel>
+          <article key={i} className={styles.panel} data-panel>
             <div className={styles.numeralWrap} aria-hidden="true">
-              <span className={`${styles.numeral} serif tabular`} data-numeral data-count={i + 1}>
-                {pad(i + 1)}
+              <span className={`${styles.numeral} serif tabular`} data-numeral data-count={Number(m.number) || i + 1}>
+                {m.number || pad(i + 1)}
               </span>
             </div>
             <div className={styles.panelBody}>
               <p className={`label ${styles.panelLabel}`} data-panel-item>
-                {pad(i + 1)} — {m.label}
+                {m.number || pad(i + 1)} — {m.label}
               </p>
               <h3 className={`serif ${styles.panelTitle}`} data-panel-item>
                 {m.title}
@@ -226,8 +215,8 @@ export function ExperienceSection({ index = "06" }: { index?: string }) {
                 {m.text}
               </p>
               <ul className={styles.items} data-panel-item>
-                {m.items.map((item) => (
-                  <li key={item}>{item}</li>
+                {m.items.map((item, j) => (
+                  <li key={j}>{item}</li>
                 ))}
               </ul>
             </div>

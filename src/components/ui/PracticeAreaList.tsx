@@ -2,12 +2,11 @@
 
 import { useCallback, useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
-import { plateOrder, plates } from "@/content/plates";
-import { practiceNumber, type PracticeArea } from "@/content/practiceAreas";
+import type { PracticeAreaView } from "@/lib/cms/repository";
 import { PracticeAreaRow } from "./PracticeAreaRow";
 import styles from "./PracticeAreaList.module.css";
 
-type Props = { areas: PracticeArea[] };
+type Props = { areas: PracticeAreaView[] };
 
 /**
  * Interactive index of practice areas. On fine pointers a framed window
@@ -66,17 +65,17 @@ export function PracticeAreaList({ areas }: Props) {
           const area = areas[index];
           if (!area || !num) return;
           layers.forEach((layer) => {
-            const active = layer.dataset.plate === area.plate;
+            const active = layer.dataset.preview === area.image.preview;
             gsap.to(layer, { autoAlpha: active ? 1 : 0, duration: 0.7, ease: EASE.soft, overwrite: "auto" });
             if (active) {
               gsap.fromTo(
                 layer,
                 { scale: 1.12 },
-                { scale: 1, backgroundPosition: area.focus, duration: 1.2, ease: EASE.inOut, overwrite: "auto" },
+                { scale: 1, backgroundPosition: area.image.position, duration: 1.2, ease: EASE.inOut, overwrite: "auto" },
               );
             }
           });
-          num.textContent = practiceNumber(area.slug);
+          num.textContent = area.number;
           gsap.fromTo(num, { yPercent: 60, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.6, ease: EASE.soft });
         };
 
@@ -96,6 +95,8 @@ export function PracticeAreaList({ areas }: Props) {
   );
 
   const onActivate = useCallback((index: number) => activate.current(index), []);
+  // One preview layer per distinct image.
+  const previews = [...new Set(areas.map((a) => a.image.preview))];
 
   return (
     <div ref={ref} className={styles.list} data-reveal>
@@ -104,28 +105,28 @@ export function PracticeAreaList({ areas }: Props) {
           <PracticeAreaRow
             key={area.slug}
             area={area}
-            number={practiceNumber(area.slug)}
+            number={area.number}
             onActivate={() => onActivate(i)}
           />
         ))}
       </ul>
 
       <div ref={previewRef} className={styles.preview} aria-hidden="true">
-        {plateOrder.map((key) => (
+        {previews.map((src) => (
           <div
-            key={key}
+            key={src}
             className={styles.previewImg}
             data-preview-img
-            data-plate={key}
+            data-preview={src}
             style={{
-              backgroundImage: `url(${plates[key].preview.src})`,
-              opacity: areas[0]?.plate === key ? 1 : 0,
+              backgroundImage: `url(${JSON.stringify(src)})`,
+              opacity: areas[0]?.image.preview === src ? 1 : 0,
             }}
           />
         ))}
         <span className={styles.previewShade} />
         <span className={`${styles.previewNum} serif tabular`} data-preview-num>
-          {areas[0] ? practiceNumber(areas[0].slug) : ""}
+          {areas[0]?.number ?? ""}
         </span>
       </div>
     </div>

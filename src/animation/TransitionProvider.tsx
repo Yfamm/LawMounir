@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { EASE, gsap, prefersReducedMotion, ScrollTrigger } from "./gsap";
 import { useSmoothScroll } from "./SmoothScrollProvider";
-import { site } from "@/content/site";
+import { useSite } from "@/components/providers/SiteProvider";
 import styles from "./TransitionProvider.module.css";
 
 type TransitionApi = { navigate: (href: string) => void };
@@ -20,6 +20,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
   const { scrollTo } = useSmoothScroll();
+  const { site } = useSite();
   const curtainRef = useRef<HTMLDivElement>(null);
   const markRef = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
@@ -91,11 +92,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       {children}
       <div ref={curtainRef} className={styles.curtain} aria-hidden="true">
         <div ref={markRef} className={styles.mark}>
-          <span className={styles.word}>{site.name}</span>
+          <span className={styles.word}>{site.siteName}</span>
           <span className={styles.rule} />
           <span className={styles.sub}>{site.descriptor}</span>
           <span className={`arabic ${styles.arabic}`} lang="ar" dir="rtl">
-            {site.nameAr}
+            {site.siteNameAr}
           </span>
         </div>
       </div>

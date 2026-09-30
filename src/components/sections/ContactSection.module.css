@@ -121,3 +121,8 @@
     gap: 6rem;
   }
 }
+
+.description {
+  max-width: 38rem;
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}

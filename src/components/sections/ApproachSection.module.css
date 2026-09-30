@@ -79,3 +79,10 @@
     margin-top: 5rem;
   }
 }
+
+.introAr {
+  margin-top: 1.25rem;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--accent-deep, var(--accent));
+}

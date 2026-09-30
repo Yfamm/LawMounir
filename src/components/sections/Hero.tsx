@@ -2,30 +2,24 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import heroImage from "@/assets/hero-justice.webp";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
-import { vision } from "@/content/firm";
-import { site } from "@/content/site";
+import type { ResolvedImage } from "@/lib/cms/images";
+import { headlineLines } from "@/lib/cms/text";
+import type { HomeHero } from "@/lib/cms/types";
 import { Arabic } from "@/components/ui/Arabic";
 import { Button } from "@/components/ui/Button";
 import styles from "./Hero.module.css";
 
-// From the firm's vision (introduction document): "القانون ليس مجرد نصوص جامدة، بل هو حصن الأمان".
-const headline = [
-  <>More than</>,
-  <>rigid text.</>,
-  <>
-    A <em>fortress.</em>
-  </>,
-];
+type Props = { content: HomeHero; image: ResolvedImage; location: string };
 
 /**
  * Full-viewport opening sequence built around the Justice hero image:
  * a dark veil lifts, the image settles from a slow push-in, the headline
  * rises line by line, and the image drifts with scroll.
  */
-export function Hero() {
+export function Hero({ content, image, location }: Props) {
   const ref = useRef<HTMLElement>(null);
+  const headline = headlineLines(content.headline);
 
   useGSAP(
     () => {
@@ -78,14 +72,15 @@ export function Hero() {
       <div className={styles.media} data-parallax>
         <div className={styles.mediaInner} data-media>
           <Image
-            src={heroImage}
-            alt="Bronze statue of Justice holding scales at sunset, with the pyramids and the Nile in the distance"
+            src={image.src}
+            alt={image.alt}
             fill
             priority
             quality={85}
-            placeholder="blur"
+            placeholder={typeof image.src === "string" ? "empty" : "blur"}
             sizes="100vw"
             className={styles.image}
+            style={image.position !== "50% 50%" ? { objectPosition: image.position } : undefined}
           />
         </div>
       </div>
@@ -97,9 +92,7 @@ export function Hero() {
       <div className={`container ${styles.content}`} data-content data-reveal>
         <p className={`label ${styles.eyebrow}`}>
           <span className={styles.eyebrowRule} data-eyebrow-rule />
-          <span data-eyebrow>
-            {site.descriptor} — {site.city}
-          </span>
+          <span data-eyebrow>{content.eyebrow}</span>
         </p>
 
         <h1 id="hero-title" className={`display ${styles.title}`}>
@@ -109,23 +102,36 @@ export function Hero() {
             </span>
           ))}
         </h1>
-        <p className={styles.arabicLine} data-fade>
-          <Arabic>{vision.headlineAr}</Arabic>
-        </p>
+        {content.headlineAr && (
+          <p className={styles.arabicLine} data-fade>
+            <Arabic>{content.headlineAr}</Arabic>
+          </p>
+        )}
 
         <div className={styles.foot}>
-          {/* Source: introduction document — who we are, mission. */}
-          <p className={styles.lede} data-fade>
-            Legal counsel for investors, company owners and individuals — in companies and investment, civil and
-            real-estate transactions, and personal status.
-          </p>
+          {content.textAr ? (
+            <div data-fade>
+              <p className={styles.lede}>{content.text}</p>
+              <Arabic as="p" className={styles.ledeAr}>
+                {content.textAr}
+              </Arabic>
+            </div>
+          ) : (
+            <p className={styles.lede} data-fade>
+              {content.text}
+            </p>
+          )}
           <div className={styles.actions} data-fade>
-            <Button href="/contact" variant="solid">
-              Let&rsquo;s talk
-            </Button>
-            <Button href="/practice-areas" variant="outline" magnetic={false}>
-              Practice areas
-            </Button>
+            {content.ctaText && content.ctaUrl && (
+              <Button href={content.ctaUrl} variant="solid">
+                {content.ctaText}
+              </Button>
+            )}
+            {content.secondaryCtaText && content.secondaryCtaUrl && (
+              <Button href={content.secondaryCtaUrl} variant="outline" magnetic={false}>
+                {content.secondaryCtaText}
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -137,7 +143,7 @@ export function Hero() {
         </span>
       </div>
       <p className={`${styles.coords} label tabular`} data-scroll-cue data-reveal aria-hidden="true">
-        {site.location}
+        {location}
       </p>
     </section>
   );
