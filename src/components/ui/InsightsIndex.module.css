@@ -1,5 +1,7 @@
 .index {
   display: grid;
+  /* minmax(0, 1fr): the scrolling filter row must not widen the page on phones. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 3rem;
 }
 
@@ -34,13 +36,13 @@
 .filter::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: -1px;
   height: 2px;
   background: var(--accent-deep);
   transform: scaleX(0);
-  transform-origin: left center;
+  transform-origin: var(--start) center;
   transition: transform 0.6s var(--ease-out);
 }
 
@@ -74,7 +76,13 @@
   .lead {
     grid-column: 1 / span 2;
     grid-row: span 2;
-    padding-right: 2.5rem;
-    border-right: 1px solid var(--line-ink);
+    padding-inline-end: 2.5rem;
+    border-inline-end: 1px solid var(--line-ink);
   }
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding-block: 3rem;
+  color: var(--tone-muted);
 }

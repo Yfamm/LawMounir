@@ -20,7 +20,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
   const { scrollTo } = useSmoothScroll();
-  const { site } = useSite();
+  const { site, lang } = useSite();
   const curtainRef = useRef<HTMLDivElement>(null);
   const markRef = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
@@ -92,12 +92,25 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       {children}
       <div ref={curtainRef} className={styles.curtain} aria-hidden="true">
         <div ref={markRef} className={styles.mark}>
-          <span className={styles.word}>{site.siteName}</span>
-          <span className={styles.rule} />
-          <span className={styles.sub}>{site.descriptor}</span>
-          <span className={`arabic ${styles.arabic}`} lang="ar" dir="rtl">
-            {site.siteNameAr}
+          <span className={styles.word} lang="en" dir="ltr">
+            {site.wordmark}
           </span>
+          <span className={styles.rule} />
+          {lang === "en" ? (
+            <>
+              <span className={styles.sub}>{site.firmName}</span>
+              <span className={`arabic ${styles.arabic}`} lang="ar" dir="rtl">
+                {site.firmNameOther}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className={`arabic ${styles.arabic}`}>{site.firmName}</span>
+              <span className={styles.sub} lang="en" dir="ltr">
+                {site.firmNameOther}
+              </span>
+            </>
+          )}
         </div>
       </div>
     </TransitionContext.Provider>

@@ -4,13 +4,26 @@ import Image from "next/image";
 import { useRef } from "react";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import type { ResolvedImage } from "@/lib/cms/images";
+import type { LinkView } from "@/lib/cms/repository";
 import { headlineLines } from "@/lib/cms/text";
-import type { HomeHero } from "@/lib/cms/types";
-import { Arabic } from "@/components/ui/Arabic";
+import type { Lang } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
+import { Counterpart } from "@/components/ui/Counterpart";
 import styles from "./Hero.module.css";
 
-type Props = { content: HomeHero; image: ResolvedImage; location: string };
+export type HeroContent = {
+  eyebrow: string;
+  headline: string;
+  /** The headline in the other language, set as a single decorative line. */
+  headlineOther: string;
+  otherLang: Lang;
+  supporting: string;
+  primary?: LinkView;
+  secondary?: LinkView;
+  scrollCue: string;
+};
+
+type Props = { content: HeroContent; image: ResolvedImage; location: string };
 
 /**
  * Full-viewport opening sequence built around the Justice hero image:
@@ -27,6 +40,8 @@ export function Hero({ content, image, location }: Props) {
       if (!root) return;
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
+      // Mirror horizontal motion on right-to-left pages.
+      const dir = getComputedStyle(root).direction === "rtl" ? -1 : 1;
 
       mm.add(MOTION.ok, () => {
         const intro = gsap.timeline({ defaults: { ease: EASE.reveal } });
@@ -34,10 +49,10 @@ export function Hero({ content, image, location }: Props) {
           .fromTo(q("[data-veil]"), { autoAlpha: 1 }, { autoAlpha: 0, duration: 2.2, ease: "power2.inOut" }, 0)
           .fromTo(q("[data-media]"), { scale: 1.22, yPercent: 4 }, { scale: 1.06, yPercent: 0, duration: 3.2 }, 0)
           .fromTo(q("[data-eyebrow-rule]"), { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: EASE.line }, 0.6)
-          .fromTo(q("[data-eyebrow]"), { autoAlpha: 0, x: -12 }, { autoAlpha: 1, x: 0, duration: 1.2 }, 0.8)
+          .fromTo(q("[data-eyebrow]"), { autoAlpha: 0, x: -12 * dir }, { autoAlpha: 1, x: 0, duration: 1.2 }, 0.8)
           .fromTo(
             q(".line-inner"),
-            { yPercent: 118, rotate: 2.5, transformOrigin: "0% 100%" },
+            { yPercent: 118, rotate: 2.5 * dir, transformOrigin: dir === 1 ? "0% 100%" : "100% 100%" },
             { yPercent: 0, rotate: 0, duration: 1.7, stagger: 0.13 },
             0.75,
           )
@@ -102,34 +117,25 @@ export function Hero({ content, image, location }: Props) {
             </span>
           ))}
         </h1>
-        {content.headlineAr && (
+        {content.headlineOther && (
           <p className={styles.arabicLine} data-fade>
-            <Arabic>{content.headlineAr}</Arabic>
+            <Counterpart lang={content.otherLang}>{content.headlineOther}</Counterpart>
           </p>
         )}
 
         <div className={styles.foot}>
-          {content.textAr ? (
-            <div data-fade>
-              <p className={styles.lede}>{content.text}</p>
-              <Arabic as="p" className={styles.ledeAr}>
-                {content.textAr}
-              </Arabic>
-            </div>
-          ) : (
-            <p className={styles.lede} data-fade>
-              {content.text}
-            </p>
-          )}
+          <p className={styles.lede} data-fade>
+            {content.supporting}
+          </p>
           <div className={styles.actions} data-fade>
-            {content.ctaText && content.ctaUrl && (
-              <Button href={content.ctaUrl} variant="solid">
-                {content.ctaText}
+            {content.primary && (
+              <Button href={content.primary.href} variant="solid">
+                {content.primary.text}
               </Button>
             )}
-            {content.secondaryCtaText && content.secondaryCtaUrl && (
-              <Button href={content.secondaryCtaUrl} variant="outline" magnetic={false}>
-                {content.secondaryCtaText}
+            {content.secondary && (
+              <Button href={content.secondary.href} variant="outline" magnetic={false}>
+                {content.secondary.text}
               </Button>
             )}
           </div>
@@ -137,7 +143,7 @@ export function Hero({ content, image, location }: Props) {
       </div>
 
       <div className={styles.cue} data-scroll-cue data-reveal aria-hidden="true">
-        <span className={styles.cueLabel}>Scroll</span>
+        <span className={styles.cueLabel}>{content.scrollCue}</span>
         <span className={styles.cueTrack}>
           <span className={styles.cueDot} />
         </span>

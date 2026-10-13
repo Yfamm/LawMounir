@@ -29,8 +29,8 @@
 
 .overlay {
   position: absolute;
-  left: clamp(1rem, 2vw, 1.75rem);
-  right: clamp(1rem, 2vw, 1.75rem);
+  inset-inline-start: clamp(1rem, 2vw, 1.75rem);
+  inset-inline-end: clamp(1rem, 2vw, 1.75rem);
   bottom: clamp(1rem, 2vw, 1.6rem);
   display: grid;
   gap: 0.5rem;
@@ -60,13 +60,13 @@
 
 .line {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   height: 2px;
   background: var(--accent);
   transform: scaleX(0);
-  transform-origin: left center;
+  transform-origin: var(--start) center;
   transition: transform 1s var(--ease-out);
 }
 

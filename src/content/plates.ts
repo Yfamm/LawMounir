@@ -17,8 +17,10 @@ export type Plate = {
   /** Small version used for the cursor-following practice preview. */
   preview: StaticImageData;
   alt: string;
+  altAr: string;
   /** Editorial caption, set like a plate in a folio. */
   caption: string;
+  captionAr: string;
 };
 
 /**
@@ -30,37 +32,49 @@ export const plates = {
     image: hallAisle,
     preview: pHallAisle,
     alt: "Sunlight falling in shafts through the roof of a hypostyle hall of carved papyrus columns",
+    altAr: "ضوء الشمس يتساقط في حزم عبر سقف قاعة أعمدة تعلوها تيجان على هيئة البردي",
     caption: "The hall of columns",
+    captionAr: "قاعة الأعمدة",
   },
   hallAislePortrait: {
     image: hallAislePortrait,
     preview: pHallAislePortrait,
     alt: "A shaft of sunlight crossing the central aisle of a hypostyle hall",
+    altAr: "حزمة من ضوء الشمس تعبر الممر الأوسط لقاعة أعمدة",
     caption: "The central aisle",
+    captionAr: "الممر الأوسط",
   },
   hallRows: {
     image: hallRows,
     preview: pHallRows,
     alt: "Massive carved columns receding into warm haze in a temple hall",
+    altAr: "أعمدة ضخمة منقوشة تمتد في ضباب دافئ داخل قاعة معبد",
     caption: "Rows of the hypostyle",
+    captionAr: "صفوف قاعة الأعمدة",
   },
   colonnade: {
     image: colonnade,
     preview: pColonnade,
     alt: "A neoclassical colonnade and broad steps catching the last golden light",
+    altAr: "رواق بأعمدة كلاسيكية ودرجات عريضة يلتقط آخر ضوء ذهبي",
     caption: "The portico at dusk",
+    captionAr: "الرواق عند الغروب",
   },
   colonnadeDetail: {
     image: colonnadeDetail,
     preview: pColonnadeDetail,
     alt: "Fluted columns and capitals lit by a low sun",
+    altAr: "أعمدة مضلّعة وتيجانها في ضوء شمس منخفض",
     caption: "Fluted shafts, raking light",
+    captionAr: "أعمدة مضلّعة في ضوء مائل",
   },
   mashrabiya: {
     image: mashrabiya,
     preview: pMashrabiya,
     alt: "Afternoon light falling through a turned-wood mashrabiya screen onto a plaster wall",
+    altAr: "ضوء العصر ينفذ من مشربية خشبية مخروطة على جدار من الجص",
     caption: "Light through the mashrabiya",
+    captionAr: "الضوء عبر المشربية",
   },
 } satisfies Record<string, Plate>;
 

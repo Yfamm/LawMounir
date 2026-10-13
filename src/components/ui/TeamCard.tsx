@@ -1,15 +1,17 @@
 import type { PersonView } from "@/lib/cms/repository";
-import { Arabic } from "./Arabic";
+import type { Lang } from "@/lib/i18n";
 import { Portrait } from "./Portrait";
 import styles from "./TeamCard.module.css";
 
-type Props = { person: PersonView; number: string; showBio?: boolean };
+export type TeamLabels = { portraitToFollow: string; portraitOf: string; education: string; languages: string; admission: string };
 
-export function TeamCard({ person, number, showBio = false }: Props) {
+type Props = { person: PersonView; number: string; showBio?: boolean; labels: TeamLabels; lang: Lang };
+
+export function TeamCard({ person, number, showBio = false, labels, lang }: Props) {
   const details = [
-    { label: "Education", value: person.education },
-    { label: "Languages", value: person.languages },
-    { label: "Admission", value: person.admission },
+    { label: labels.education, value: person.education },
+    { label: labels.languages, value: person.languages },
+    { label: labels.admission, value: person.admission },
   ].filter((d) => d.value.trim());
 
   return (
@@ -21,6 +23,8 @@ export function TeamCard({ person, number, showBio = false }: Props) {
               name={person.name}
               image={person.image}
               alt={person.imageAlt}
+              labels={labels}
+              lang={lang}
               sizes="(min-width: 1100px) 30vw, (min-width: 640px) 50vw, 100vw"
             />
           </div>
@@ -41,11 +45,6 @@ export function TeamCard({ person, number, showBio = false }: Props) {
         <span className="label tabular">{number}</span>
         <span className={styles.practice}>{person.practice}</span>
       </div>
-      {showBio && (person.nameAr || person.roleAr) && (
-        <p className={styles.arabic}>
-          <Arabic>{[person.nameAr, person.roleAr].filter(Boolean).join(" — ")}</Arabic>
-        </p>
-      )}
       {showBio && <p className={styles.bio}>{person.bio}</p>}
       {showBio && person.bioFull && <p className={styles.bio}>{person.bioFull}</p>}
       {showBio && details.length > 0 && (

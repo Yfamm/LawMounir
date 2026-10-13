@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { EASE, gsap, prefersReducedMotion, showRoot, useGSAP } from "@/animation/gsap";
+import { useSite } from "@/components/providers/SiteProvider";
 import type { InsightView } from "@/lib/cms/repository";
 import { EditorialCard } from "./EditorialCard";
 import { Reveal } from "./Reveal";
@@ -10,11 +11,15 @@ import styles from "./InsightsIndex.module.css";
 type Filter = string;
 
 /** Filterable journal index. Changing category re-deals the cards. */
+const ALL = "";
+
 export function InsightsIndex({ insights, categories }: { insights: InsightView[]; categories: string[] }) {
-  const [filter, setFilter] = useState<Filter>("All");
+  const { ui } = useSite();
+  const labels = { issue: ui.issue, read: ui.read };
+  const [filter, setFilter] = useState<Filter>(ALL);
   const gridRef = useRef<HTMLDivElement>(null);
   const hasEntered = useRef(false);
-  const visible = filter === "All" ? insights : insights.filter((i) => i.category === filter);
+  const visible = filter === ALL ? insights : insights.filter((i) => i.category === filter);
 
   const choose = (next: Filter) => {
     if (next === filter) return;
@@ -63,22 +68,23 @@ export function InsightsIndex({ insights, categories }: { insights: InsightView[
   return (
     <div className={styles.index}>
       <Reveal className={styles.filters}>
-        <div role="group" aria-label="Filter insights by category" className={styles.filterList}>
-          {["All", ...categories].map((c) => (
+        <div role="group" aria-label={ui.filterLabel} className={styles.filterList}>
+          {[ALL, ...categories].map((c) => (
             <button
-              key={c}
+              key={c || "all"}
               type="button"
               className={styles.filter}
               aria-pressed={filter === c}
               onClick={() => choose(c)}
             >
-              {c}
+              {c || ui.filterAll}
             </button>
           ))}
         </div>
       </Reveal>
 
       <div ref={gridRef} className={styles.grid} aria-live="polite" data-reveal>
+        {visible.length === 0 && <p className={styles.empty}>{ui.noInsights}</p>}
         {visible.map((insight) => (
           <div
             key={insight.slug}
@@ -87,6 +93,7 @@ export function InsightsIndex({ insights, categories }: { insights: InsightView[
             <EditorialCard
               insight={insight}
               issue={insight.issue}
+              labels={labels}
               variant={insight === visible[0] ? "feature" : "standard"}
             />
           </div>

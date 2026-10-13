@@ -10,12 +10,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const db = await sessionClient();
   const [{ count }, site] = await Promise.all([
     db.from("enquiries").select("id", { count: "exact", head: true }).is("read_at", null),
-    getSite(),
+    getSite("en"),
   ]);
 
   return (
     <div className={styles.shell}>
-      <Sidebar email={admin.email} unread={count ?? 0} siteName={site.siteName} />
+      <Sidebar email={admin.email} unread={count ?? 0} siteName={site.wordmark} />
       <main className={styles.main}>{children}</main>
     </div>
   );

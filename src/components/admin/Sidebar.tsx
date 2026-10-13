@@ -12,6 +12,7 @@ const groups = [
     links: [
       { href: "/admin/homepage", label: "Homepage" },
       { href: "/admin/about", label: "About" },
+      { href: "/admin/pages", label: "Index pages & SEO" },
     ],
   },
   {
@@ -27,6 +28,7 @@ const groups = [
     heading: "Site",
     links: [
       { href: "/admin/navigation", label: "Navigation & Footer" },
+      { href: "/admin/interface", label: "Interface text" },
       { href: "/admin/settings", label: "Site Settings" },
       { href: "/admin/media", label: "Media" },
     ],
@@ -67,9 +69,15 @@ export function Sidebar({ email, unread, siteName }: { email: string; unread: nu
         <span className={styles.who} title={email}>
           {email}
         </span>
-        <a href="/" target="_blank" rel="noopener">
-          View site ↗
-        </a>
+        <span>
+          <a href="/ar" target="_blank" rel="noopener">
+            View site AR ↗
+          </a>{" "}
+          ·{" "}
+          <a href="/en" target="_blank" rel="noopener">
+            EN ↗
+          </a>
+        </span>
         <form action={signOut}>
           <button type="submit" className={styles.iconButton}>
             Sign out

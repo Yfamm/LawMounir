@@ -42,3 +42,12 @@
 :where(a, button, [data-arrow-host]):focus-visible .b {
   transform: translateX(0);
 }
+
+/* Right-to-left pages: forward arrows point left. */
+:global([dir="rtl"]) .right {
+  transform: scaleX(-1);
+}
+
+:global([dir="rtl"]) .up-right {
+  transform: rotate(45deg) scaleX(-1);
+}

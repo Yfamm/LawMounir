@@ -1,19 +1,19 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
+import { EASE, gsap, MOTION, ScrollTrigger, showRoot, startOrigin, useGSAP } from "@/animation/gsap";
 import type { PracticeAreaView } from "@/lib/cms/repository";
 import { PracticeAreaRow } from "./PracticeAreaRow";
 import styles from "./PracticeAreaList.module.css";
 
-type Props = { areas: PracticeAreaView[] };
+type Props = { areas: PracticeAreaView[]; label?: string };
 
 /**
  * Interactive index of practice areas. On fine pointers a framed window
  * follows the cursor; each row brings in its own architectural plate,
  * crossfading and panning to that area's framing.
  */
-export function PracticeAreaList({ areas }: Props) {
+export function PracticeAreaList({ areas, label }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const activate = useRef<(index: number) => void>(() => {});
@@ -28,7 +28,7 @@ export function PracticeAreaList({ areas }: Props) {
 
       mm.add(MOTION.ok, () => {
         gsap.set(rows, { autoAlpha: 0, y: 48 });
-        gsap.set(root.querySelectorAll("[data-row-rule]"), { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(root.querySelectorAll("[data-row-rule]"), { scaleX: 0, transformOrigin: startOrigin(root) });
         ScrollTrigger.batch(rows, {
           start: "top 92%",
           once: true,
@@ -100,7 +100,7 @@ export function PracticeAreaList({ areas }: Props) {
 
   return (
     <div ref={ref} className={styles.list} data-reveal>
-      <ul>
+      <ul aria-label={label}>
         {areas.map((area, i) => (
           <PracticeAreaRow
             key={area.slug}

@@ -5,7 +5,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { assertAdmin, UnauthorizedError } from "@/lib/cms/auth";
-import { defaultSettings } from "@/lib/cms/defaults";
+import { randomUUID } from "node:crypto";
+import { normalizeSettings } from "@/lib/cms/normalize";
 import { collectionFields, footerFields, sectionFields, settingsFields, type CollectionKey } from "@/lib/cms/fields";
 import { slugify, tables, toRow } from "@/lib/cms/records";
 import { firstIssue, objectSchema } from "@/lib/cms/schema";
@@ -80,16 +81,36 @@ export async function signOut() {
 
 /* -------------------------------------------------------------- sections */
 
+const HOME_IDS = ["intro", "practice", "landscape", "values", "experience", "people", "insights"] as const;
+const layoutSchema = z.object({
+  order: z.array(z.enum(HOME_IDS)).max(HOME_IDS.length),
+  hidden: z.array(z.enum(HOME_IDS)).max(HOME_IDS.length),
+});
+
 export async function saveSection(key: string, data: unknown): Promise<ActionResult> {
   return guarded(async (userId) => {
-    const fields = sectionFields[key];
-    if (!fields) return { ok: false, error: "Unknown section." };
-    const parsed = objectSchema(fields).safeParse(data);
-    if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+    let value: Record<string, unknown>;
+    if (key === "home.layout") {
+      const parsed = layoutSchema.safeParse(data);
+      if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+      const order = [...new Set(parsed.data.order)];
+      for (const id of HOME_IDS) if (!order.includes(id)) order.push(id);
+      value = { order, hidden: [...new Set(parsed.data.hidden)] };
+    } else {
+      const fields = sectionFields[key];
+      if (!fields) return { ok: false, error: "Unknown section." };
+      const parsed = objectSchema(fields, true).safeParse(data);
+      if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
+      value = parsed.data as Record<string, unknown>;
+      // About sections: give new blocks a stable id.
+      if (key === "about.blocks" && Array.isArray(value.blocks)) {
+        value.blocks = (value.blocks as Record<string, unknown>[]).map((b) => ({ ...b, id: b.id || `block-${randomUUID().slice(0, 8)}` }));
+      }
+    }
     const db = await sessionClient();
     const { error } = await db
       .from("page_sections")
-      .upsert({ key, data: parsed.data, enabled: true, updated_by: userId }, { onConflict: "key" });
+      .upsert({ key, data: value, enabled: true, updated_by: userId }, { onConflict: "key" });
     const failed = dbError(error);
     if (failed) return failed;
     publish();
@@ -102,12 +123,13 @@ export async function saveSection(key: string, data: unknown): Promise<ActionRes
 export async function saveSettings(group: "settings" | "footer", data: unknown): Promise<ActionResult> {
   return guarded(async (userId) => {
     const fields = group === "settings" ? settingsFields : footerFields;
-    const parsed = objectSchema(fields).safeParse(data);
+    const parsed = objectSchema(fields, true).safeParse(data);
     if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
     const db = await sessionClient();
     const { data: current, error: readError } = await db.from("site_settings").select("data").eq("id", 1).maybeSingle();
     if (readError) return dbError(readError)!;
-    const merged = { ...defaultSettings, ...((current?.data as object) ?? {}), ...parsed.data };
+    // Settings and footer are saved separately; each keeps the other's values.
+    const merged = { ...normalizeSettings(current?.data), ...parsed.data };
     const { error } = await db.from("site_settings").upsert({ id: 1, data: merged, updated_by: userId });
     const failed = dbError(error);
     if (failed) return failed;
@@ -125,13 +147,16 @@ export async function saveRecord(collection: CollectionKey, id: string | null, d
   return guarded(async () => {
     const key = collectionKey.parse(collection);
     if (id !== null && !uuid.safeParse(id).success) return { ok: false, error: "Unknown entry." };
-    const parsed = objectSchema(collectionFields[key]).safeParse(data);
+    const parsed = objectSchema(collectionFields[key], true).safeParse(data);
     if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
     const record = parsed.data as Record<string, unknown>;
+    record.translations = record._translation ?? {};
+    delete record._translation;
 
     if ("slug" in record) {
-      record.slug = String(record.slug || slugify(String(record.title ?? "")));
-      if (!record.slug) return { ok: false, error: "Add a title or slug." };
+      const title = record.title as { en?: string } | undefined;
+      record.slug = String(record.slug || slugify(String(title?.en ?? "")));
+      if (!record.slug) return { ok: false, error: "Add an English title or type a slug (Latin letters) for the address." };
     }
 
     const db = await sessionClient();
@@ -198,6 +223,7 @@ export async function setPublished(collection: CollectionKey, id: string, publis
     if (!uuid.safeParse(id).success) return { ok: false, error: "Unknown entry." };
     const patch =
       key === "insights" ? { status: published ? "published" : "draft" } : key === "navigation" ? { visible: published } : { published };
+    // Publishing an article never approves its legal review.
     const db = await sessionClient();
     const failed = dbError((await db.from(tables[key]).update(patch).eq("id", id)).error);
     if (failed) return failed;
@@ -255,7 +281,12 @@ export async function deleteEnquiry(id: string): Promise<ActionResult> {
 
 /* ----------------------------------------------------------------- media */
 
-const mediaPatch = z.object({ alt: z.string().trim().max(300), caption: z.string().trim().max(200) });
+const mediaPatch = z.object({
+  alt: z.string().trim().max(300),
+  alt_ar: z.string().trim().max(300),
+  caption: z.string().trim().max(200),
+  caption_ar: z.string().trim().max(200),
+});
 
 export async function updateMedia(id: string, patch: unknown): Promise<ActionResult> {
   return guarded(async () => {

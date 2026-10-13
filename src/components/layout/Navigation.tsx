@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/Button";
 import { ContactLink } from "@/components/ui/ContactLink";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import { TransitionLink } from "@/components/ui/TransitionLink";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Wordmark } from "./Wordmark";
 import styles from "./Navigation.module.css";
 
 export function Navigation() {
   const pathname = usePathname();
-  const { site, nav } = useSite();
+  const { site, nav, ui, lang } = useSite();
   const { stop, start } = useSmoothScroll();
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -23,6 +24,7 @@ export function Navigation() {
   const menuTl = useRef<gsap.core.Timeline | null>(null);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const home = `/${lang}`;
 
   // Intro reveal and scroll-driven states: transparent over the hero, then a
   // compact solid bar; hides while scrolling down, returns on scroll up.
@@ -135,9 +137,9 @@ export function Navigation() {
     <>
       <header ref={headerRef} className={styles.header} data-open={open} data-reveal>
         <div className={styles.backdrop} aria-hidden="true" />
-        <nav className={styles.bar} aria-label="Primary">
+        <nav className={styles.bar} aria-label={ui.navPrimary}>
           <div data-nav-item>
-            <TransitionLink href="/" className={styles.brand} aria-label={`${site.siteName} — home`} onClick={close}>
+            <TransitionLink href={home} className={styles.brand} aria-label={ui.navHome.replace("{name}", site.brandName)} onClick={close}>
               <Wordmark />
             </TransitionLink>
           </div>
@@ -157,11 +159,16 @@ export function Navigation() {
           </ul>
 
           <div className={styles.actions}>
-            <div className={styles.cta} data-nav-item>
-              <Button href={site.navCtaUrl} variant="accent">
-                {site.navCtaText}
-              </Button>
+            <div className={styles.lang} data-nav-item>
+              <LanguageSwitcher />
             </div>
+            {site.navCta && (
+              <div className={styles.cta} data-nav-item>
+                <Button href={site.navCta.href} variant="accent">
+                  {site.navCta.text}
+                </Button>
+              </div>
+            )}
             <div data-nav-item>
               <button
                 type="button"
@@ -170,7 +177,7 @@ export function Navigation() {
                 aria-controls="site-menu"
                 onClick={() => setOpen((v) => !v)}
               >
-                <span className={styles.toggleLabel}>{open ? "Close" : "Menu"}</span>
+                <span className={styles.toggleLabel}>{open ? ui.menuClose : ui.menuOpen}</span>
                 <span className={styles.toggleIcon} aria-hidden="true">
                   <span />
                   <span />
@@ -211,20 +218,23 @@ export function Navigation() {
             ))}
           </ol>
 
+          <div className={styles.menuLang} data-menu-fade>
+            <LanguageSwitcher onNavigate={close} />
+          </div>
           <p className={styles.menuArabic} data-menu-fade>
-            <Arabic>{site.siteNameAr}</Arabic>
+            {lang === "en" ? <Arabic>{site.firmNameOther}</Arabic> : <span className="arabic">{site.firmName}</span>}
           </p>
           <div className={styles.menuFooter}>
             <div data-menu-fade>
-              <p className="label">Call</p>
+              <p className="label">{ui.menuCall}</p>
               <ContactLink href={site.phoneHref}>{site.phone}</ContactLink>
             </div>
             <div data-menu-fade>
-              <p className="label">Write</p>
+              <p className="label">{ui.menuWrite}</p>
               <ContactLink href={site.emailHref}>{site.email}</ContactLink>
             </div>
             <div data-menu-fade>
-              <p className="label">Visit</p>
+              <p className="label">{ui.menuVisit}</p>
               <p>{site.address.join(", ")}</p>
             </div>
           </div>

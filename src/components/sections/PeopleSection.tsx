@@ -1,12 +1,12 @@
 import type { PersonView } from "@/lib/cms/repository";
 import { headlineLines } from "@/lib/cms/text";
-import type { HomePeople } from "@/lib/cms/types";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TeamGrid } from "@/components/ui/TeamGrid";
+import type { HeadingContent } from "./content";
 import styles from "./PeopleSection.module.css";
 
-type Props = { content: HomePeople; people: PersonView[]; index?: string };
+type Props = { content: HeadingContent; people: PersonView[]; index?: string };
 
 export function PeopleSection({ content, people, index = "07" }: Props) {
   return (
@@ -15,14 +15,15 @@ export function PeopleSection({ content, people, index = "07" }: Props) {
         <SectionHeading
           index={index}
           label={content.label}
-          arabic={content.labelAr || undefined}
+          other={content.labelOther || undefined}
+          otherLang={content.otherLang}
           title={headlineLines(content.title)}
           size="l"
           intro={content.intro || undefined}
           aside={
-            content.ctaText && content.ctaUrl ? (
-              <Button href={content.ctaUrl} variant="outline">
-                {content.ctaText}
+            content.cta ? (
+              <Button href={content.cta.href} variant="outline">
+                {content.cta.text}
               </Button>
             ) : undefined
           }

@@ -4,6 +4,7 @@ import { saveSection } from "@/app/admin/actions";
 import { FieldForm } from "@/components/admin/FieldForm";
 import { PageHead, Panel } from "@/components/admin/PageHead";
 import { SectionTabs } from "@/components/admin/SectionTabs";
+import { HomeLayoutEditor } from "@/components/admin/HomeLayoutEditor";
 import styles from "@/components/admin/admin.module.css";
 import { adminList, adminSections } from "@/lib/cms/admin-data";
 import { requireAdmin } from "@/lib/cms/auth";
@@ -13,6 +14,7 @@ import type { SectionKey } from "@/lib/cms/types";
 export const metadata: Metadata = { title: "Homepage" };
 
 const tabs: { id: string; key: SectionKey; label: string; about: string }[] = [
+  { id: "layout", key: "home.layout", label: "Order & visibility", about: "Reorder, hide or show the homepage sections." },
   { id: "hero", key: "home.hero", label: "Hero", about: "The opening image, headline and buttons." },
   { id: "intro", key: "home.intro", label: "Introduction", about: "The statement that lights up word by word, with the firm’s introduction." },
   { id: "practice", key: "home.practice", label: "Practice Areas", about: "Heading for the practice list. The areas themselves are edited under Practice Areas." },
@@ -29,9 +31,9 @@ type Props = { searchParams: Promise<{ section?: string }> };
 export default async function HomepageAdmin({ searchParams }: Props) {
   await requireAdmin();
   const { section } = await searchParams;
-  const tab = tabs.find((t) => t.id === section) ?? tabs[0];
+  const tab = tabs.find((t) => t.id === section) ?? tabs[1];
   const [sections, people, insights] = await Promise.all([
-    adminSections([tab.key]),
+    adminSections([tab.key, "home.layout"]),
     tab.id === "people" ? adminList("people") : Promise.resolve([]),
     tab.id === "insights" ? adminList("insights") : Promise.resolve([]),
   ]);
@@ -69,16 +71,21 @@ export default async function HomepageAdmin({ searchParams }: Props) {
             </>
           )}
         </p>
+        {tab.key === "home.layout" ? (
+          <HomeLayoutEditor initial={sections["home.layout"]} />
+        ) : (
         <FieldForm
           key={tab.key}
+          previewPath="/"
           fields={sectionFields[tab.key]}
           initial={sections[tab.key] as Record<string, unknown>}
           action={saveSection.bind(null, tab.key)}
           refOptions={{
-            people: people.map((p) => ({ value: p.id ?? "", label: `${p.nameEn}${p.titleEn ? ` — ${p.titleEn}` : ""}${p.published ? "" : " (unpublished)"}` })),
-            insights: insights.map((n) => ({ value: n.slug, label: `${n.title}${n.status === "published" ? "" : " (draft)"}` })),
+            people: people.map((p) => ({ value: p.id ?? "", label: `${p.name.en || p.name.ar}${p.title.en ? ` — ${p.title.en}` : ""}${p.published ? "" : " (unpublished)"}` })),
+            insights: insights.map((n) => ({ value: n.slug, label: `${n.title.en || n.title.ar}${n.status === "published" ? "" : " (not published)"}` })),
           }}
         />
+        )}
       </Panel>
     </>
   );

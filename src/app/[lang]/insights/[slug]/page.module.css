@@ -82,9 +82,11 @@
   color: rgba(242, 235, 221, 0.86);
 }
 
-.body > p:first-child::first-letter {
-  float: left;
-  margin: 0.08em 0.14em 0 0;
+.body > p:first-child:not(.notice)::first-letter,
+.body > .contents > p:first-child::first-letter {
+  float: inline-start;
+  margin: 0.08em 0 0;
+  margin-inline-end: 0.14em;
   font-family: var(--font-serif), Georgia, serif;
   font-size: 4.6em;
   font-weight: 400;
@@ -104,7 +106,7 @@
   position: relative;
   margin-block: 1.5rem;
   padding: 1.75rem 0 1.75rem 2rem;
-  border-left: 1px solid var(--accent);
+  border-inline-start: 1px solid var(--accent);
   font-size: clamp(1.6rem, 2.6vw, 2.4rem);
   font-style: italic;
   font-weight: 300;
@@ -120,13 +122,13 @@
 
 .list li {
   position: relative;
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
 }
 
 .list li::before {
   content: "";
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0.9em;
   width: 1rem;
   height: 1px;
@@ -164,8 +166,8 @@
   .aside ul {
     display: grid;
     gap: 0.9rem;
-    padding-left: 1rem;
-    border-left: 1px solid var(--line);
+    padding-inline-start: 1rem;
+    border-inline-start: 1px solid var(--line);
     font-size: 0.875rem;
     line-height: 1.45;
   }
@@ -195,12 +197,29 @@
   }
 }
 
-.arabic {
-  display: grid;
-  gap: 0.5rem;
-  max-width: 44rem;
-  margin-top: 1.5rem;
-  color: var(--accent);
-  font-size: 1.25rem;
-  line-height: 1.8;
+
+.notice {
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem;
+  border-inline-start: 1px solid var(--accent);
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+/* Right-to-left pages: "back" points right. */
+:global([dir="rtl"]) .backArrow {
+  transform: none;
+}
+
+/* Language wrappers that must not affect layout. */
+.contents {
+  display: contents;
+}
+
+/* Arabic letters join: no drop cap. */
+.body > .contents:lang(ar) > p:first-child::first-letter {
+  float: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
 }

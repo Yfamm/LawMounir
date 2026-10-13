@@ -3,9 +3,10 @@
 import { useRef } from "react";
 import { gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import type { ResolvedImage } from "@/lib/cms/images";
+import type { LinkView } from "@/lib/cms/repository";
 import { paragraphs, statementWords } from "@/lib/cms/text";
-import type { HomeIntro } from "@/lib/cms/types";
-import { Arabic } from "@/components/ui/Arabic";
+import type { Lang } from "@/lib/i18n";
+import { Counterpart } from "@/components/ui/Counterpart";
 import { Button } from "@/components/ui/Button";
 import { PlateFigure } from "@/components/ui/PlateFigure";
 import { Reveal } from "@/components/ui/Reveal";
@@ -13,7 +14,17 @@ import { SplitReveal } from "@/components/ui/SplitReveal";
 import styles from "./Introduction.module.css";
 
 /** A near-empty editorial pause: one statement that lights up word by word. */
-export function Introduction({ content, image, index = "02" }: { content: HomeIntro; image: ResolvedImage; index?: string }) {
+export type IntroContent = {
+  label: string;
+  labelOther: string;
+  statement: string;
+  statementOther: string;
+  otherLang: Lang;
+  body: string;
+  cta?: LinkView;
+};
+
+export function Introduction({ content, image, index = "02" }: { content: IntroContent; image: ResolvedImage; index?: string }) {
   const ref = useRef<HTMLElement>(null);
   const statement = statementWords(content.statement);
 
@@ -56,9 +67,9 @@ export function Introduction({ content, image, index = "02" }: { content: HomeIn
           <span className="label" data-reveal-item>
             {content.label}
           </span>
-          {content.labelAr && (
+          {content.labelOther && (
             <span className={styles.arabicLabel} data-reveal-item>
-              <Arabic>{content.labelAr}</Arabic>
+              <Counterpart lang={content.otherLang}>{content.labelOther}</Counterpart>
             </span>
           )}
         </Reveal>
@@ -72,11 +83,11 @@ export function Introduction({ content, image, index = "02" }: { content: HomeIn
                 </span>
               ))}
             </h2>
-            {content.statementAr && (
+            {content.statementOther && (
               <Reveal>
-                <Arabic as="p" className={styles.arabicStatement}>
-                  {content.statementAr}
-                </Arabic>
+                <Counterpart as="p" lang={content.otherLang} className={styles.arabicStatement}>
+                  {content.statementOther}
+                </Counterpart>
               </Reveal>
             )}
           </div>
@@ -95,10 +106,10 @@ export function Introduction({ content, image, index = "02" }: { content: HomeIn
                 {paragraph}
               </SplitReveal>
             ))}
-            {content.ctaText && content.ctaUrl && (
+            {content.cta && (
               <Reveal>
-                <Button href={content.ctaUrl} variant="outline">
-                  {content.ctaText}
+                <Button href={content.cta.href} variant="outline">
+                  {content.cta.text}
                 </Button>
               </Reveal>
             )}

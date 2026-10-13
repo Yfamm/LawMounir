@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Arabic } from "./Arabic";
+import type { Lang } from "@/lib/i18n";
+import { Counterpart } from "./Counterpart";
 import { Reveal } from "./Reveal";
 import { RevealText } from "./RevealText";
 import { SplitReveal } from "./SplitReveal";
@@ -8,8 +9,9 @@ import styles from "./SectionHeading.module.css";
 type Props = {
   index?: string;
   label: string;
-  /** Arabic counterpart of the label, set at the end of the rule. */
-  arabic?: string;
+  /** The label in the other language, set at the end of the rule. */
+  other?: string;
+  otherLang?: Lang;
   title: ReactNode[];
   intro?: string;
   size?: "mega" | "xl" | "l" | "m";
@@ -26,7 +28,8 @@ type Props = {
 export function SectionHeading({
   index,
   label,
-  arabic,
+  other,
+  otherLang = "ar",
   title,
   intro,
   size = "xl",
@@ -47,9 +50,9 @@ export function SectionHeading({
         <span className="label" data-reveal-item>
           {label}
         </span>
-        {arabic && (
+        {other && (
           <span className={styles.arabic} data-reveal-item>
-            <Arabic>{arabic}</Arabic>
+            <Counterpart lang={otherLang}>{other}</Counterpart>
           </span>
         )}
       </Reveal>

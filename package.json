@@ -11,7 +11,8 @@
     "cms:seed": "tsx scripts/cms/seed.ts",
     "cms:create-admin": "tsx scripts/cms/create-admin.ts",
     "db:start": "supabase start -x realtime,imgproxy,edge-runtime,logflare,vector,supavisor,studio,postgres-meta,mailpit",
-    "db:reset": "supabase db reset"
+    "db:reset": "supabase db reset",
+    "cms:backfill-ar": "tsx scripts/cms/backfill-ar.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

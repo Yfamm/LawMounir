@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { EASE, gsap, inlineDir, MOTION, showRoot, startOrigin, useGSAP } from "@/animation/gsap";
 
 type Tag = "h1" | "h2" | "h3" | "p" | "div" | "span";
 
@@ -42,7 +42,7 @@ export function RevealText({
       mm.add(MOTION.ok, () => {
         gsap.fromTo(
           el.querySelectorAll(".line-inner"),
-          { yPercent: 118, rotate: 2.5, transformOrigin: "0% 100%" },
+          { yPercent: 118, rotate: 2.5 * inlineDir(el), transformOrigin: startOrigin(el, "100%") },
           {
             yPercent: 0,
             rotate: 0,

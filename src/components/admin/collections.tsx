@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { saveRecord } from "@/app/admin/actions";
 import { adminGet, adminList } from "@/lib/cms/admin-data";
 import { collectionFields, type CollectionKey } from "@/lib/cms/fields";
+import { completeness } from "@/lib/cms/fields";
 import { formatDate } from "@/lib/cms/text";
 import type { FirmValue, InsightRecord, NavItem, PersonRecord, PracticeAreaRecord } from "@/lib/cms/types";
 import { FieldForm } from "./FieldForm";
@@ -18,10 +19,16 @@ type Config = {
   title: React.ReactNode;
   intro: string;
   singular: string;
+  plural: string;
   toggle?: [string, string];
   empty: Record<string, unknown>;
   summary: (record: never) => Summary;
+  /** Language-neutral public path for previews. */
+  preview?: (record: never) => string;
 };
+
+const E = () => ({ en: "", ar: "" });
+const both = (v: { en: string; ar: string }) => (v.en && v.ar ? `${v.en} · ${v.ar}` : v.en || v.ar);
 
 export const collectionConfig: Record<CollectionKey, Config> = {
   practice: {
@@ -34,8 +41,13 @@ export const collectionConfig: Record<CollectionKey, Config> = {
     ),
     intro: "The order here is the order on the site. Unpublished areas are hidden from the site and have no public page.",
     singular: "practice area",
-    empty: { title: "", titleAr: "", slug: "", summary: "", overview: "", scope: [], forums: [], image: {}, seoTitle: "", seoDescription: "", published: false, verify: [] },
-    summary: (a: PracticeAreaRecord) => ({ title: a.title, sub: `/practice-areas/${a.slug}`, published: a.published, href: `/practice-areas/${a.slug}` }),
+    plural: "practice areas",
+    empty: {
+      title: E(), slug: "", summary: E(), overview: E(), scope: { en: [], ar: [] }, forums: { en: [], ar: [] }, image: {},
+      seoTitle: E(), seoDescription: E(), published: false, verify: [], _translation: {},
+    },
+    summary: (a: PracticeAreaRecord) => ({ title: both(a.title), sub: `/practice-areas/${a.slug}`, published: a.published, href: `/ar/practice-areas/${a.slug}` }),
+    preview: (a: PracticeAreaRecord) => `/practice-areas/${a.slug}`,
   },
   people: {
     base: "/admin/people",
@@ -47,8 +59,13 @@ export const collectionConfig: Record<CollectionKey, Config> = {
     ),
     intro: "Publish only confirmed profiles. Placeholders stay in [BRACKETS] until the firm supplies real details.",
     singular: "person",
-    empty: { nameEn: "", nameAr: "", titleEn: "", titleAr: "", practice: "", bioShort: "", bioFull: "", portrait: {}, education: "", languages: "", admission: "", published: false },
-    summary: (p: PersonRecord) => ({ title: p.nameEn, sub: [p.titleEn, p.practice].filter(Boolean).join(" · "), published: p.published, href: "/people" }),
+    plural: "people",
+    empty: {
+      name: E(), title: E(), practice: E(), bioShort: E(), bioFull: E(), portrait: {}, education: E(), languages: E(), admission: E(),
+      published: false, _translation: {},
+    },
+    summary: (p: PersonRecord) => ({ title: both(p.name), sub: [p.title.en || p.title.ar, p.practice.en || p.practice.ar].filter(Boolean).join(" · "), published: p.published, href: "/ar/people" }),
+    preview: () => "/people",
   },
   insights: {
     base: "/admin/insights",
@@ -58,33 +75,24 @@ export const collectionConfig: Record<CollectionKey, Config> = {
         Insights <em>&amp; notes.</em>
       </>
     ),
-    intro: "Articles marked “legal review pending” carry the draft notice on the site until the firm approves them.",
+    intro: "Only “Published” articles are public. Articles marked “legal review pending” carry the draft notice on the site until the firm approves them. Publishing never approves legal review.",
     singular: "article",
+    plural: "articles",
     empty: {
-      title: "",
-      titleAr: "",
-      slug: "",
-      excerpt: "",
-      excerptAr: "",
-      body: "",
-      author: "",
-      cover: {},
-      category: "Legal Updates",
-      publishedOn: null,
-      readingTime: "",
-      seoTitle: "",
-      seoDescription: "",
-      status: "draft",
-      legalReview: "pending",
-      verify: [],
+      title: E(), slug: "", excerpt: E(), body: E(), author: E(), cover: {}, category: { en: "Legal Updates", ar: "مستجدات قانونية" },
+      publishedOn: null, readingTime: E(), seoTitle: E(), seoDescription: E(), status: "draft", legalReview: "pending", verify: [], _translation: {},
     },
     summary: (n: InsightRecord) => ({
-      title: n.title,
-      sub: `${n.category} · ${formatDate(n.publishedOn)}`,
+      title: both(n.title),
+      sub: `${n.category.en || n.category.ar} · ${formatDate(n.publishedOn)}`,
       published: n.status === "published",
-      badges: [n.legalReview === "approved" ? { text: "Reviewed", tone: "outline" } : { text: "Review pending", tone: "muted" }],
-      href: `/insights/${n.slug}`,
+      badges: [
+        ...(n.status === "review" ? [{ text: "In review", tone: "gold" as const }] : []),
+        n.legalReview === "approved" ? { text: "Legally reviewed", tone: "outline" as const } : { text: "Legal review pending", tone: "muted" as const },
+      ],
+      href: `/ar/insights/${n.slug}`,
     }),
+    preview: (n: InsightRecord) => `/insights/${n.slug}`,
   },
   values: {
     base: "/admin/values",
@@ -96,8 +104,10 @@ export const collectionConfig: Record<CollectionKey, Config> = {
     ),
     intro: "Shown on the homepage and the About page, numbered in this order.",
     singular: "value",
-    empty: { titleEn: "", titleAr: "", bodyEn: "", bodyAr: "", published: true },
-    summary: (v: FirmValue) => ({ title: v.titleEn, sub: v.titleAr, published: v.published }),
+    plural: "values",
+    empty: { title: E(), body: E(), published: true, _translation: {} },
+    summary: (v: FirmValue) => ({ title: both(v.title), published: v.published }),
+    preview: () => "/about",
   },
   navigation: {
     base: "/admin/navigation",
@@ -107,13 +117,31 @@ export const collectionConfig: Record<CollectionKey, Config> = {
         Navigation <em>&amp; footer.</em>
       </>
     ),
-    intro: "Menu links appear in the header, the mobile menu and the footer.",
+    intro: "Menu links appear in the header, the mobile menu and the footer, in both languages.",
     singular: "link",
+    plural: "links",
     toggle: ["Show", "Hide"],
-    empty: { label: "", href: "/", visible: true },
-    summary: (n: NavItem) => ({ title: n.label, sub: n.href, published: n.visible }),
+    empty: { label: E(), href: "/", visible: true },
+    summary: (n: NavItem) => ({ title: both(n.label), sub: n.href, published: n.visible }),
   },
 };
+
+/** Translation badges for a record. */
+function TranslationBadges({ collection, record }: { collection: CollectionKey; record: Record<string, unknown> }) {
+  const state = completeness(collectionFields[collection], record, (record.translations ?? {}) as Record<string, string>);
+  return (
+    <span className={styles.statusGrid}>
+      {(["ar", "en"] as const).map((lang) => {
+        const s = state[lang];
+        return (
+          <span key={lang} className={`${styles.badge} ${s.complete ? styles.badgeOutline : s.missing ? styles.badgeDanger : styles.badgeMuted}`}>
+            {lang.toUpperCase()} {s.complete ? "✓" : s.missing ? `${s.missing} missing` : "review"}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
 
 /** Table of a collection with reorder / publish / delete controls. */
 export async function CollectionTable({ collection }: { collection: CollectionKey }) {
@@ -128,6 +156,7 @@ export async function CollectionTable({ collection }: { collection: CollectionKe
             <th>#</th>
             <th>Title</th>
             <th>Status</th>
+            <th>Translation</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -154,6 +183,9 @@ export async function CollectionTable({ collection }: { collection: CollectionKe
                       </span>
                     ))}
                   </span>
+                </td>
+                <td>
+                  <TranslationBadges collection={collection} record={row as unknown as Record<string, unknown>} />
                 </td>
                 <td>
                   <span className={styles.tools}>
@@ -210,13 +242,15 @@ export async function CollectionEditor({ collection, id }: { collection: Collect
   const isNew = id === "new";
   const record = isNew ? null : await adminGet(collection, id);
   if (!isNew && !record) notFound();
-  const initial = record ? { ...(record as Record<string, unknown>) } : config.empty;
+  const initial = record
+    ? { ...(record as Record<string, unknown>), _translation: (record as { translations?: unknown }).translations ?? {} }
+    : config.empty;
   const s = record ? config.summary(record as never) : null;
 
   return (
     <>
       <Link href={config.base} className={styles.back}>
-        ← All {config.singular === "person" ? "people" : `${config.singular}s`}
+        ← All {config.plural}
       </Link>
       <PageHead
         eyebrow={isNew ? `New ${config.singular}` : `Edit ${config.singular}`}
@@ -236,6 +270,8 @@ export async function CollectionEditor({ collection, id }: { collection: Collect
           action={saveRecord.bind(null, collection, isNew ? null : id)}
           submitLabel={isNew ? "Create" : "Save & publish"}
           createdPath={isNew ? config.base : undefined}
+          previewPath={record && config.preview ? config.preview(record as never) : undefined}
+          translationBar={collection !== "navigation" ? true : undefined}
         />
       </Panel>
     </>

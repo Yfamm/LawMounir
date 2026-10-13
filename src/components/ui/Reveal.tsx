@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { EASE, gsap, MOTION, showRoot, startOrigin, useGSAP } from "@/animation/gsap";
 
 type Props = {
   as?: "div" | "section" | "ul" | "ol" | "dl" | "footer" | "article" | "aside";
@@ -49,7 +49,7 @@ export function Reveal({
         if (lines.length) {
           tl.fromTo(
             lines,
-            { scaleX: 0, transformOrigin: "0% 50%" },
+            { scaleX: 0, transformOrigin: startOrigin(el) },
             { scaleX: 1, duration: 1.4, ease: EASE.line, stagger },
             0,
           );

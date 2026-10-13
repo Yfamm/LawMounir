@@ -15,7 +15,7 @@ import styles from "./Footer.module.css";
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
   const { scrollTo } = useSmoothScroll();
-  const { site, nav, practiceLinks } = useSite();
+  const { site, nav, practiceLinks, ui, lang } = useSite();
 
   useGSAP(
     () => {
@@ -52,8 +52,8 @@ export function Footer() {
             <p className={styles.note}>{site.footerDescription}</p>
           </div>
 
-          <nav aria-label="Footer" className={styles.col}>
-            <p className={`label ${styles.heading}`}>The Firm</p>
+          <nav aria-label={ui.footerNav} className={styles.col}>
+            <p className={`label ${styles.heading}`}>{ui.footerFirm}</p>
             <ul>
               {nav.map((item) => (
                 <li key={item.href}>
@@ -66,11 +66,11 @@ export function Footer() {
           </nav>
 
           <div className={styles.col}>
-            <p className={`label ${styles.heading}`}>Practice</p>
+            <p className={`label ${styles.heading}`}>{ui.footerPractice}</p>
             <ul>
               {practiceLinks.slice(0, 6).map((area) => (
                 <li key={area.slug}>
-                  <TransitionLink href={`/practice-areas/${area.slug}`} className={styles.link}>
+                  <TransitionLink href={area.href} className={styles.link}>
                     {area.title}
                   </TransitionLink>
                 </li>
@@ -79,7 +79,7 @@ export function Footer() {
           </div>
 
           <div className={styles.col}>
-            <p className={`label ${styles.heading}`}>Contact</p>
+            <p className={`label ${styles.heading}`}>{ui.footerContact}</p>
             <ul>
               <li>
                 <ContactLink href={site.phoneHref} className={styles.link}>
@@ -94,7 +94,7 @@ export function Footer() {
               {site.whatsappHref && (
                 <li>
                   <a href={site.whatsappHref} className={styles.link} target="_blank" rel="noopener noreferrer">
-                    WhatsApp {site.whatsapp}
+                    {ui.whatsapp} {site.whatsapp}
                   </a>
                 </li>
               )}
@@ -116,24 +116,40 @@ export function Footer() {
           aria-hidden="true"
           data-giant
           data-reveal
-          style={{ "--chars": site.siteName.length } as React.CSSProperties}
+          lang="en"
+          dir="ltr"
+          style={{ "--chars": site.wordmark.length } as React.CSSProperties}
         >
-          {site.siteName.split("").map((ch, i) => (
+          {site.wordmark.split("").map((ch, i) => (
             <span key={i}>{ch}</span>
           ))}
         </p>
 
         <div className={styles.bottom}>
           <p>
-            © {year} {site.siteName} · <Arabic>{site.siteNameAr}</Arabic>. {site.copyright}
+            {lang === "en" ? (
+              <>
+                © {year} {site.brandName} · <Arabic>{site.firmNameOther}</Arabic>. {site.copyright}
+              </>
+            ) : (
+              <>
+                © {year} {site.firmName}. {site.copyright}
+              </>
+            )}
           </p>
           <p className={styles.disclaimer}>{site.disclaimer}</p>
           <p className="tabular">
-            <Arabic className={styles.arabic}>{site.siteNameAr}</Arabic>
+            {lang === "en" ? (
+              <Arabic className={styles.arabic}>{site.firmNameOther}</Arabic>
+            ) : (
+              <span lang="en" dir="ltr" className={styles.arabic}>
+                {site.firmNameOther}
+              </span>
+            )}
             <span className={styles.coords}>{site.location}</span>
           </p>
           <button type="button" className={styles.top} onClick={() => scrollTo(0)}>
-            Back to top <Arrow direction="up-right" />
+            {ui.backToTop} <Arrow direction="up-right" />
           </button>
         </div>
       </div>

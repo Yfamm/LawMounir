@@ -14,7 +14,7 @@ export function PracticeAreaRow({ area, number, onActivate }: Props) {
     <li className={styles.row} data-row>
       <span className={styles.rule} data-row-rule aria-hidden="true" />
       <TransitionLink
-        href={`/practice-areas/${area.slug}`}
+        href={area.href}
         className={styles.link}
         onPointerEnter={onActivate}
         onFocus={onActivate}

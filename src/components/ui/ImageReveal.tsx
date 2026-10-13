@@ -3,6 +3,7 @@
 import Image, { type StaticImageData } from "next/image";
 import { useRef, type CSSProperties } from "react";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
+import { useSite } from "@/components/providers/SiteProvider";
 import styles from "./ImageReveal.module.css";
 
 type Props = {
@@ -48,6 +49,7 @@ export function ImageReveal({
 }: Props) {
   const ref = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const { ui } = useSite();
 
   useGSAP(
     () => {
@@ -106,7 +108,11 @@ export function ImageReveal({
       </div>
       {caption && (
         <figcaption className={`${styles.caption} label`}>
-          {plate && <span className={styles.plate}>Pl. {plate}</span>}
+          {plate && (
+            <span className={styles.plate}>
+              {ui.plate} {plate}
+            </span>
+          )}
           <span>{caption}</span>
         </figcaption>
       )}

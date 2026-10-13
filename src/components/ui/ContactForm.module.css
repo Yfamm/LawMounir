@@ -70,13 +70,13 @@ select.input option {
 
 .focusLine {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   height: 1px;
   background: var(--accent);
   transform: scaleX(0);
-  transform-origin: left center;
+  transform-origin: var(--start) center;
   transition: transform 0.7s var(--ease-out);
   pointer-events: none;
 }
@@ -91,7 +91,7 @@ select.input option {
 
 .trap {
   position: absolute;
-  left: -9999px;
+  inset-inline-start: -9999px;
   width: 1px;
   height: 1px;
   overflow: hidden;
@@ -149,4 +149,9 @@ select.input option {
   text-transform: uppercase;
   border-bottom: 1px solid var(--accent);
   padding-bottom: 0.3rem;
+}
+
+/* Phone and e-mail are typed left-to-right; on Arabic pages they sit at the field's start (right). */
+:global([dir="rtl"]) .input[dir="ltr"] {
+  text-align: end;
 }

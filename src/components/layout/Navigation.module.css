@@ -68,13 +68,13 @@
 .link::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0.15rem;
   height: 1px;
   background: currentColor;
   transform: scaleX(0);
-  transform-origin: right center;
+  transform-origin: var(--end) center;
   transition: transform 0.6s var(--ease-out);
 }
 
@@ -86,7 +86,7 @@
 .link:hover::after,
 .link:focus-visible::after {
   transform: scaleX(1);
-  transform-origin: left center;
+  transform-origin: var(--start) center;
 }
 
 .link[aria-current="page"] {
@@ -106,6 +106,21 @@
 
 .cta {
   display: none;
+}
+
+/* Language switch: in the bar from small phones up, and inside the menu. */
+.lang {
+  display: none;
+}
+
+@media (min-width: 380px) {
+  .lang {
+    display: block;
+  }
+}
+
+.menuLang {
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
 }
 
 .toggle {
@@ -129,8 +144,8 @@
 
 .toggleIcon span {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   height: 1px;
   background: currentColor;
   transition:
@@ -145,7 +160,7 @@
 
 .toggleIcon span:last-child {
   top: 9px;
-  left: auto;
+  inset-inline-start: auto;
   width: 60%;
 }
 
@@ -232,7 +247,7 @@
 
 .menuLink:hover,
 .menuLink:focus-visible {
-  transform: translateX(0.6rem);
+  transform: translateX(calc(var(--dir) * 0.6rem));
 }
 
 .menuLink[aria-current="page"] .serif {

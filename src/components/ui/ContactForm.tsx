@@ -1,6 +1,8 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
+import { useSite } from "@/components/providers/SiteProvider";
+import type { UiKey } from "@/lib/cms/ui";
 import { Button } from "./Button";
 import styles from "./ContactForm.module.css";
 
@@ -13,12 +15,25 @@ type Props = {
   successText: string;
 };
 
+/** Error codes returned by /api/contact, shown in the page language. */
+const ERRORS: Record<string, UiKey> = {
+  name_required: "errNameRequired",
+  phone_required: "errPhoneRequired",
+  phone_invalid: "errPhoneInvalid",
+  email_invalid: "errEmailInvalid",
+  message_required: "errMessageRequired",
+  too_long: "errTooLong",
+  rate_limited: "errRateLimited",
+  unavailable: "errUnavailable",
+};
+
 /**
  * Enquiry form. Posts to /api/contact, which validates the enquiry and
  * stores it in the firm's confidential enquiries inbox.
  */
 export function ContactForm({ submitText, notice, successTitle, successText }: Props) {
   const id = useId();
+  const { ui, lang } = useSite();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -32,6 +47,7 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
       message: String(fd.get("message") ?? "").trim(),
       company: String(fd.get("company") ?? ""),
       path: window.location.pathname,
+      lang,
     };
 
     setStatus({ kind: "sending" });
@@ -41,26 +57,27 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      const json = (await res.json().catch(() => ({}))) as { ok?: boolean; code?: string };
       if (res.ok && json.ok) {
         form.reset();
         setStatus({ kind: "sent" });
         return;
       }
-      setStatus({ kind: "error", message: json.error ?? "Something went wrong. Please try again." });
+      const key = json.code ? ERRORS[json.code] : undefined;
+      setStatus({ kind: "error", message: key ? ui[key] : ui.errGeneric });
     } catch {
-      setStatus({ kind: "error", message: "We couldn't reach the server. Please check your connection and try again." });
+      setStatus({ kind: "error", message: ui.errNetwork });
     }
   }
 
   if (status.kind === "sent") {
     return (
       <div className={styles.done} role="status">
-        <p className="label">Received</p>
+        <p className="label">{ui.formReceived}</p>
         <p className={`serif ${styles.doneTitle}`}>{successTitle}</p>
         {successText && <p className={styles.doneText}>{successText}</p>}
         <button type="button" className={styles.again} onClick={() => setStatus({ kind: "idle" })}>
-          Send another enquiry
+          {ui.formAgain}
         </button>
       </div>
     );
@@ -69,31 +86,34 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
   return (
     <form className={styles.form} onSubmit={onSubmit}>
       <div className={styles.row}>
-        <Field id={`${id}-name`} name="name" label="Name" autoComplete="name" required maxLength={200} />
+        <Field id={`${id}-name`} name="name" label={ui.formName} autoComplete="name" required maxLength={200} />
         <Field
           id={`${id}-phone`}
           name="phone"
-          label="Phone number"
+          label={ui.formPhone}
           type="tel"
           autoComplete="tel"
           required
           minLength={5}
           maxLength={40}
+          dir="ltr"
         />
       </div>
       <Field
         id={`${id}-email`}
         name="email"
-        label="Email"
-        hint="optional"
+        label={ui.formEmail}
+        hint={ui.formOptional}
         type="email"
         autoComplete="email"
         maxLength={200}
+        dir="ltr"
       />
 
       <div className={styles.field}>
         <label htmlFor={`${id}-message`} className={styles.label}>
-          Issue / question<span aria-hidden="true"> *</span>
+          {ui.formIssue}
+          <span aria-hidden="true"> *</span>
         </label>
         <textarea
           id={`${id}-message`}
@@ -116,7 +136,7 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
 
       <div className={styles.submit}>
         <Button type="submit" variant="solid" disabled={status.kind === "sending"}>
-          {status.kind === "sending" ? "Sending" : submitText}
+          {status.kind === "sending" ? ui.formSending : submitText}
         </Button>
         {status.kind === "error" && (
           <p className={styles.error} role="alert">
@@ -138,9 +158,11 @@ type FieldProps = {
   required?: boolean;
   minLength?: number;
   maxLength?: number;
+  /** Phone numbers and e-mail addresses are typed left-to-right in both languages. */
+  dir?: "ltr";
 };
 
-function Field({ id, name, label, hint, type = "text", autoComplete, required, minLength, maxLength }: FieldProps) {
+function Field({ id, name, label, hint, type = "text", autoComplete, required, minLength, maxLength, dir }: FieldProps) {
   return (
     <div className={styles.field}>
       <label htmlFor={id} className={styles.label}>
@@ -156,6 +178,7 @@ function Field({ id, name, label, hint, type = "text", autoComplete, required, m
         required={required}
         minLength={minLength}
         maxLength={maxLength}
+        dir={dir}
         className={styles.input}
       />
       <span className={styles.focusLine} aria-hidden="true" />

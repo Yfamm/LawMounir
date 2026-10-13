@@ -5,7 +5,7 @@ import { getSite } from "@/lib/cms/repository";
 export const revalidate = 300;
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  const site = await getSite();
+  const site = await getSite("ar");
   // Pre-launch safety: disallow crawling until NEXT_PUBLIC_SITE_INDEXABLE=true.
   // The admin is never crawlable.
   return {

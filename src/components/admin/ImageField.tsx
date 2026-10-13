@@ -50,7 +50,8 @@ export function ImageField({ id, value, onChange }: Props) {
   };
 
   const chooseMedia = (item: MediaItem) => {
-    onChange({ mediaId: item.id, url: item.url, alt: item.alt || undefined, caption: item.caption || undefined });
+    // Alt text and captions come from the media library unless overridden here.
+    onChange({ mediaId: item.id, url: item.url });
     dialog.current?.close();
   };
 
@@ -58,7 +59,12 @@ export function ImageField({ id, value, onChange }: Props) {
     if (!file) return;
     setUploading(true);
     setError("");
-    const result = await uploadImage(file, value.alt ?? "", value.caption ?? "");
+    const result = await uploadImage(file, {
+      alt: value.alt?.en,
+      altAr: value.alt?.ar,
+      caption: value.caption?.en,
+      captionAr: value.caption?.ar,
+    });
     setUploading(false);
     if (!result.ok) {
       setError(result.error);
@@ -68,7 +74,9 @@ export function ImageField({ id, value, onChange }: Props) {
     chooseMedia(result.media);
   };
 
-  const set = (key: "alt" | "caption" | "position", v: string) => onChange({ ...value, [key]: v });
+  const setText = (key: "alt" | "caption", lang: "en" | "ar", v: string) =>
+    onChange({ ...value, [key]: { en: value[key]?.en ?? "", ar: value[key]?.ar ?? "", [lang]: v } });
+  const setPosition = (v: string) => onChange({ ...value, position: v });
 
   return (
     <div className={styles.imageField} id={id} role="group" aria-labelledby={`${id}-label`}>
@@ -92,17 +100,40 @@ export function ImageField({ id, value, onChange }: Props) {
             </button>
           )}
         </span>
-        <label className={styles.field}>
-          <span className={styles.label}>Alt text</span>
-          <input className={styles.input} value={value.alt ?? ""} maxLength={300} onChange={(e) => set("alt", e.target.value)} placeholder="Describe the image for screen readers" />
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Caption</span>
-          <input className={styles.input} value={value.caption ?? ""} maxLength={200} onChange={(e) => set("caption", e.target.value)} placeholder="Leave empty for the plate’s own caption" />
-        </label>
+        {(["alt", "caption"] as const).map((key) => (
+          <div key={key} className={styles.field}>
+            <span className={styles.label}>
+              {key === "alt" ? "Alt text" : "Caption"}
+              <span className={styles.labelAr} lang="ar">
+                {" "}
+                · {key === "alt" ? "النص البديل" : "التعليق"}
+              </span>
+            </span>
+            <div className={styles.pair}>
+              <input
+                className={styles.input}
+                aria-label={`${key === "alt" ? "Alt text" : "Caption"} — English`}
+                value={value[key]?.en ?? ""}
+                maxLength={key === "alt" ? 300 : 200}
+                onChange={(e) => setText(key, "en", e.target.value)}
+                placeholder={key === "alt" ? "English — leave empty to use the image’s own" : "English — leave empty for the image’s own"}
+              />
+              <input
+                className={`${styles.input} ${styles.rtl}`}
+                dir="rtl"
+                lang="ar"
+                aria-label={`${key === "alt" ? "Alt text" : "Caption"} — Arabic`}
+                value={value[key]?.ar ?? ""}
+                maxLength={key === "alt" ? 300 : 200}
+                onChange={(e) => setText(key, "ar", e.target.value)}
+                placeholder="العربية"
+              />
+            </div>
+          </div>
+        ))}
         <label className={styles.field}>
           <span className={styles.label}>Framing (x% y%)</span>
-          <input className={styles.input} value={value.position ?? ""} maxLength={20} onChange={(e) => set("position", e.target.value)} placeholder="50% 50%" />
+          <input className={styles.input} dir="ltr" value={value.position ?? ""} maxLength={20} onChange={(e) => setPosition(e.target.value)} placeholder="50% 50%" />
         </label>
       </div>
 
@@ -157,7 +188,7 @@ export function ImageField({ id, value, onChange }: Props) {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={m.url} alt="" />
-                    <span>{m.alt || m.caption || "Untitled"}</span>
+                    <span>{m.alt || m.alt_ar || m.caption || "Untitled"}</span>
                   </button>
                 ))}
               </div>

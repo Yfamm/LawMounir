@@ -1,12 +1,17 @@
 /**
- * CMS content model. Pure types — safe to import from server code, client
- * components and the seed script.
+ * CMS content model (bilingual). Pure types — safe on client, server and in
+ * scripts. Every visitor-facing string is an `L` ({ en, ar }); lists are `LL`.
  *
  * Text conventions used by editors:
  * - Display headlines: one line per row; wrap words in *asterisks* to set
  *   them in the gold italic.
  * - Body text: paragraphs separated by a blank line.
+ * - Links: site paths are written without a language ("/contact"); the
+ *   site adds /ar or /en automatically.
  */
+import type { L, LL } from "@/lib/i18n";
+
+export type { L, LL };
 
 /** Keys of the six architectural plates plus the hero photograph. */
 export type StaticImageKey =
@@ -19,166 +24,172 @@ export type StaticImageKey =
   | "mashrabiya";
 
 /**
- * Reference to an image: one of the static plates, or an uploaded image from
- * the media library. Alt text and caption override the image's defaults.
+ * Reference to an image: one of the built-in plates, or an uploaded image
+ * from the media library. Alt text and caption override the image's own.
  */
 export type ImageRef = {
   plate?: StaticImageKey;
   mediaId?: string;
   url?: string;
-  alt?: string;
-  caption?: string;
+  alt?: L;
+  caption?: L;
   /** CSS object-position used to frame the image, e.g. "62% 45%". */
   position?: string;
 };
 
-export type SocialLink = { label: string; url: string };
+/** Review flags per language; "needs_review" marks an unreviewed translation. */
+export type TranslationFlags = Partial<Record<"ar" | "en", "needs_review" | "reviewed">>;
+
+export type Link = { text: L; url: string };
+
+export type SocialLink = { label: L; url: string };
 
 export type SiteSettings = {
-  siteName: string;
-  siteNameAr: string;
-  descriptor: string;
-  city: string;
-  location: string;
-  browserTitle: string;
-  description: string;
-  defaultSeoDescription: string;
+  /** Brand name used in running text and titles (e.g. DIWAN / ديوان). */
+  brandName: L;
+  /** Latin wordmark set in the logo lockup in both languages. */
+  wordmark: string;
+  /** Lockup descriptor: English descriptor / full Arabic firm name. */
+  firmName: L;
+  city: L;
+  location: L;
+  browserTitle: L;
+  description: L;
+  defaultSeoDescription: L;
   /** Canonical origin. Empty = NEXT_PUBLIC_SITE_URL. */
   canonicalUrl: string;
+  defaultLanguage: "ar" | "en";
   email: string;
   phone: string;
   whatsapp: string;
-  address: string[];
-  hours: string;
+  address: LL;
+  hours: L;
   social: SocialLink[];
-  footerDescription: string;
-  copyright: string;
-  disclaimer: string;
-  navCtaText: string;
-  navCtaUrl: string;
+  footerDescription: L;
+  copyright: L;
+  disclaimer: L;
+  navCta: Link;
+  /** Optional logo image replacing the typographic wordmark. */
+  logo: ImageRef;
+  /** Optional favicon (square PNG recommended). */
+  favicon: ImageRef;
+  /** Default social sharing image. */
+  shareImage: ImageRef;
+  _translation?: TranslationFlags;
 };
 
-export type NavItem = { id?: string; label: string; href: string; visible: boolean; sortOrder: number };
+export type NavItem = { id?: string; label: L; href: string; visible: boolean; sortOrder: number };
 
-export type HomeHero = {
-  eyebrow: string;
-  headline: string;
-  headlineAr: string;
-  text: string;
-  textAr: string;
-  ctaText: string;
-  ctaUrl: string;
-  secondaryCtaText: string;
-  secondaryCtaUrl: string;
+type Base = { _translation?: TranslationFlags };
+
+export type HomeLayout = {
+  /** Order of the movable homepage sections. Hero is always first, contact always last. */
+  order: HomeSectionId[];
+  hidden: HomeSectionId[];
+};
+
+export type HomeSectionId = "intro" | "practice" | "landscape" | "values" | "experience" | "people" | "insights";
+
+export type HomeHero = Base & {
+  eyebrow: L;
+  headline: L;
+  supporting: L;
+  primary: Link;
+  secondary: Link;
   image: ImageRef;
 };
 
-export type HomeIntro = {
-  label: string;
-  labelAr: string;
-  statement: string;
-  statementAr: string;
-  body: string;
+export type HomeIntro = Base & {
+  label: L;
+  statement: L;
+  body: L;
   image: ImageRef;
-  ctaText: string;
-  ctaUrl: string;
+  cta: Link;
 };
 
-export type HomePractice = {
-  label: string;
-  labelAr: string;
-  title: string;
-  intro: string;
-  note: string;
-  ctaText: string;
-  ctaUrl: string;
-};
+export type HomePractice = Base & { label: L; title: L; intro: L; note: L; cta: Link };
 
-export type LandscapePillar = { title: string; text: string };
-
-export type HomeLandscape = {
-  label: string;
-  labelAr: string;
+export type HomeLandscape = Base & {
+  label: L;
   /** Exactly three statements play through the pinned stage; pillars follow the last. */
-  frames: { text: string }[];
-  pillars: LandscapePillar[];
+  frames: { text: L }[];
+  pillars: { title: L; text: L }[];
   image: ImageRef;
 };
 
-export type HomeValues = {
-  label: string;
-  labelAr: string;
-  title: string;
-  intro: string;
-  image: ImageRef;
-};
+export type HomeValues = Base & { label: L; title: L; intro: L; image: ImageRef };
 
 export type ExperienceMovement = {
   number: string;
-  label: string;
-  title: string;
-  text: string;
-  items: string[];
+  label: L;
+  title: L;
+  text: L;
+  items: LL;
   /** When true, the list shows the published practice-area titles instead of `items`. */
   autoPracticeAreas: boolean;
 };
 
-export type HomeExperience = {
-  label: string;
-  labelAr: string;
-  title: string;
-  intro: string;
-  hint: string;
+export type HomeExperience = Base & {
+  label: L;
+  title: L;
+  intro: L;
+  hint: L;
   image: ImageRef;
   movements: ExperienceMovement[];
 };
 
-export type HomePeople = {
-  label: string;
-  labelAr: string;
-  title: string;
-  intro: string;
-  ctaText: string;
-  ctaUrl: string;
-  /** Person ids in display order; empty = the first three published. */
-  selected: string[];
-};
+export type HomePeople = Base & { label: L; title: L; intro: L; cta: Link; selected: string[] };
+export type HomeInsights = Base & { label: L; title: L; intro: L; cta: Link; selected: string[] };
 
-export type HomeInsights = {
-  label: string;
-  labelAr: string;
-  title: string;
-  intro: string;
-  ctaText: string;
-  ctaUrl: string;
-  /** Insight slugs in display order; empty = the first three published. */
-  selected: string[];
-};
-
-export type ContactContent = {
-  label: string;
-  labelAr: string;
-  title: string;
-  description: string;
-  submitText: string;
-  notice: string;
-  successTitle: string;
-  successText: string;
-};
-
-export type AboutBlock = {
-  enabled: boolean;
-  label: string;
-  /** Arabic title, set at the end of the label rule. */
-  titleAr: string;
-  /** English display title. */
-  title: string;
-  bodyEn: string;
-  bodyAr: string;
+export type ContactContent = Base & {
+  label: L;
+  title: L;
+  description: L;
+  submitText: L;
+  notice: L;
+  successTitle: L;
+  successText: L;
   image: ImageRef;
 };
 
+export type AboutLayout = "header" | "story" | "values" | "statement";
+
+export type AboutBlock = {
+  id: string;
+  layout: AboutLayout;
+  enabled: boolean;
+  label: L;
+  title: L;
+  body: L;
+  image: ImageRef;
+};
+
+export type AboutContent = Base & { blocks: AboutBlock[] };
+
+export type IndexPage = Base & { label: L; title: L; intro: L; image: ImageRef };
+
+export type ContactPage = Base & {
+  label: L;
+  title: L;
+  steps: { title: L; text: L }[];
+};
+
+export type PageMeta = { title: L; description: L };
+
+export type SeoPages = Base & {
+  home: PageMeta;
+  about: PageMeta;
+  practice: PageMeta;
+  people: PageMeta;
+  insights: PageMeta;
+  contact: PageMeta;
+};
+
+/** Interface text (buttons, labels, messages). Keys are fixed; values are editable. */
+export type UiStrings = Base & { strings: Record<string, L> };
+
 export type SectionMap = {
+  "home.layout": HomeLayout;
   "home.hero": HomeHero;
   "home.intro": HomeIntro;
   "home.practice": HomePractice;
@@ -188,77 +199,79 @@ export type SectionMap = {
   "home.people": HomePeople;
   "home.insights": HomeInsights;
   "home.contact": ContactContent;
-  "about.vision": AboutBlock;
-  "about.who": AboutBlock;
-  "about.values": AboutBlock;
-  "about.mission": AboutBlock;
+  "about.blocks": AboutContent;
+  "practice.index": IndexPage;
+  "people.index": IndexPage;
+  "insights.index": IndexPage;
+  "contact.page": ContactPage;
+  "seo.pages": SeoPages;
+  "ui.strings": UiStrings;
 };
 
 export type SectionKey = keyof SectionMap;
 
 export type FirmValue = {
   id?: string;
-  titleEn: string;
-  titleAr: string;
-  bodyEn: string;
-  bodyAr: string;
+  title: L;
+  body: L;
   published: boolean;
   sortOrder: number;
+  translations: TranslationFlags;
 };
 
 export type PracticeAreaRecord = {
   id?: string;
   slug: string;
-  title: string;
-  titleAr: string;
-  summary: string;
-  overview: string;
-  scope: string[];
-  forums: string[];
+  title: L;
+  summary: L;
+  overview: L;
+  scope: LL;
+  forums: LL;
   image: ImageRef;
-  seoTitle: string;
-  seoDescription: string;
+  seoTitle: L;
+  seoDescription: L;
   published: boolean;
   sortOrder: number;
   sources: string[];
   verify: string[];
+  translations: TranslationFlags;
 };
 
 export type PersonRecord = {
   id?: string;
-  nameEn: string;
-  nameAr: string;
-  titleEn: string;
-  titleAr: string;
-  practice: string;
-  bioShort: string;
-  bioFull: string;
+  name: L;
+  title: L;
+  practice: L;
+  bioShort: L;
+  bioFull: L;
   portrait: ImageRef;
-  education: string;
-  languages: string;
-  admission: string;
+  education: L;
+  languages: L;
+  admission: L;
   published: boolean;
   sortOrder: number;
+  translations: TranslationFlags;
 };
+
+export type InsightStatus = "draft" | "review" | "published";
 
 export type InsightRecord = {
   id?: string;
   slug: string;
-  title: string;
-  titleAr: string;
-  excerpt: string;
-  excerptAr: string;
-  /** Plain-text body: blank-line paragraphs, "## " headings, "> " quotes, "- " list items. */
-  body: string;
-  author: string;
+  title: L;
+  excerpt: L;
+  /** Body text: blank-line paragraphs, "## " headings, "> " quotes, "- " list items. */
+  body: L;
+  author: L;
   cover: ImageRef;
-  category: string;
+  category: L;
   publishedOn: string | null;
-  readingTime: string;
-  seoTitle: string;
-  seoDescription: string;
-  status: "draft" | "published";
+  readingTime: L;
+  seoTitle: L;
+  seoDescription: L;
+  status: InsightStatus;
   legalReview: "pending" | "approved";
   verify: string[];
   sortOrder: number;
+  translations: TranslationFlags;
 };

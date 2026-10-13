@@ -1,9 +1,14 @@
 /**
- * Content migration: copies the DIWAN source content (src/content/* via
- * src/lib/cms/defaults.ts) into Supabase — settings, navigation, every page
- * section, values, the six confirmed practice areas (with sources and VERIFY
- * notes), the placeholder team and the sample insights (published, legal
- * review pending).
+ * Content migration: copies the bilingual DIWAN source content
+ * (src/lib/cms/defaults.ts, built from src/content/*) into Supabase —
+ * settings, navigation, every page section and the interface text, values,
+ * the six confirmed practice areas (with sources and VERIFY notes), the
+ * placeholder team and the sample insights (published, legal review
+ * pending). Arabic and English are both seeded; Arabic translations of
+ * English copy are flagged "needs review".
+ *
+ * For a database seeded BEFORE the bilingual upgrade, use
+ * `npm run cms:backfill-ar` instead — it fills Arabic without overwriting.
  *
  *   npm run cms:seed            seeds an empty database; refuses if already seeded
  *   npm run cms:seed -- --force replaces all CMS content (never enquiries, media or admins)

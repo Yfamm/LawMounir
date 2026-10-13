@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useRef } from "react";
 import type { ResolvedImage } from "@/lib/cms/images";
 import { headlineLines } from "@/lib/cms/text";
-import type { HomeLandscape } from "@/lib/cms/types";
-import { Arabic } from "@/components/ui/Arabic";
+import type { Lang } from "@/lib/i18n";
+import { Counterpart } from "@/components/ui/Counterpart";
 import { EASE, gsap, MOTION, showRoot, useGSAP } from "@/animation/gsap";
 import styles from "./LandscapeSection.module.css";
 
@@ -24,17 +24,26 @@ function Lines({ lines }: { lines: React.ReactNode[] }) {
  * three statements pass through it and the image slowly pulls back from the
  * pyramids to the city. On mobile the statements simply stack.
  */
+export type LandscapeContent = {
+  label: string;
+  labelOther: string;
+  otherLang: Lang;
+  frames: string[];
+  pillars: { title: string; text: string }[];
+  platePrefix: string;
+};
+
 export function LandscapeSection({
   content,
   image,
   index = "04",
 }: {
-  content: HomeLandscape;
+  content: LandscapeContent;
   image: ResolvedImage;
   index?: string;
 }) {
   // The pinned timeline is choreographed for exactly three statements.
-  const frames = [0, 1, 2].map((i) => content.frames[i]?.text ?? "");
+  const frames = [0, 1, 2].map((i) => content.frames[i] ?? "");
   const pillars = content.pillars;
 
   const ref = useRef<HTMLElement>(null);
@@ -126,7 +135,9 @@ export function LandscapeSection({
             <h2 id="landscape-title" className="label">
               {content.label}
             </h2>
-            {content.labelAr && <Arabic className={styles.arabic}>{content.labelAr}</Arabic>}
+            <Counterpart lang={content.otherLang} className={styles.arabic}>
+              {content.labelOther}
+            </Counterpart>
           </div>
 
           <div className={styles.frames}>
@@ -168,7 +179,7 @@ export function LandscapeSection({
             <span className="label tabular">03</span>
             {image.caption && (
               <span className={`label ${styles.plateCaption}`}>
-                {image.plateNo ? `Pl. ${image.plateNo} — ` : ""}
+                {image.plateNo ? `${content.platePrefix} ${image.plateNo} — ` : ""}
                 {image.caption}
               </span>
             )}

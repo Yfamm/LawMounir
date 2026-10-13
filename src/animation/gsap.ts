@@ -40,3 +40,13 @@ export function showRoot(el: Element | null) {
 }
 
 export { gsap, ScrollTrigger, SplitText, useGSAP };
+
+/** 1 on left-to-right pages, -1 on right-to-left pages (for mirroring horizontal motion). */
+export function inlineDir(el: Element): 1 | -1 {
+  return getComputedStyle(el).direction === "rtl" ? -1 : 1;
+}
+
+/** transform-origin at the inline start of an element ("0% y" in LTR, "100% y" in RTL). */
+export function startOrigin(el: Element, y = "50%") {
+  return `${inlineDir(el) === 1 ? "0%" : "100%"} ${y}`;
+}

@@ -1,21 +1,23 @@
 import Image from "next/image";
 import type { InsightView } from "@/lib/cms/repository";
-import { formatDate } from "@/lib/cms/text";
 import { Arrow } from "./Arrow";
 import { TransitionLink } from "./TransitionLink";
 import styles from "./EditorialCard.module.css";
 
+export type CardLabels = { issue: string; read: string };
+
 type Props = {
-  insight: Pick<InsightView, "slug" | "category" | "title" | "standfirst" | "date" | "readingTime" | "cover">;
+  insight: Pick<InsightView, "href" | "category" | "title" | "titleLang" | "standfirst" | "date" | "dateLabel" | "readingTime" | "cover">;
   issue: string;
+  labels: CardLabels;
   variant?: "feature" | "standard";
 };
 
 /** Insight presented like a page from a legal journal rather than a blog tile. */
-export function EditorialCard({ insight, issue, variant = "standard" }: Props) {
+export function EditorialCard({ insight, issue, labels, variant = "standard" }: Props) {
   return (
     <article className={`${styles.card} ${styles[variant]}`} data-reveal-item>
-      <TransitionLink href={`/insights/${insight.slug}`} className={styles.link}>
+      <TransitionLink href={insight.href} className={styles.link}>
         <span className={styles.rule} aria-hidden="true" />
         {variant === "feature" && (
           <div className={styles.media}>
@@ -33,23 +35,31 @@ export function EditorialCard({ insight, issue, variant = "standard" }: Props) {
         )}
         <div className={styles.head}>
           <span className={`label ${styles.category}`}>{insight.category}</span>
-          <span className={`${styles.issue} serif tabular`}>No. {issue}</span>
+          <span className={`${styles.issue} serif tabular`}>
+            {labels.issue} {issue}
+          </span>
         </div>
 
-        <h3 className={`serif ${styles.title}`}>
+        <h3 className={`serif ${styles.title}`} lang={insight.titleLang}>
           <span className={styles.titleText}>{insight.title}</span>
         </h3>
 
-        <p className={styles.standfirst}>{insight.standfirst}</p>
+        <p className={styles.standfirst} lang={insight.titleLang}>
+          {insight.standfirst}
+        </p>
 
         <div className={styles.foot}>
           <span className={`${styles.meta} tabular`}>
-            <time dateTime={insight.date ?? undefined}>{formatDate(insight.date)}</time>
-            <span aria-hidden="true"> · </span>
-            {insight.readingTime}
+            <time dateTime={insight.date ?? undefined}>{insight.dateLabel}</time>
+            {insight.readingTime && (
+              <>
+                <span aria-hidden="true"> · </span>
+                {insight.readingTime}
+              </>
+            )}
           </span>
           <span className={styles.read}>
-            Read <Arrow />
+            {labels.read} <Arrow />
           </span>
         </div>
       </TransitionLink>

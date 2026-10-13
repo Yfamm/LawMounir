@@ -5,8 +5,8 @@ import { Fragment, useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
 import type { ResolvedImage } from "@/lib/cms/images";
 import { headlineLines } from "@/lib/cms/text";
-import type { HomeExperience } from "@/lib/cms/types";
-import { Arabic } from "@/components/ui/Arabic";
+import type { Lang } from "@/lib/i18n";
+import { Counterpart } from "@/components/ui/Counterpart";
 import { GeometricPattern } from "@/components/ui/GeometricPattern";
 import styles from "./ExperienceSection.module.css";
 
@@ -16,8 +16,19 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Horizontal storytelling track. Pinned and scrubbed sideways on desktop;
  * a vertical sequence on smaller screens. Numerals count up on entry.
  */
+export type ExperienceContent = {
+  label: string;
+  labelOther: string;
+  otherLang: Lang;
+  title: string;
+  intro: string;
+  hint: string;
+  platePrefix: string;
+  movements: { number: string; label: string; title: string; text: string; items: string[]; autoPracticeAreas: boolean }[];
+};
+
 type Props = {
-  content: HomeExperience;
+  content: ExperienceContent;
   image: ResolvedImage;
   /** Titles of the published practice areas, for movements that list them. */
   practiceTitles: string[];
@@ -53,11 +64,16 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
       };
 
       const mm = gsap.matchMedia();
+      // Right-to-left pages travel the other way: the track moves right and
+      // panels enter from the left edge.
+      const dir = getComputedStyle(root).direction === "rtl" ? -1 : 1;
+      const enter = dir === 1 ? "left right" : "right left";
+      const leave = dir === 1 ? "right left" : "left right";
 
       mm.add(MOTION.desktop, () => {
         const distance = () => track.scrollWidth - window.innerWidth;
         const scroller = gsap.to(track, {
-          x: () => -distance(),
+          x: () => -distance() * dir,
           ease: "none",
           scrollTrigger: {
             trigger: root,
@@ -80,16 +96,16 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
         if (panelImage) {
           gsap.fromTo(
             panelImage,
-            { xPercent: -8, scale: 1.18 },
+            { xPercent: -8 * dir, scale: 1.18 },
             {
-              xPercent: 8,
+              xPercent: 8 * dir,
               scale: 1.18,
               ease: "none",
               scrollTrigger: {
                 trigger: panelImage.closest("figure"),
                 containerAnimation: scroller,
-                start: "left right",
-                end: "right left",
+                start: enter,
+                end: leave,
                 scrub: true,
               },
             },
@@ -102,7 +118,7 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
           ScrollTrigger.create({
             trigger: panel,
             containerAnimation: scroller,
-            start: "left 72%",
+            start: dir === 1 ? "left 72%" : "right 28%",
             once: true,
             onEnter: () => {
               countUp(panel.querySelector("[data-count]"));
@@ -111,11 +127,11 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
           });
           gsap.fromTo(
             panel.querySelector("[data-numeral]"),
-            { xPercent: 18 },
+            { xPercent: 18 * dir },
             {
-              xPercent: -12,
+              xPercent: -12 * dir,
               ease: "none",
-              scrollTrigger: { trigger: panel, containerAnimation: scroller, start: "left right", end: "right left", scrub: true },
+              scrollTrigger: { trigger: panel, containerAnimation: scroller, start: enter, end: leave, scrub: true },
             },
           );
         });
@@ -158,7 +174,9 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
             <span className="label tabular">{index}</span>
             <span className={styles.rule} />
             <span className="label">{content.label}</span>
-            {content.labelAr && <Arabic className={styles.arabic}>{content.labelAr}</Arabic>}
+            <Counterpart lang={content.otherLang} className={styles.arabic}>
+              {content.labelOther}
+            </Counterpart>
           </div>
           <h2 id="experience-title" className={`display ${styles.introTitle}`}>
             {titleLines.map((line, i) => (
@@ -192,7 +210,12 @@ export function ExperienceSection({ content, image, practiceTitles, index = "06"
           </div>
           {image.caption && (
             <figcaption className="label">
-              {image.plateNo && <span className={styles.plateNo}>Pl. {image.plateNo}</span>} {image.caption}
+              {image.plateNo && (
+                <span className={styles.plateNo}>
+                  {content.platePrefix} {image.plateNo}
+                </span>
+              )}{" "}
+              {image.caption}
             </figcaption>
           )}
         </figure>

@@ -67,6 +67,30 @@
   }
 }
 
+/* Font stacks. Arabic pages put the Arabic faces first; their unicode-range
+   is Arabic-only, so Latin letters and digits keep the Latin faces. */
+:root {
+  --font-serif: var(--font-cormorant);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-plexmono);
+  /* Direction helpers for transforms that physical properties cannot mirror. */
+  --dir: 1;
+  --start: left;
+  --end: right;
+}
+
+html[lang="ar"] {
+  --font-serif: var(--font-arabic), var(--font-cormorant);
+  --font-sans: var(--font-arabic-sans), var(--font-manrope);
+  --font-mono: var(--font-arabic-sans), var(--font-plexmono);
+}
+
+[dir="rtl"] {
+  --dir: -1;
+  --start: right;
+  --end: left;
+}
+
 /* ==========================================================================
    Base
    ========================================================================== */
@@ -227,7 +251,7 @@ html.lenis body {
 .skip-link {
   position: fixed;
   top: 1rem;
-  left: 1rem;
+  inset-inline-start: 1rem;
   z-index: 300;
   padding: 0.75rem 1rem;
   background: var(--ivory);
@@ -291,7 +315,7 @@ html.lenis body {
 
 /* Index count set against a display title, e.g. PRACTICE AREAS (12) */
 .count {
-  margin-left: 0.15em;
+  margin-inline-start: 0.15em;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: max(0.7rem, 0.11em);
   font-weight: 400;
@@ -372,4 +396,53 @@ html.js [data-reveal] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+   Arabic typography
+   Arabic letters join, so they are never tracked or case-transformed; the
+   display serif gets the vertical room its marks and descenders need, and
+   italic emphasis becomes colour-only (Arabic has no true italic).
+   ========================================================================== */
+
+:lang(ar) {
+  letter-spacing: 0 !important;
+}
+
+:lang(ar) .display,
+.display:lang(ar) {
+  line-height: 1.32;
+  font-weight: 400;
+}
+
+:lang(ar) .display em,
+:lang(ar) .serif em,
+.display:lang(ar) em {
+  font-style: normal;
+  font-weight: 400;
+}
+
+:lang(ar) .line-mask,
+.line-mask:lang(ar) {
+  padding-block: 0.08em 0.24em;
+  margin-block: -0.08em -0.24em;
+}
+
+.label:lang(ar) {
+  font-size: max(0.8125rem, var(--fs-meta));
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+html[lang="ar"] body {
+  line-height: 1.85;
+}
+
+/* English counterpart lines on Arabic pages (see Counterpart). */
+.latin-counterpart {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  text-transform: none;
 }

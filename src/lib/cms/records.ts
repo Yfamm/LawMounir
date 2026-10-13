@@ -1,15 +1,26 @@
 /**
- * Mapping between database rows (snake_case) and CMS records (camelCase).
- * Shared by the repository, the admin actions and the seed script.
+ * Mapping between database rows and bilingual CMS records. Unsuffixed text
+ * columns hold English; *_ar columns hold Arabic (see the bilingual
+ * migration). Shared by the repository, the admin actions and the scripts.
  */
 import type { CollectionKey } from "./fields";
-import type { FirmValue, ImageRef, InsightRecord, NavItem, PersonRecord, PracticeAreaRecord } from "./types";
+import { normalizeImage } from "./normalize";
+import type { FirmValue, InsightRecord, L, LL, NavItem, PersonRecord, PracticeAreaRecord, TranslationFlags } from "./types";
 
 type Row = Record<string, unknown>;
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
 const arr = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
-const img = (v: unknown) => (v && typeof v === "object" ? (v as ImageRef) : {});
+const loc = (r: Row, en: string, ar: string): L => ({ en: str(r[en]), ar: str(r[ar]) });
+const locList = (r: Row, en: string, ar: string): LL => ({ en: arr(r[en]), ar: arr(r[ar]) });
+const flags = (v: unknown): TranslationFlags => {
+  const o = v && typeof v === "object" ? (v as Record<string, unknown>) : {};
+  const ok = (x: unknown) => (x === "needs_review" || x === "reviewed" ? x : undefined);
+  const out: TranslationFlags = {};
+  if (ok(o.ar)) out.ar = ok(o.ar);
+  if (ok(o.en)) out.en = ok(o.en);
+  return out;
+};
 
 export const tables: Record<CollectionKey, string> = {
   values: "firm_values",
@@ -21,136 +32,161 @@ export const tables: Record<CollectionKey, string> = {
 
 export const valueFromRow = (r: Row): FirmValue => ({
   id: str(r.id),
-  titleEn: str(r.title_en),
-  titleAr: str(r.title_ar),
-  bodyEn: str(r.body_en),
-  bodyAr: str(r.body_ar),
+  title: loc(r, "title_en", "title_ar"),
+  body: loc(r, "body_en", "body_ar"),
   published: Boolean(r.published),
   sortOrder: Number(r.sort_order ?? 0),
+  translations: flags(r.translations),
 });
 
 export const valueToRow = (v: Omit<FirmValue, "id" | "sortOrder">) => ({
-  title_en: v.titleEn,
-  title_ar: v.titleAr,
-  body_en: v.bodyEn,
-  body_ar: v.bodyAr,
+  title_en: v.title.en,
+  title_ar: v.title.ar,
+  body_en: v.body.en,
+  body_ar: v.body.ar,
   published: v.published,
+  translations: v.translations ?? {},
 });
 
 export const navFromRow = (r: Row): NavItem => ({
   id: str(r.id),
-  label: str(r.label),
+  label: loc(r, "label", "label_ar"),
   href: str(r.href),
   visible: Boolean(r.visible),
   sortOrder: Number(r.sort_order ?? 0),
 });
 
-export const navToRow = (v: Omit<NavItem, "id" | "sortOrder">) => ({ label: v.label, href: v.href, visible: v.visible });
+/** The DB requires a non-empty English label; Arabic-only labels are mirrored into it. */
+export const navToRow = (v: Omit<NavItem, "id" | "sortOrder">) => ({
+  label: v.label.en || v.label.ar,
+  label_ar: v.label.ar,
+  href: v.href,
+  visible: v.visible,
+});
 
 export const practiceFromRow = (r: Row): PracticeAreaRecord => ({
   id: str(r.id),
   slug: str(r.slug),
-  title: str(r.title),
-  titleAr: str(r.title_ar),
-  summary: str(r.summary),
-  overview: str(r.overview),
-  scope: arr(r.scope),
-  forums: arr(r.forums),
-  image: img(r.image),
-  seoTitle: str(r.seo_title),
-  seoDescription: str(r.seo_description),
+  title: loc(r, "title", "title_ar"),
+  summary: loc(r, "summary", "summary_ar"),
+  overview: loc(r, "overview", "overview_ar"),
+  scope: locList(r, "scope", "scope_ar"),
+  forums: locList(r, "forums", "forums_ar"),
+  image: normalizeImage(r.image),
+  seoTitle: loc(r, "seo_title", "seo_title_ar"),
+  seoDescription: loc(r, "seo_description", "seo_description_ar"),
   published: Boolean(r.published),
   sortOrder: Number(r.sort_order ?? 0),
   sources: arr(r.sources),
   verify: arr(r.verify),
+  translations: flags(r.translations),
 });
 
 export const practiceToRow = (v: Omit<PracticeAreaRecord, "id" | "sortOrder" | "sources"> & { sources?: string[] }) => ({
   slug: v.slug,
-  title: v.title,
-  title_ar: v.titleAr,
-  summary: v.summary,
-  overview: v.overview,
-  scope: v.scope,
-  forums: v.forums,
+  title: v.title.en || v.title.ar,
+  title_ar: v.title.ar,
+  summary: v.summary.en,
+  summary_ar: v.summary.ar,
+  overview: v.overview.en,
+  overview_ar: v.overview.ar,
+  scope: v.scope.en,
+  scope_ar: v.scope.ar,
+  forums: v.forums.en,
+  forums_ar: v.forums.ar,
   image: v.image,
-  seo_title: v.seoTitle,
-  seo_description: v.seoDescription,
+  seo_title: v.seoTitle.en,
+  seo_title_ar: v.seoTitle.ar,
+  seo_description: v.seoDescription.en,
+  seo_description_ar: v.seoDescription.ar,
   published: v.published,
   verify: v.verify,
+  translations: v.translations ?? {},
   ...(v.sources ? { sources: v.sources } : {}),
 });
 
 export const personFromRow = (r: Row): PersonRecord => ({
   id: str(r.id),
-  nameEn: str(r.name_en),
-  nameAr: str(r.name_ar),
-  titleEn: str(r.title_en),
-  titleAr: str(r.title_ar),
-  practice: str(r.practice),
-  bioShort: str(r.bio_short),
-  bioFull: str(r.bio_full),
-  portrait: img(r.portrait),
-  education: str(r.education),
-  languages: str(r.languages),
-  admission: str(r.admission),
+  name: loc(r, "name_en", "name_ar"),
+  title: loc(r, "title_en", "title_ar"),
+  practice: loc(r, "practice", "practice_ar"),
+  bioShort: loc(r, "bio_short", "bio_short_ar"),
+  bioFull: loc(r, "bio_full", "bio_full_ar"),
+  portrait: normalizeImage(r.portrait),
+  education: loc(r, "education", "education_ar"),
+  languages: loc(r, "languages", "languages_ar"),
+  admission: loc(r, "admission", "admission_ar"),
   published: Boolean(r.published),
   sortOrder: Number(r.sort_order ?? 0),
+  translations: flags(r.translations),
 });
 
 export const personToRow = (v: Omit<PersonRecord, "id" | "sortOrder">) => ({
-  name_en: v.nameEn,
-  name_ar: v.nameAr,
-  title_en: v.titleEn,
-  title_ar: v.titleAr,
-  practice: v.practice,
-  bio_short: v.bioShort,
-  bio_full: v.bioFull,
+  name_en: v.name.en || v.name.ar,
+  name_ar: v.name.ar,
+  title_en: v.title.en,
+  title_ar: v.title.ar,
+  practice: v.practice.en,
+  practice_ar: v.practice.ar,
+  bio_short: v.bioShort.en,
+  bio_short_ar: v.bioShort.ar,
+  bio_full: v.bioFull.en,
+  bio_full_ar: v.bioFull.ar,
   portrait: v.portrait,
-  education: v.education,
-  languages: v.languages,
-  admission: v.admission,
+  education: v.education.en,
+  education_ar: v.education.ar,
+  languages: v.languages.en,
+  languages_ar: v.languages.ar,
+  admission: v.admission.en,
+  admission_ar: v.admission.ar,
   published: v.published,
+  translations: v.translations ?? {},
 });
 
 export const insightFromRow = (r: Row): InsightRecord => ({
   id: str(r.id),
   slug: str(r.slug),
-  title: str(r.title),
-  titleAr: str(r.title_ar),
-  excerpt: str(r.excerpt),
-  excerptAr: str(r.excerpt_ar),
-  body: str(r.body),
-  author: str(r.author),
-  cover: img(r.cover),
-  category: str(r.category),
+  title: loc(r, "title", "title_ar"),
+  excerpt: loc(r, "excerpt", "excerpt_ar"),
+  body: loc(r, "body", "body_ar"),
+  author: loc(r, "author", "author_ar"),
+  cover: normalizeImage(r.cover),
+  category: loc(r, "category", "category_ar"),
   publishedOn: typeof r.published_on === "string" ? r.published_on : null,
-  readingTime: str(r.reading_time),
-  seoTitle: str(r.seo_title),
-  seoDescription: str(r.seo_description),
-  status: r.status === "published" ? "published" : "draft",
+  readingTime: loc(r, "reading_time", "reading_time_ar"),
+  seoTitle: loc(r, "seo_title", "seo_title_ar"),
+  seoDescription: loc(r, "seo_description", "seo_description_ar"),
+  status: r.status === "published" ? "published" : r.status === "review" ? "review" : "draft",
   legalReview: r.legal_review === "approved" ? "approved" : "pending",
   verify: arr(r.verify),
   sortOrder: Number(r.sort_order ?? 0),
+  translations: flags(r.translations),
 });
 
 export const insightToRow = (v: Omit<InsightRecord, "id" | "sortOrder">) => ({
   slug: v.slug,
-  title: v.title,
-  title_ar: v.titleAr,
-  excerpt: v.excerpt,
-  excerpt_ar: v.excerptAr,
-  body: v.body,
-  author: v.author,
+  title: v.title.en || v.title.ar,
+  title_ar: v.title.ar,
+  excerpt: v.excerpt.en,
+  excerpt_ar: v.excerpt.ar,
+  body: v.body.en,
+  body_ar: v.body.ar,
+  author: v.author.en,
+  author_ar: v.author.ar,
   cover: v.cover,
-  category: v.category,
+  category: v.category.en || v.category.ar || "Legal Updates",
+  category_ar: v.category.ar,
   published_on: v.publishedOn,
-  reading_time: v.readingTime,
-  seo_title: v.seoTitle,
-  seo_description: v.seoDescription,
+  reading_time: v.readingTime.en,
+  reading_time_ar: v.readingTime.ar,
+  seo_title: v.seoTitle.en,
+  seo_title_ar: v.seoTitle.ar,
+  seo_description: v.seoDescription.en,
+  seo_description_ar: v.seoDescription.ar,
   status: v.status,
   legal_review: v.legalReview,
   verify: v.verify,
+  translations: v.translations ?? {},
 });
 
 export const fromRow = {
@@ -170,7 +206,7 @@ export const toRow: Record<CollectionKey, (v: any) => Row> = {
   insights: insightToRow,
 };
 
-/** Converts a title into a URL slug. */
+/** Converts a title into a URL slug (Latin letters; Arabic-only titles need a slug typed by hand). */
 export function slugify(text: string) {
   return text
     .toLowerCase()

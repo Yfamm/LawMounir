@@ -16,7 +16,7 @@
 }
 
 .arabic {
-  margin-left: auto;
+  margin-inline-start: auto;
   white-space: nowrap;
   font-size: 1.15rem;
   line-height: 1;
@@ -52,7 +52,7 @@
 
 .plateNo {
   color: var(--accent);
-  margin-right: 1rem;
+  margin-inline-end: 1rem;
 }
 
 .track {
@@ -152,13 +152,13 @@
 
 .items li {
   position: relative;
-  padding-left: 1rem;
+  padding-inline-start: 1rem;
 }
 
 .items li::before {
   content: "";
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0.7em;
   width: 0.4rem;
   height: 1px;
@@ -188,15 +188,15 @@
     height: 100%;
     padding: calc(var(--nav-h) + 2rem) clamp(2rem, 4vw, 5rem) 5rem;
     border-top: 0;
-    border-left: 1px solid var(--line);
+    border-inline-start: 1px solid var(--line);
     grid-template-rows: 1fr auto;
     align-content: stretch;
   }
 
   .intro {
     width: min(46vw, 44rem);
-    padding-left: 0;
-    border-left: 0;
+    padding-inline-start: 0;
+    border-inline-start: 0;
     grid-template-rows: auto;
     align-content: center;
   }
@@ -224,8 +224,8 @@
   .progress {
     display: block;
     position: absolute;
-    left: var(--gutter);
-    right: var(--gutter);
+    inset-inline-start: var(--gutter);
+    inset-inline-end: var(--gutter);
     bottom: 2.5rem;
     height: 1px;
     background: var(--line-strong);
@@ -235,7 +235,7 @@
     position: absolute;
     inset: 0;
     background: var(--accent);
-    transform-origin: left center;
+    transform-origin: var(--start) center;
     transform: scaleX(0);
   }
 }

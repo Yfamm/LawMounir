@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "./site";
+import { ogLocale, other, type Lang } from "@/lib/i18n";
 
 /**
  * Search indexing stays off until the firm's details are complete and the
@@ -8,46 +8,70 @@ import { site } from "./site";
 export const indexable = process.env.NEXT_PUBLIC_SITE_INDEXABLE === "true";
 
 type PageMeta = {
+  lang: Lang;
   title: string;
   description: string;
-  /** Path from the site root, e.g. "/about". */
+  /** Language-neutral path from the site root, e.g. "/about" or "/". */
   path: string;
+  siteName: string;
   type?: "website" | "article";
   publishedTime?: string;
-  /** Site name from the CMS settings. */
-  siteName?: string;
+  /** Social image from Site Settings; defaults to the built-in share image. */
+  shareImage?: string | null;
+  /** Language served at x-default (the site's default language). */
+  defaultLanguage?: Lang;
+  /** Set false when the page has no counterpart in the other language. */
+  hasAlternate?: boolean;
 };
+
+const DEFAULT_SHARE = { url: "/opengraph-image.jpg", width: 1200, height: 630 };
+const SHARE_ALT: Record<Lang, string> = {
+  en: "Bronze statue of Justice holding scales at sunset — DIWAN, Law & Legal Consultancy",
+  ar: "تمثال برونزي للعدالة يحمل الميزان عند الغروب — ديوان للمحاماه والأستشارات القانونية",
+};
+
+export const localePath = (lang: Lang, path: string) => (path === "/" ? `/${lang}` : `/${lang}${path}`);
 
 /**
- * Per-page metadata with its own canonical URL and Open Graph / Twitter
- * fields. Next.js merges `openGraph` shallowly, so every page sets the full
- * object rather than inheriting the home page's title and description.
- * A page-level `openGraph` replaces the root file-based share image, so the
- * image served from app/opengraph-image.jpg is referenced explicitly here.
+ * Per-page, per-language metadata: canonical URL, hreflang alternates and
+ * full Open Graph / Twitter objects. Next.js merges `openGraph` shallowly, so
+ * every page sets the complete object.
  */
-const shareImage = {
-  url: "/opengraph-image.jpg",
-  width: 1200,
-  height: 630,
-  alt: "Bronze statue of Justice holding scales at sunset — DIWAN, Law & Legal Consultancy",
-};
-
-export function pageMetadata({ title, description, path, type = "website", publishedTime, siteName = site.name }: PageMeta): Metadata {
+export function pageMetadata({
+  lang,
+  title,
+  description,
+  path,
+  siteName,
+  type = "website",
+  publishedTime,
+  shareImage,
+  defaultLanguage = "ar",
+  hasAlternate = true,
+}: PageMeta): Metadata {
   const fullTitle = `${title} — ${siteName}`;
+  const image = shareImage ? { url: shareImage, alt: SHARE_ALT[lang] } : { ...DEFAULT_SHARE, alt: SHARE_ALT[lang] };
+  const canonical = localePath(lang, path);
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical,
+      languages: hasAlternate
+        ? { ar: localePath("ar", path), en: localePath("en", path), "x-default": localePath(defaultLanguage, path) }
+        : { [lang]: canonical },
+    },
     openGraph: {
       type,
       siteName,
-      locale: "en_EG",
-      url: path,
+      locale: ogLocale(lang),
+      alternateLocale: hasAlternate ? [ogLocale(other(lang))] : [],
+      url: canonical,
       title: fullTitle,
       description,
-      images: [shareImage],
+      images: [image],
       ...(publishedTime ? { publishedTime } : {}),
     },
-    twitter: { card: "summary_large_image", title: fullTitle, description, images: [shareImage] },
+    twitter: { card: "summary_large_image", title: fullTitle, description, images: [image] },
   };
 }

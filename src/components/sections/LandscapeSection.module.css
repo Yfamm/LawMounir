@@ -65,7 +65,7 @@
 }
 
 .arabic {
-  margin-left: auto;
+  margin-inline-start: auto;
   white-space: nowrap;
   font-size: 1.15rem;
   line-height: 1;
@@ -179,7 +179,7 @@
 
   .plateCaption {
     display: block;
-    margin-left: auto;
+    margin-inline-start: auto;
     color: var(--muted);
   }
 
@@ -194,7 +194,7 @@
     position: absolute;
     inset: 0;
     background: var(--accent);
-    transform-origin: left center;
+    transform-origin: var(--start) center;
     transform: scaleX(0);
   }
 }

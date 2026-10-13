@@ -107,5 +107,5 @@
 
 .nextLink:hover .nextTitle,
 .nextLink:focus-visible .nextTitle {
-  transform: translateX(1.5rem);
+  transform: translateX(calc(var(--dir) * 1.5rem));
 }

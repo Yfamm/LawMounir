@@ -41,8 +41,8 @@
   .lead {
     grid-column: 1 / span 7;
     grid-row: span 2;
-    padding-right: 2rem;
-    border-right: 1px solid var(--line-ink);
+    padding-inline-end: 2rem;
+    border-inline-end: 1px solid var(--line-ink);
   }
   .side {
     grid-column: 8 / span 5;

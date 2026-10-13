@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { EASE, gsap, MOTION, ScrollTrigger, showRoot, useGSAP } from "@/animation/gsap";
+import { useSite } from "@/components/providers/SiteProvider";
 import type { PersonView } from "@/lib/cms/repository";
 import { TeamCard } from "./TeamCard";
 import styles from "./TeamGrid.module.css";
@@ -11,6 +12,14 @@ type Props = { people: PersonView[]; showBio?: boolean; columns?: 3 | 4 };
 /** Portrait grid; each image unmasks upward as it scrolls into view. */
 export function TeamGrid({ people, showBio = false, columns = 3 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const { ui, lang } = useSite();
+  const labels = {
+    portraitToFollow: ui.portraitToFollow,
+    portraitOf: ui.portraitOf,
+    education: ui.education,
+    languages: ui.languages,
+    admission: ui.admission,
+  };
 
   useGSAP(
     () => {
@@ -46,7 +55,7 @@ export function TeamGrid({ people, showBio = false, columns = 3 }: Props) {
   return (
     <div ref={ref} className={`${styles.grid} ${columns === 4 ? styles.four : ""}`} data-reveal>
       {people.map((person, i) => (
-        <TeamCard key={person.id} person={person} number={String(i + 1).padStart(2, "0")} showBio={showBio} />
+        <TeamCard key={person.id} person={person} number={String(i + 1).padStart(2, "0")} showBio={showBio} labels={labels} lang={lang} />
       ))}
     </div>
   );

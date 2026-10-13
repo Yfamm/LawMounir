@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { ResolvedImage } from "@/lib/cms/images";
+import type { Lang } from "@/lib/i18n";
 import { PlateFigure } from "@/components/ui/PlateFigure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import styles from "./PageHeader.module.css";
@@ -7,7 +8,8 @@ import styles from "./PageHeader.module.css";
 type Props = {
   index?: string;
   label: string;
-  arabic?: string;
+  other?: string;
+  otherLang?: Lang;
   title: ReactNode[];
   intro?: string;
   size?: "mega" | "xl" | "l";
@@ -17,7 +19,7 @@ type Props = {
 };
 
 /** Opening block for inner pages: oversized title, then a captioned plate. */
-export function PageHeader({ index, label, arabic, title, intro, size = "mega", aside, plate }: Props) {
+export function PageHeader({ index, label, other, otherLang, title, intro, size = "mega", aside, plate }: Props) {
   return (
     <section className={styles.header}>
       <div className="container">
@@ -26,7 +28,8 @@ export function PageHeader({ index, label, arabic, title, intro, size = "mega", 
           immediate
           index={index}
           label={label}
-          arabic={arabic}
+          other={other}
+          otherLang={otherLang}
           title={title}
           intro={intro}
           size={size}

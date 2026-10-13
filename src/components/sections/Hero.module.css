@@ -93,7 +93,7 @@
   width: 3rem;
   height: 1px;
   background: var(--accent);
-  transform-origin: left center;
+  transform-origin: var(--start) center;
 }
 
 .title {
@@ -130,13 +130,6 @@
   color: rgba(242, 235, 221, 0.82);
 }
 
-.ledeAr {
-  max-width: 30rem;
-  margin-top: 0.75rem;
-  font-size: var(--fs-body-l);
-  line-height: 1.7;
-  color: rgba(242, 235, 221, 0.72);
-}
 
 .actions {
   display: flex;
@@ -155,7 +148,7 @@
 /* Scroll cue */
 .cue {
   position: absolute;
-  right: var(--gutter);
+  inset-inline-end: var(--gutter);
   bottom: clamp(3.5rem, 8vh, 6.5rem);
   display: none;
   flex-direction: column;
@@ -197,6 +190,8 @@
   }
 }
 
+/* Vertical text resolves logical insets against its own writing mode, so the
+   side is set physically and mirrored for right-to-left pages. */
 .coords {
   position: absolute;
   top: calc(var(--nav-h) + 1.5rem);
@@ -204,6 +199,11 @@
   display: none;
   font-weight: 500;
   color: rgba(242, 235, 221, 0.55);
+}
+
+:global([dir="rtl"]) .coords {
+  right: auto;
+  left: var(--gutter);
 }
 
 @media (min-width: 1100px) {
@@ -214,4 +214,10 @@
     display: block;
     writing-mode: vertical-rl;
   }
+}
+
+/* Arabic: Amiri sets larger and wider than Cormorant at the same size. */
+:global(html[lang="ar"]) .title {
+  font-size: clamp(2.6rem, 6.4vw, 7.4rem);
+  max-width: 16ch;
 }

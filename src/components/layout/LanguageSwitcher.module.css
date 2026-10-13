@@ -1,0 +1,80 @@
+/* Compact pill: near-black surface, antique-gold hairline, gold thumb under
+   the active language. Direction-aware: the thumb sits at inline-start for
+   the first option in both LTR and RTL. */
+.switcher {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 2.6rem;
+  align-items: stretch;
+  height: 2.25rem;
+  padding: 3px;
+  border: 1px solid var(--line-gold);
+  border-radius: 999px;
+  background: rgba(12, 11, 10, 0.72);
+  backdrop-filter: blur(8px);
+  isolation: isolate;
+}
+
+.option {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--ivory);
+  font-family: var(--font-plexmono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-decoration: none;
+  opacity: 0.72;
+  transition: color 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
+}
+
+.option[lang="ar"] {
+  font-family: var(--font-arabic), serif;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  padding-bottom: 0.15em;
+}
+
+.option:hover,
+.option:focus-visible {
+  opacity: 1;
+  color: var(--gold-100);
+}
+
+.option:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.option[aria-current="true"] {
+  opacity: 1;
+  color: var(--bg);
+}
+
+.thumb {
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  width: 2.6rem;
+  border-radius: 999px;
+  background: linear-gradient(100deg, var(--gold-200), var(--accent));
+  box-shadow: 0 0 0 1px rgba(239, 226, 194, 0.15) inset;
+  transition: transform 0.6s var(--ease-out);
+}
+
+/* Options are ordered ar, en; in RTL the first column is on the right. */
+.thumb[data-active="en"] {
+  transform: translateX(calc(var(--dir) * 100%));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb,
+  .option {
+    transition: none;
+  }
+}

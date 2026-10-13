@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, Panel } from "@/components/admin/PageHead";
 import styles from "@/components/admin/admin.module.css";
+import { adminList, adminSections, adminSettings } from "@/lib/cms/admin-data";
 import { requireAdmin } from "@/lib/cms/auth";
+import { collectionFields, completeness, footerFields, sectionFields, settingsFields, type CollectionKey } from "@/lib/cms/fields";
+import type { SectionKey } from "@/lib/cms/types";
 import { sessionClient } from "@/lib/supabase/server";
 import { EnquiryStatus, formatDateTime } from "@/components/admin/EnquiryBits";
 
@@ -15,6 +18,66 @@ async function count(table: string, filter?: Filter) {
   const q = db.from(table).select("id", { count: "exact", head: true });
   const { count: n } = await (filter ? q.filter(filter[1], filter[0], filter[2]) : q);
   return n ?? 0;
+}
+
+const SECTION_LINKS: { key: SectionKey; label: string; href: string }[] = [
+  { key: "home.hero", label: "Homepage · Hero", href: "/admin/homepage?section=hero" },
+  { key: "home.intro", label: "Homepage · Introduction", href: "/admin/homepage?section=intro" },
+  { key: "home.practice", label: "Homepage · Practice areas", href: "/admin/homepage?section=practice" },
+  { key: "home.landscape", label: "Homepage · Legal landscape", href: "/admin/homepage?section=landscape" },
+  { key: "home.values", label: "Homepage · Values", href: "/admin/homepage?section=values" },
+  { key: "home.experience", label: "Homepage · Experience", href: "/admin/homepage?section=experience" },
+  { key: "home.people", label: "Homepage · People preview", href: "/admin/homepage?section=people" },
+  { key: "home.insights", label: "Homepage · Insights preview", href: "/admin/homepage?section=insights" },
+  { key: "home.contact", label: "Contact section", href: "/admin/homepage?section=contact" },
+  { key: "about.blocks", label: "About", href: "/admin/about" },
+  { key: "practice.index", label: "Practice areas page", href: "/admin/pages?section=practice" },
+  { key: "people.index", label: "People page", href: "/admin/pages?section=people" },
+  { key: "insights.index", label: "Insights page", href: "/admin/pages?section=insights" },
+  { key: "contact.page", label: "Contact page", href: "/admin/pages?section=contact" },
+  { key: "seo.pages", label: "Search & sharing", href: "/admin/pages?section=seo" },
+  { key: "ui.strings", label: "Interface text", href: "/admin/interface" },
+];
+
+const COLLECTION_LINKS: { key: CollectionKey; label: string; href: string }[] = [
+  { key: "practice", label: "Practice areas", href: "/admin/practice-areas" },
+  { key: "people", label: "People", href: "/admin/people" },
+  { key: "insights", label: "Insights", href: "/admin/insights" },
+  { key: "values", label: "Values", href: "/admin/values" },
+  { key: "navigation", label: "Navigation links", href: "/admin/navigation" },
+];
+
+function StatusBadge({ complete, missing, review, label }: { complete: boolean; missing: number; review?: boolean; label: string }) {
+  return (
+    <span className={`${styles.badge} ${complete ? styles.badgeOutline : missing ? styles.badgeDanger : styles.badgeMuted}`}>
+      {label} {complete ? "✓ complete" : missing ? `${missing} missing` : review ? "needs review" : "—"}
+    </span>
+  );
+}
+
+async function translationRows() {
+  const sections = await adminSections(SECTION_LINKS.map((s) => s.key));
+  const settings = await adminSettings();
+  const rows: { label: string; href: string; ar: ReturnType<typeof completeness>["ar"]; en: ReturnType<typeof completeness>["en"] }[] = [];
+  const settingsState = completeness([...settingsFields, ...footerFields], settings as unknown as Record<string, unknown>, settings._translation);
+  rows.push({ label: "Site settings & footer", href: "/admin/settings", ...settingsState });
+  for (const s of SECTION_LINKS) {
+    const data = sections[s.key] as unknown as Record<string, unknown>;
+    rows.push({ label: s.label, href: s.href, ...completeness(sectionFields[s.key], data, data._translation as Record<string, string>) });
+  }
+  const collections = await Promise.all(
+    COLLECTION_LINKS.map(async (c) => {
+      const list = (await adminList(c.key)) as unknown as Record<string, unknown>[];
+      const states = list.map((r) => completeness(collectionFields[c.key], r, r.translations as Record<string, string>));
+      const sum = (lang: "ar" | "en") => ({
+        missing: states.reduce((n, st) => n + st[lang].missing, 0),
+        needsReview: states.some((st) => st[lang].needsReview),
+        complete: states.every((st) => st[lang].complete),
+      });
+      return { label: `${c.label} (${list.length})`, href: c.href, ar: sum("ar"), en: sum("en") };
+    }),
+  );
+  return [...rows, ...collections];
 }
 
 export default async function Dashboard() {
@@ -85,6 +148,41 @@ export default async function Dashboard() {
               </table>
             </div>
           )}
+        </Panel>
+
+        <Panel title="Translation status · حالة الترجمة" meta="Arabic & English">
+          <p className={styles.help} style={{ marginBottom: "1rem" }}>
+            “Missing” counts texts filled in one language only; visitors then see the other language. “Needs review” marks
+            translations nobody has checked yet — tick “reviewed” in the editor once they have been.
+          </p>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Content</th>
+                  <th>Arabic</th>
+                  <th>English</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(await translationRows()).map((r) => (
+                  <tr key={r.label}>
+                    <td>
+                      <Link href={r.href} className={styles.rowTitle}>
+                        {r.label}
+                      </Link>
+                    </td>
+                    <td>
+                      <StatusBadge label="AR" complete={r.ar.complete} missing={r.ar.missing} review={r.ar.needsReview} />
+                    </td>
+                    <td>
+                      <StatusBadge label="EN" complete={r.en.complete} missing={r.en.missing} review={r.en.needsReview} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Panel>
 
         <Panel title="Editing the site">

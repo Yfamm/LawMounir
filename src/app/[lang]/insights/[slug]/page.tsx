@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { pageMetadata } from "@/content/seo";
-import { getInsight, getInsights, getSite } from "@/lib/cms/repository";
-import { formatDate, type BodyBlock as InsightBlock } from "@/lib/cms/text";
+import { getInsights, getSite, getSlugs, getUi } from "@/lib/cms/repository";
+import type { BodyBlock as InsightBlock } from "@/lib/cms/text";
+import { dirOf, isLang, type Lang } from "@/lib/i18n";
 import { ContactSection } from "@/components/sections/ContactSection";
-import { Arabic } from "@/components/ui/Arabic";
 import { Arrow } from "@/components/ui/Arrow";
 import { EditorialCard } from "@/components/ui/EditorialCard";
 import { PlateFigure } from "@/components/ui/PlateFigure";
@@ -14,21 +14,26 @@ import { SplitReveal } from "@/components/ui/SplitReveal";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import styles from "./page.module.css";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateStaticParams() {
-  return (await getInsights()).map((insight) => ({ slug: insight.slug }));
+  return (await getSlugs()).insights.map((slug) => ({ slug }));
 }
 
 // Articles published in the admin after the build are rendered on first request.
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const [insight, site] = await Promise.all([getInsight(slug), getSite()]);
+  const { lang, slug } = await params;
+  if (!isLang(lang)) return {};
+  const [insights, site] = await Promise.all([getInsights(lang), getSite(lang)]);
+  const insight = insights.find((i) => i.slug === slug);
   if (!insight) return {};
   return pageMetadata({
-    siteName: site.siteName,
+    lang,
+    siteName: site.brandName,
+    shareImage: site.shareImage,
+    defaultLanguage: site.defaultLanguage,
     title: insight.seoTitle,
     description: insight.seoDescription,
     path: `/insights/${insight.slug}`,
@@ -61,8 +66,10 @@ function Block({ block }: { block: InsightBlock }) {
 }
 
 export default async function InsightPage({ params }: Props) {
-  const { slug } = await params;
-  const [insights, site] = await Promise.all([getInsights(), getSite()]);
+  const { lang: raw, slug } = await params;
+  if (!isLang(raw)) notFound();
+  const lang: Lang = raw;
+  const [insights, site, ui] = await Promise.all([getInsights(lang), getSite(lang), getUi(lang)]);
   const insight = insights.find((i) => i.slug === slug);
   if (!insight) notFound();
 
@@ -73,30 +80,26 @@ export default async function InsightPage({ params }: Props) {
       <article className={styles.article}>
         <header className={`container ${styles.header}`}>
           <Reveal className={styles.meta} immediate delay={0.2}>
-            <TransitionLink href="/insights" className={styles.back} data-reveal-item>
-              <Arrow direction="right" className={styles.backArrow} /> All insights
+            <TransitionLink href={`/${lang}/insights`} className={styles.back} data-reveal-item>
+              <Arrow direction="right" className={styles.backArrow} /> {ui.allInsights}
             </TransitionLink>
             <span className={`label ${styles.category}`} data-reveal-item>
               {insight.category}
             </span>
             <span className={`${styles.date} tabular`} data-reveal-item>
-              <time dateTime={insight.date ?? undefined}>{formatDate(insight.date)}</time>
+              <time dateTime={insight.date ?? undefined}>{insight.dateLabel}</time>
               {insight.readingTime && ` · ${insight.readingTime}`}
               {insight.author && ` · ${insight.author}`}
             </span>
           </Reveal>
 
-          <RevealText as="h1" immediate delay={0.3} className={`display ${styles.title}`} lines={[insight.title]} />
+          <div lang={insight.titleLang} dir={dirOf(insight.titleLang)} className={styles.contents}>
+            <RevealText as="h1" immediate delay={0.3} className={`display ${styles.title}`} lines={[insight.title]} />
 
-          <SplitReveal className={styles.standfirst} immediate delay={0.7}>
-            {insight.standfirst}
-          </SplitReveal>
-          {(insight.titleAr || insight.standfirstAr) && (
-            <div className={styles.arabic}>
-              {insight.titleAr && <Arabic as="p">{insight.titleAr}</Arabic>}
-              {insight.standfirstAr && <Arabic as="p">{insight.standfirstAr}</Arabic>}
-            </div>
-          )}
+            <SplitReveal className={styles.standfirst} immediate delay={0.7}>
+              {insight.standfirst}
+            </SplitReveal>
+          </div>
           <PlateFigure
             image={insight.cover}
             ratio="21 / 9"
@@ -108,8 +111,8 @@ export default async function InsightPage({ params }: Props) {
 
         <div className={`container ${styles.layout}`}>
           <aside className={styles.aside}>
-            <p className="label">In this note</p>
-            <ul>
+            <p className="label">{ui.inThisNote}</p>
+            <ul lang={insight.bodyLang}>
               {insight.body
                 .filter((b): b is Extract<InsightBlock, { type: "h" }> => b.type === "h")
                 .map((b, i) => (
@@ -119,13 +122,15 @@ export default async function InsightPage({ params }: Props) {
           </aside>
 
           <div className={styles.body}>
-            {insight.body.map((block, i) => (
-              <Block key={i} block={block} />
-            ))}
+            {insight.bodyFallback && <p className={styles.notice}>{ui.otherLanguageOnly}</p>}
+            <div lang={insight.bodyLang} dir={dirOf(insight.bodyLang)} className={styles.contents}>
+              {insight.body.map((block, i) => (
+                <Block key={i} block={block} />
+              ))}
+            </div>
             <p className={styles.disclaimer}>
-              This note is general information about Egyptian law as it stood at the date of publication. It is not
-              legal advice from {site.siteName} and should not be relied on for any specific matter.
-              {!insight.reviewed && " [DRAFT — PENDING LEGAL REVIEW BY THE FIRM]"}
+              {ui.disclaimer.replace("{name}", site.brandName)}
+              {!insight.reviewed && ` ${ui.draftNotice}`}
             </p>
           </div>
         </div>
@@ -135,18 +140,18 @@ export default async function InsightPage({ params }: Props) {
       <section className={`section surface-paper ${styles.more}`} aria-labelledby="more-title">
         <div className="container">
           <h2 id="more-title" className={`label ${styles.moreTitle}`}>
-            Further reading
+            {ui.furtherReading}
           </h2>
           <Reveal className={styles.moreGrid} stagger={0.1}>
             {more.map((i) => (
-              <EditorialCard key={i.slug} insight={i} issue={i.issue} />
+              <EditorialCard key={i.slug} insight={i} issue={i.issue} labels={{ issue: ui.issue, read: ui.read }} />
             ))}
           </Reveal>
         </div>
       </section>
       )}
 
-      <ContactSection />
+      <ContactSection lang={lang} />
     </>
   );
 }
