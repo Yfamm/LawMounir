@@ -87,7 +87,6 @@ export const collectionConfig: Record<CollectionKey, Config> = {
       sub: `${n.category.en || n.category.ar} · ${formatDate(n.publishedOn)}`,
       published: n.status === "published",
       badges: [
-        ...(n.status === "review" ? [{ text: "In review", tone: "gold" as const }] : []),
         n.legalReview === "approved" ? { text: "Legally reviewed", tone: "outline" as const } : { text: "Legal review pending", tone: "muted" as const },
       ],
       href: `/ar/insights/${n.slug}`,
@@ -175,7 +174,17 @@ export async function CollectionTable({ collection }: { collection: CollectionKe
                 <td>
                   <span className={styles.tools}>
                     <span className={`${styles.badge} ${s.published ? styles.badgeOutline : styles.badgeMuted}`}>
-                      {s.published ? (collection === "navigation" ? "Visible" : "Published") : collection === "navigation" ? "Hidden" : collection === "insights" ? "Draft" : "Unpublished"}
+                      {s.published
+                        ? collection === "navigation"
+                          ? "Visible"
+                          : "Published"
+                        : collection === "navigation"
+                          ? "Hidden"
+                          : collection === "insights"
+                            ? (row as { status?: string }).status === "review"
+                              ? "In review"
+                              : "Draft"
+                            : "Unpublished"}
                     </span>
                     {s.badges?.map((b) => (
                       <span key={b.text} className={`${styles.badge} ${b.tone === "outline" ? styles.badgeOutline : b.tone === "gold" ? styles.badgeGold : styles.badgeMuted}`}>

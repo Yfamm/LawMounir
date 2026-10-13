@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getAdmin } from "@/lib/cms/auth";
@@ -111,6 +112,8 @@ export async function POST(request: Request) {
       return fail("The image could not be replaced. Please try again.", 500);
     }
     if (previousPath) await db.storage.from("media").remove([previousPath]);
+    // Pages embed the file URL; regenerate them so every use shows the new file.
+    revalidatePath("/", "layout");
     return NextResponse.json({ ok: true, media: data });
   }
 

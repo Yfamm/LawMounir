@@ -16,7 +16,9 @@ const enquirySchema = z.object({
     .min(1, "phone_required")
     .max(40, "phone_invalid")
     .regex(/^\+?[\d\s().\-\u0660-\u0669\u06F0-\u06F9]+$/, "phone_invalid")
-    .refine((v) => (v.match(/[\d\u0660-\u0669\u06F0-\u06F9]/g) ?? []).length >= 5, "phone_invalid"),
+    .refine((v) => (v.match(/[\d\u0660-\u0669\u06F0-\u06F9]/g) ?? []).length >= 5, "phone_invalid")
+    // Arabic-Indic (٠–٩) and Persian (۰–۹) digits are stored as 0–9 so the number can be dialled.
+    .transform((v) => v.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) & 0xf))),
   email: z.union([z.literal(""), z.email("email_invalid").max(200, "email_invalid")], { error: "email_invalid" }),
   message: z.string().trim().min(1, "message_required").max(4000, "too_long"),
   path: z.string().max(200).optional(),

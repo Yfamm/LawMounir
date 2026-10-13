@@ -27,6 +27,20 @@ const ERRORS: Record<string, UiKey> = {
   unavailable: "errUnavailable",
 };
 
+const DIGITS = /[\d\u0660-\u0669\u06F0-\u06F9]/g;
+
+/** The server's rules, checked first so visitors see messages in the page language, not the browser's. */
+function validate(p: { name: string; phone: string; email: string; message: string }): string | null {
+  if (!p.name) return "name_required";
+  if (!p.phone) return "phone_required";
+  if (!/^\+?[\d\s().\-\u0660-\u0669\u06F0-\u06F9]+$/.test(p.phone) || (p.phone.match(DIGITS) ?? []).length < 5) return "phone_invalid";
+  if (p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) return "email_invalid";
+  if (!p.message) return "message_required";
+  return null;
+}
+
+const FIELD_OF: Record<string, string> = { name_required: "name", phone_required: "phone", phone_invalid: "phone", email_invalid: "email", message_required: "message" };
+
 /**
  * Enquiry form. Posts to /api/contact, which validates the enquiry and
  * stores it in the firm's confidential enquiries inbox.
@@ -49,6 +63,13 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
       path: window.location.pathname,
       lang,
     };
+
+    const invalid = validate(payload);
+    if (invalid) {
+      setStatus({ kind: "error", message: ui[ERRORS[invalid]] });
+      (form.elements.namedItem(FIELD_OF[invalid]) as HTMLElement | null)?.focus();
+      return;
+    }
 
     setStatus({ kind: "sending" });
     try {
@@ -84,7 +105,7 @@ export function ContactForm({ submitText, notice, successTitle, successText }: P
   }
 
   return (
-    <form className={styles.form} onSubmit={onSubmit}>
+    <form className={styles.form} onSubmit={onSubmit} noValidate>
       <div className={styles.row}>
         <Field id={`${id}-name`} name="name" label={ui.formName} autoComplete="name" required maxLength={200} />
         <Field

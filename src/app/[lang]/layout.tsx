@@ -11,8 +11,9 @@ import "../globals.css";
 
 // Public pages are static and regenerate at most every five minutes; every
 // admin save also purges them immediately (revalidatePath in the actions).
+// dynamicParams stays on: with it off, a purged page answers 404
+// (NoFallbackError) instead of regenerating. Unknown languages 404 below.
 export const revalidate = 300;
-export const dynamicParams = false;
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));

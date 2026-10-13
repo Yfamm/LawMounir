@@ -1,5 +1,6 @@
 import "server-only";
 import { sessionClient } from "@/lib/supabase/server";
+import { sectionAdmin } from "./labels";
 import { normalizeSection, normalizeSettings } from "./normalize";
 import { fromRow, tables } from "./records";
 import type { CollectionKey } from "./fields";
@@ -65,8 +66,8 @@ export async function mediaUsage(): Promise<Map<string, string[]>> {
       usage.set(m[1], list);
     }
   };
-  for (const r of sections.data ?? []) scan(r.data, `Page section · ${r.key}`);
-  scan(settings.data?.data, "Site settings");
+  for (const r of sections.data ?? []) scan(r.data, sectionAdmin[r.key as SectionKey]?.label ?? `Page section · ${r.key}`);
+  scan(settings.data?.data, "Site settings (logo, favicon or sharing image)");
   for (const r of practice.data ?? []) scan(r.image, `Practice area · ${r.title}`);
   for (const r of people.data ?? []) scan(r.portrait, `Person · ${r.name_en}`);
   for (const r of insights.data ?? []) scan(r.cover, `Insight · ${r.title}`);

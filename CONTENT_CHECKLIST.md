@@ -68,9 +68,11 @@ Machine-readable versions: `src/content/sources.ts` (registry) and
 | `[STREET ADDRESS]` | Contact section, footer, mobile menu (city is confirmed) | Site Settings → Address |
 | `[OFFICE HOURS]` | Contact section, footer | Site Settings → Office hours |
 | `[WEBSITE]` | Canonical URL | Site Settings → Canonical URL, or `NEXT_PUBLIC_SITE_URL` |
-| `[LAWYER NAME]`, `[TITLE]`, `[PRACTICE AREA]`, `[SHORT BIO]` | Six team cards | People |
-| `[PUBLICATION DATE]` | Insight cards and articles | Insights → Publication date |
-| Favicon mark | Browser tab | `src/app/icon.svg` (code) |
+| `[LAWYER NAME]`, `[TITLE]`, `[PRACTICE AREA]`, `[SHORT BIO]` (Arabic: `[اسم المحامي]`, `[المسمى الوظيفي]`, `[مجال الممارسة]`, `[نبذة مختصرة]`) | Six team cards | People |
+| `[PUBLICATION DATE]` / `[تاريخ النشر]` | Insight cards and articles | Insights → Publication date |
+| `[عنوان المكتب]`, `[مواعيد العمل]` | Arabic address and hours | Site Settings → Address / Office hours (Arabic) |
+| Favicon mark | Browser tab | Site Settings → Favicon (default `public/icon.svg`) |
+| Logo image (optional) | Header, footer | Site Settings → Logo image (default: typographic wordmark) |
 
 Exact office coordinates are not supplied; the hero and footer show the
 confirmed location line ("Kafr el Sheikh — Egypt") instead.
@@ -101,6 +103,26 @@ routes. Create an area in Admin → Practice Areas only once the firm confirms i
   pending review, and state they are not legal advice from DIWAN. Replace them
   with the firm's own notes, or set Legal review → Approved and a publication
   date in Admin → Insights once approved.
+
+## 4a. Arabic translations awaiting review
+
+Arabic is the default language. All Arabic prepared during the bilingual
+upgrade is flagged **needs review** in the admin until a native reader ticks
+"Arabic text reviewed" (Dashboard → Translation status lists every item).
+
+- **Source-derived Arabic** (firm name, vision, who we are, values, mission,
+  hero tagline) is the firm's own text from the introduction document.
+- **Prepared Arabic — needs review:** homepage sections (hero headline and
+  buttons, practice, landscape, experience, previews, contact), index pages,
+  SEO titles and descriptions, interface text (buttons, form labels and
+  errors, 404), the six practice areas (summary, overview, scope, forums),
+  navigation labels, insight titles, excerpts, categories and reading times.
+- **Not translated:** the six sample insight *bodies* — Arabic pages show the
+  English body (marked `lang="en"`) with the notice "هذا المقال متاح حالياً
+  باللغة الإنجليزية فقط." Add the Arabic body in Admin → Insights.
+- **Legal terminology** in the practice-area Arabic (court and authority
+  names, statute references) must be checked by a lawyer at the firm, not only
+  a translator.
 
 ## 5. Launch settings (deployment environment)
 

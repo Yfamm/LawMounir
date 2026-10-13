@@ -4,6 +4,7 @@ import { PageHead, Panel } from "@/components/admin/PageHead";
 import styles from "@/components/admin/admin.module.css";
 import { adminList, adminSections, adminSettings } from "@/lib/cms/admin-data";
 import { requireAdmin } from "@/lib/cms/auth";
+import { sectionAdmin } from "@/lib/cms/labels";
 import { collectionFields, completeness, footerFields, sectionFields, settingsFields, type CollectionKey } from "@/lib/cms/fields";
 import type { SectionKey } from "@/lib/cms/types";
 import { sessionClient } from "@/lib/supabase/server";
@@ -20,24 +21,7 @@ async function count(table: string, filter?: Filter) {
   return n ?? 0;
 }
 
-const SECTION_LINKS: { key: SectionKey; label: string; href: string }[] = [
-  { key: "home.hero", label: "Homepage · Hero", href: "/admin/homepage?section=hero" },
-  { key: "home.intro", label: "Homepage · Introduction", href: "/admin/homepage?section=intro" },
-  { key: "home.practice", label: "Homepage · Practice areas", href: "/admin/homepage?section=practice" },
-  { key: "home.landscape", label: "Homepage · Legal landscape", href: "/admin/homepage?section=landscape" },
-  { key: "home.values", label: "Homepage · Values", href: "/admin/homepage?section=values" },
-  { key: "home.experience", label: "Homepage · Experience", href: "/admin/homepage?section=experience" },
-  { key: "home.people", label: "Homepage · People preview", href: "/admin/homepage?section=people" },
-  { key: "home.insights", label: "Homepage · Insights preview", href: "/admin/homepage?section=insights" },
-  { key: "home.contact", label: "Contact section", href: "/admin/homepage?section=contact" },
-  { key: "about.blocks", label: "About", href: "/admin/about" },
-  { key: "practice.index", label: "Practice areas page", href: "/admin/pages?section=practice" },
-  { key: "people.index", label: "People page", href: "/admin/pages?section=people" },
-  { key: "insights.index", label: "Insights page", href: "/admin/pages?section=insights" },
-  { key: "contact.page", label: "Contact page", href: "/admin/pages?section=contact" },
-  { key: "seo.pages", label: "Search & sharing", href: "/admin/pages?section=seo" },
-  { key: "ui.strings", label: "Interface text", href: "/admin/interface" },
-];
+const SECTION_LINKS = (Object.keys(sectionAdmin) as SectionKey[]).filter((k) => k !== "home.layout").map((key) => ({ key, ...sectionAdmin[key] }));
 
 const COLLECTION_LINKS: { key: CollectionKey; label: string; href: string }[] = [
   { key: "practice", label: "Practice areas", href: "/admin/practice-areas" },
