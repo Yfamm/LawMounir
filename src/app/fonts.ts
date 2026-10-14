@@ -49,10 +49,15 @@ const arabic = localFont({
   variable: "--font-arabic",
   display: "swap",
   adjustFontFallback: false,
+  fallback: ["DIWAN Arabic fallthrough"],
   declarations: [{ prop: "unicode-range", value: "U+0020-0021,U+0028,U+00A0,U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC" }],
 });
 
 // IBM Plex Sans Arabic — Arabic reading text, labels and controls.
+// Both Arabic faces name a fallback family that is never installed: Next.js
+// adds no fallback here, but vinext (Cloudflare build) would otherwise append
+// a generic sans-serif, which would catch Latin letters and digits before they
+// reach Cormorant / Manrope in the chained --font-* stacks.
 const arabicSans = localFont({
   src: [
     { path: "../fonts/ibm-plex-sans-arabic-arabic-300-normal.woff2", weight: "300", style: "normal" },
@@ -63,6 +68,7 @@ const arabicSans = localFont({
   variable: "--font-arabic-sans",
   display: "swap",
   adjustFontFallback: false,
+  fallback: ["DIWAN Arabic fallthrough"],
   declarations: [{ prop: "unicode-range", value: "U+0020,U+00A0,U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC" }],
 });
 

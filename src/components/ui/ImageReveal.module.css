@@ -1,4 +1,5 @@
-.figure {
+/* Zero specificity: classes passed in by the caller (e.g. a sticky figure) win in any CSS order. */
+:where(.figure) {
   position: relative;
   display: grid;
   gap: 1rem;

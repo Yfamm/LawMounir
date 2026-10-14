@@ -30,6 +30,10 @@ import { isLang, other, tr, trList, type Lang } from "@/lib/i18n";
 
 type Props = { params: Promise<{ lang: string }> };
 
+// Same as the [lang] layout; repeated here because vinext (Cloudflare build)
+// reads the ISR interval from the page, not from parent layouts.
+export const revalidate = 300;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isLang(lang)) return {};

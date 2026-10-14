@@ -68,8 +68,12 @@
   margin-inline-start: auto;
   white-space: nowrap;
   font-size: 1.15rem;
-  line-height: 1;
   color: var(--accent);
+}
+
+/* Counterpart in English (Arabic pages); the Arabic counterpart keeps .arabic's line-height. */
+.arabic:not(:global(.arabic)) {
+  line-height: 1;
 }
 
 .plateCaption {
@@ -90,12 +94,10 @@
 
 .statement {
   font-size: var(--fs-display-l);
-  line-height: 0.98;
 }
 
 .statementSmall {
   font-size: clamp(1.75rem, 4.6vw, 5rem);
-  line-height: 1.04;
 }
 
 .pillars {

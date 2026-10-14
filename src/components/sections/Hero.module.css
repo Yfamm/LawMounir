@@ -98,8 +98,6 @@
 
 .title {
   font-size: clamp(3.3rem, 9.4vw, 10.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
   max-width: 12ch;
   text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
 }
@@ -197,7 +195,6 @@
   top: calc(var(--nav-h) + 1.5rem);
   right: var(--gutter);
   display: none;
-  font-weight: 500;
   color: rgba(242, 235, 221, 0.55);
 }
 

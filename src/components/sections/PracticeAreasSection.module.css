@@ -1,6 +1,5 @@
 .practice {
   background: var(--bg);
-  padding-top: calc(var(--section) * 0.6);
 }
 
 .list {

@@ -83,8 +83,6 @@
 .mega {
   font-size: var(--fs-mega);
   white-space: nowrap;
-  line-height: 0.86;
-  letter-spacing: -0.035em;
   text-transform: uppercase;
 }
 
@@ -94,10 +92,8 @@
 
 .l {
   font-size: var(--fs-display-l);
-  line-height: 0.98;
 }
 
 .m {
   font-size: var(--fs-display-m);
-  line-height: 1.02;
 }

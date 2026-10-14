@@ -54,7 +54,6 @@
 .title {
   max-width: 20ch;
   font-size: clamp(2.6rem, 6vw, 6.4rem);
-  line-height: 0.98;
 }
 
 .standfirst {
@@ -177,9 +176,6 @@
   }
 }
 
-.more {
-  padding-block: var(--section-s);
-}
 
 .moreTitle {
   margin-bottom: 2.5rem;
@@ -207,7 +203,8 @@
 }
 
 /* Right-to-left pages: "back" points right. */
-:global([dir="rtl"]) .backArrow {
+/* html[dir] outranks Arrow's own [dir="rtl"] mirroring in any CSS order. */
+:global(html[dir="rtl"]) .backArrow {
   transform: none;
 }
 

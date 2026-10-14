@@ -1,7 +1,6 @@
 .intro {
   position: relative;
   background: var(--bg);
-  padding-block: var(--section) calc(var(--section) * 0.9);
 }
 
 .meta {
@@ -46,7 +45,6 @@
 .statement {
   max-width: 15ch;
   font-size: var(--fs-display-xl);
-  line-height: 0.96;
 }
 
 .statement span {
@@ -61,7 +59,6 @@
 
 .arabicStatement {
   font-size: clamp(1.5rem, 2.6vw, 2.6rem);
-  line-height: 1.4;
   color: var(--accent);
   text-align: start;
 }
@@ -98,4 +95,9 @@
     grid-column: 2 / span 5;
     grid-row: 2;
   }
+}
+
+/* Counterpart in English (Arabic pages); the Arabic counterpart keeps .arabic's line-height. */
+.arabicStatement:not(:global(.arabic)) {
+  line-height: 1.4;
 }

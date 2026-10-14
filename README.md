@@ -33,6 +33,13 @@ single-language sections; it never overwrites text, never deletes, and never
 touches enquiries, media files or admins. Deploy the code before (or together
 with) the backfill: the previous version cannot read the bilingual shape.
 
+### Cloudflare Workers
+
+The site can also be deployed to Cloudflare Workers through vinext, alongside
+the unchanged Next.js workflow: `npm run build:vinext`, `npm run start:vinext`
+(local preview in the Cloudflare runtime), `npm run deploy:vinext`. Setup,
+GitHub connection and environment variables: [`DEPLOY_CLOUDFLARE.md`](DEPLOY_CLOUDFLARE.md).
+
 ## Structure
 
 ```

@@ -19,8 +19,12 @@
   margin-inline-start: auto;
   white-space: nowrap;
   font-size: 1.15rem;
-  line-height: 1;
   color: var(--accent);
+}
+
+/* Counterpart in English (Arabic pages); the Arabic counterpart keeps .arabic's line-height. */
+.arabic:not(:global(.arabic)) {
+  line-height: 1;
 }
 
 .imagePanel {
